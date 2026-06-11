@@ -44,7 +44,9 @@ export default function LevelSection({
             <span
               className={`inline-block rounded-full border px-3 py-1 text-xs font-bold ${c.badge}`}
             >
-              SEVİYE {level.level} · {level.difficulty}
+              {level.track === "branch"
+                ? `DAL · ${level.difficulty}`
+                : `SEVİYE ${level.level} · ${level.difficulty}`}
             </span>
             <h2 className="mt-3 flex items-center gap-2 text-2xl font-bold text-white">
               <span>{level.emoji}</span>

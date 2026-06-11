@@ -6,7 +6,12 @@ export type ConceptCategory =
   | "Backend"
   | "Veritabanı"
   | "Araçlar"
-  | "Kavram";
+  | "Kavram"
+  | "Realtime"
+  | "Oyun"
+  | "AI"
+  | "Mobil"
+  | "DevOps";
 
 export type Concept = {
   term: string;
@@ -1492,6 +1497,331 @@ export const concepts: Concept[] = [
     short: "Kaynak kodu herkese açık, katkıya izin veren yazılım.",
     body: "Açık kaynak projeler (React, Linux...) kodunu paylaşır; herkes inceleyebilir, kullanabilir ve katkı yapabilir. Katkı vermek, junior'lar için güçlü bir öğrenme ve görünürlük yoludur.",
     analogy: "Herkesin tarifine ekleme yapabildiği ortak bir yemek kitabı gibi.",
+  },
+
+  // ─────────────────────────── REALTIME ───────────────────────────
+  {
+    term: "WebSocket",
+    category: "Realtime",
+    short: "İstemci ve sunucu arasında çift yönlü, sürekli açık bağlantı.",
+    body: "HTTP'nin 'iste-cevap al' modelinin aksine WebSocket bağlantısı açık kalır; iki taraf da anında veri gönderebilir. Sohbet, canlı bildirim, oyun gibi gerçek zamanlı işler için idealdir.",
+    analogy: "Telefon görüşmesi gibi: hat açık, iki taraf da istediğinde konuşur.",
+  },
+  {
+    term: "Polling vs Push",
+    category: "Realtime",
+    short: "Sürekli 'yeni var mı?' diye sormak (polling) ile olunca haber almak (push).",
+    body: "Polling'de istemci belirli aralıkla sunucuya sorar (verimsiz, gecikmeli). Push'ta sunucu yeni veri olunca kendisi bildirir (WebSocket/SSE). Gerçek zamanlı uygulamalar push tercih eder.",
+    analogy: "Polling: her 5 dakikada posta kutusuna bakmak. Push: kapı zili çalınca gitmek.",
+  },
+  {
+    term: "Optimistic UI",
+    category: "Realtime",
+    short: "Sunucu onayını beklemeden arayüzü hemen güncellemek.",
+    body: "Kullanıcı bir işlem yapınca (mesaj gönder, beğen) sonucu daha sunucudan onay gelmeden ekranda gösterirsin; uygulama hızlı hisseder. İşlem başarısız olursa değişikliği geri alırsın (rollback).",
+    analogy: "Garson siparişi 'tamamdır' deyip mutfağa giderken senin önüne not bırakması gibi.",
+  },
+  {
+    term: "Broadcast & Room",
+    category: "Realtime",
+    short: "Bir mesajı bir gruptaki herkese aynı anda iletmek.",
+    body: "Broadcast, bir olayı bağlı tüm istemcilere yayar. Room (oda/kanal), bu yayını sadece ilgili gruba sınırlar — örn. yalnızca '#genel' kanalındakiler mesajı alır. Sohbet ve çok oyunculu sistemlerin temelidir.",
+    analogy: "Telsiz kanalları gibi: aynı kanaldaki herkes duyar, diğerleri duymaz.",
+  },
+  {
+    term: "Presence",
+    category: "Realtime",
+    short: "Kimlerin o an çevrimiçi/aktif olduğunu takip etmek.",
+    body: "Presence; bağlanan kullanıcıları bir listede tutar, biri ayrılınca (bağlantı kopunca) çıkarır. 'Online', 'yazıyor…', 'en son görülme' gibi özellikler bununla yapılır.",
+    analogy: "Sınıf yoklaması gibi: kim var, kim çıktı sürekli güncellenir.",
+  },
+  {
+    term: "Debounce & Throttle",
+    category: "Realtime",
+    short: "Çok sık tetiklenen olayları seyrekleştirme teknikleri.",
+    body: "Debounce; olay durduktan sonra bekleyip bir kez çalışır (örn. arama kutusunda yazma bitince istek at). Throttle; belirli aralıkta en fazla bir kez çalışır (örn. scroll olayını saniyede 10 kez). Performansı korur.",
+    analogy: "Asansör kapısı gibi: herkes binene kadar bekler (debounce), sonra bir kez kapanır.",
+  },
+  {
+    term: "Race Condition",
+    category: "Realtime",
+    short: "Eşzamanlı işlemlerin sırasına bağlı ortaya çıkan hatalar.",
+    body: "İki işlem aynı veriye aynı anda erişip sıraları garanti olmayınca beklenmedik sonuç doğar — mesaj kaybı, yanlış sayaç gibi. Sıra numarası, kilit veya atomik işlemlerle önlenir.",
+    analogy: "İki kişinin aynı anda son koltuğa oturmaya çalışması gibi: kim önce davrandı belirsiz.",
+  },
+
+  // ─────────────────────────── OYUN ───────────────────────────
+  {
+    term: "Canvas",
+    category: "Oyun",
+    short: "Tarayıcıda piksel piksel çizim yapılan HTML elementi.",
+    body: "`<canvas>`, JavaScript ile şekil, görsel ve metin çizebileceğin bir tuvaldir (2D context veya WebGL). Oyunlar, grafikler ve görsel efektler için kullanılır; DOM elementleri yerine doğrudan piksellerle çalışırsın.",
+    analogy: "Boş bir tuval gibi: her kareyi sen fırçayla (kodla) çizersin.",
+  },
+  {
+    term: "Game Loop",
+    category: "Oyun",
+    short: "Oyunu sürekli güncelleyip yeniden çizen ana döngü.",
+    body: "Game loop her karede iki şey yapar: durumu güncelle (update — hareket, çarpışma, skor) ve ekrana çiz (render). Saniyede ~60 kez dönerek hareketin akıcı görünmesini sağlar.",
+    analogy: "Çizgi film gibi: çok sayıda kareyi hızla art arda göstererek hareket yaratır.",
+  },
+  {
+    term: "requestAnimationFrame",
+    category: "Oyun",
+    short: "Tarayıcının çizim ritmine uyumlu döngü kurma yöntemi.",
+    body: "`requestAnimationFrame(fn)`, bir sonraki ekran yenilemesinden hemen önce fonksiyonunu çağırır; bu sayede `setInterval`'a göre daha akıcı ve enerji-verimli animasyon/oyun döngüsü kurarsın. Sekme arka plandayken otomatik yavaşlar.",
+    analogy: "Müzik temposuyla dans etmek gibi: ekranın ritmine ayak uydurursun.",
+  },
+  {
+    term: "Delta Time",
+    category: "Oyun",
+    short: "İki kare arasında geçen süre; hareketi cihaz hızından bağımsız yapar.",
+    body: "Farklı cihazlar farklı FPS'te çalışır. Hareketi 'her karede +5' yerine 'saniyede +300, delta ile ölçekle' yaparsan, hızlı da yavaş da olsa hız aynı hissedilir. Profesyonel oyunların olmazsa olmazı.",
+    analogy: "Yolu adım sayısına değil, geçen süreye göre ölçmek gibi.",
+  },
+  {
+    term: "Input Handling",
+    category: "Oyun",
+    short: "Klavye/fare/dokunma girdilerini oyuna aktarma.",
+    body: "Oyunda tuşa basıldığında değil, basılı tutulduğu sürece tepki istersin. Bu yüzden olayda hemen hareket etmek yerine 'hangi tuşlar basılı' durumunu tutup game loop içinde okursun. Akıcı kontrol bununla olur.",
+    analogy: "Gaz pedalı gibi: bastığın sürece gider, bıraktığında durur.",
+  },
+  {
+    term: "Collision Detection",
+    category: "Oyun",
+    short: "İki nesnenin çarpışıp çarpışmadığını anlama.",
+    body: "Oyuncu duvara, yeme ya da düşmana değdi mi? En basit yöntem AABB'dir: nesneleri dikdörtgen kabul edip kenarlarının kesişip kesişmediğine bakarsın. Daire-daire ve piksel bazlı yöntemler de vardır.",
+    analogy: "İki kutunun üst üste binip binmediğine bakmak gibi.",
+  },
+  {
+    term: "Oyun State'i",
+    category: "Oyun",
+    short: "Oyunun o anki durumunu tutan merkezi veri.",
+    body: "Skor, can, seviye, 'oynanıyor/duraklatıldı/bitti' gibi her şey oyun state'inde tutulur. Game loop bu state'i okuyup günceller ve çizer. Net bir state, oyunu yönetmeyi ve sıfırlamayı kolaylaştırır.",
+    analogy: "Satranç tahtasının o anki dizilişi gibi: oyunun tüm durumu orada.",
+  },
+  {
+    term: "FPS",
+    category: "Oyun",
+    short: "Saniyedeki kare sayısı (frames per second).",
+    body: "FPS, oyunun saniyede kaç kez çizildiğidir; 60 FPS akıcı kabul edilir. Düşük FPS takılma demektir — genelde her karede çok iş yapmaktan kaynaklanır. Delta time, düşük FPS'te bile hızın doğru kalmasını sağlar.",
+    analogy: "Sinemanın saniyedeki kare sayısı gibi: ne kadar çok, o kadar akıcı.",
+  },
+
+  // ─────────────────────────── AI / LLM ───────────────────────────
+  {
+    term: "LLM",
+    category: "AI",
+    short: "Büyük metin verisiyle eğitilmiş, dil üreten yapay zeka modeli.",
+    body: "LLM (Large Language Model), bir metnin devamında en olası kelimeleri tahmin ederek çalışır; soru yanıtlama, özetleme, kod yazma gibi işleri yapar. Claude, GPT bu sınıftandır. 'Anlamaz', örüntü tahmin eder — bu yüzden bazen yanılır.",
+    analogy: "Çok okumuş bir otomatik tamamlama gibi: en uygun devamı tahmin eder.",
+  },
+  {
+    term: "Claude API",
+    category: "AI",
+    short: "Anthropic'in Claude modellerine kod üzerinden erişim sağlayan API.",
+    body: "Claude API ile uygulamana yapay zeka eklersin: bir mesaj gönderir, cevabı alırsın. Resmi Anthropic SDK'sı (`@anthropic-ai/sdk`) kullanılır ve güncel, en yetenekli model olarak `claude-opus-4-8` tercih edilir. İstekler durumsuzdur; geçmişi sen taşırsın.",
+    analogy: "Çok yetenekli bir stajyere mesaj atıp iş yaptırmak gibi.",
+  },
+  {
+    term: "Token",
+    category: "AI",
+    short: "Modelin metni işlerken kullandığı en küçük parça.",
+    body: "Modeller kelimeyi değil 'token'ı işler — bir token kabaca birkaç karakter ya da bir kelime parçasıdır. Hem girdi hem çıktı token sayısına göre ücretlenir ve sınırlanır. Maliyet ve limit hesaplarının temel birimidir.",
+    analogy: "Metni lego parçalarına bölmek gibi: model bu parçalarla düşünür.",
+  },
+  {
+    term: "Context Window",
+    category: "AI",
+    short: "Modelin tek seferde 'görebildiği' maksimum token miktarı.",
+    body: "Context window, modelin aynı anda dikkate alabileceği toplam metin (sistem promptu + geçmiş + soru + cevap) sınırıdır. Aşılırsa eski kısımlar atılmalı ya da özetlenmelidir. Uzun sohbet ve doküman işlerinde kritiktir.",
+    analogy: "Masaya aynı anda sığabilecek kâğıt sayısı gibi: fazlası taşar.",
+  },
+  {
+    term: "Streaming",
+    category: "AI",
+    short: "Cevabın tamamı beklenmeden, üretildikçe parça parça gelmesi.",
+    body: "Streaming'de model cevabı yazdıkça token token sana ulaşır; kullanıcı boş ekrana bakmak yerine yazının akışını görür. Uzun cevaplarda hem deneyimi iyileştirir hem de zaman aşımı riskini azaltır.",
+    analogy: "Birinin cümlesini bitirmesini beklemek yerine konuştukça dinlemek gibi.",
+  },
+  {
+    term: "System Prompt",
+    category: "AI",
+    short: "Modele kimliğini, kurallarını ve görevini veren başlangıç talimatı.",
+    body: "System prompt; 'sen kibar bir Türkçe asistansın, kısa yanıt ver' gibi modelin davranışını şekillendiren üst düzey yönergedir. Kullanıcı mesajlarından ayrı, daha güçlü bir kanaldır. İyi tasarımı, iyi sonucun yarısıdır.",
+    analogy: "Bir çalışana işe başlarken verilen görev tanımı gibi.",
+  },
+  {
+    term: "Prompt Engineering",
+    category: "AI",
+    short: "Modelden istediğin sonucu almak için talimatı iyi tasarlamak.",
+    body: "Aynı modelden, nasıl sorduğuna göre çok farklı sonuçlar alırsın. Net görev, örnekler (few-shot), adım adım düşündürme ve istenen format belirtmek kaliteyi artırır. Deneme-yanılmayla gelişen bir beceridir.",
+    analogy: "Doğru soruyu doğru şekilde sormak gibi: iyi soru, iyi cevap getirir.",
+  },
+  {
+    term: "Tool Use",
+    category: "AI",
+    short: "Modelin gerçek aksiyonlar için senin fonksiyonlarını çağırabilmesi.",
+    body: "Tool use (function calling) ile modele araçlar tanımlarsın (hava durumu çek, veritabanına yaz); model gerektiğinde hangi aracı hangi parametreyle çağıracağını söyler, sen çalıştırıp sonucu geri verirsin. Asistanı 'konuşan'dan 'yapan'a çevirir.",
+    analogy: "Bir asistana telefon ve takvim vermek gibi: artık sadece konuşmaz, iş de halleder.",
+  },
+  {
+    term: "Hallucination",
+    category: "AI",
+    short: "Modelin emin bir dille yanlış/uydurma bilgi vermesi.",
+    body: "LLM'ler örüntü tahmin ettiği için bazen var olmayan bir kaynağı, tarihi ya da API'yi 'uydurur'. Çözüm: cevabı gerçek verilere dayandırmak (RAG/tool use), doğrulama eklemek ve kritik bilgilerde modele körü körüne güvenmemek.",
+    analogy: "Cevabı bilmeyen ama yine de kendinden emin konuşan bir öğrenci gibi.",
+  },
+  {
+    term: "RAG",
+    category: "AI",
+    short: "Modeli kendi verinle besleyip ona dayanarak cevap üretmesi.",
+    body: "RAG (Retrieval-Augmented Generation); soru gelince önce ilgili dokümanları arayıp bulur, sonra bunları modele verip 'bunlara dayanarak yanıtla' der. Güncel/özel bilgiyi modele öğretmeden kullanmanın ve halüsinasyonu azaltmanın yoludur.",
+    analogy: "Sınavda 'açık kitap' gibi: ezbere değil, önündeki kaynağa bakarak cevaplar.",
+  },
+  {
+    term: "Embedding",
+    category: "AI",
+    short: "Metni, anlamını taşıyan sayı dizisine (vektöre) çevirme.",
+    body: "Embedding, bir metni anlamını yansıtan sayılara dönüştürür; benzer anlamlı metinlerin vektörleri birbirine yakın olur. Bu sayede 'anlamca arama' (semantic search) yapılır — RAG'in arama adımının temelidir.",
+    analogy: "Her metne, anlamına göre bir harita koordinatı vermek gibi: yakınlar benzerdir.",
+  },
+  {
+    term: "Vector Database",
+    category: "AI",
+    short: "Embedding'leri saklayıp anlamca en yakınları hızlı bulan veritabanı.",
+    body: "Vektör veritabanı (Pinecone, pgvector...) embedding'leri tutar ve bir sorgunun vektörüne en yakın kayıtları verir. RAG'de 'şu soruya en alakalı 5 dokümanı getir' işini bu yapar.",
+    analogy: "Anlam haritasında 'bana en yakın yerleri göster' diyen bir arama gibi.",
+  },
+
+  // ─────────────────────────── MOBİL ───────────────────────────
+  {
+    term: "React Native",
+    category: "Mobil",
+    short: "React ile gerçek iOS/Android uygulaması yazmayı sağlayan framework.",
+    body: "React Native, web'deki React bilgini mobile taşır; tek koddan hem iOS hem Android için gerçek (native) bileşenler üretir. `<div>` yerine `<View>`, `<p>` yerine `<Text>` kullanırsın. Mantık ve state aynı React'tir.",
+    analogy: "Aynı tarifle hem fırında hem ocakta pişirebilmek gibi: tek kod, iki platform.",
+  },
+  {
+    term: "Expo",
+    category: "Mobil",
+    short: "React Native geliştirmeyi kolaylaştıran araç seti.",
+    body: "Expo; proje kurulumu, kamera/konum gibi native API'lere kolay erişim, telefonda anında önizleme (Expo Go) ve bulutta derleme/yayın (EAS) sağlar. React Native'e başlamanın en hızlı yoludur.",
+    analogy: "Hazır mutfaklı ev gibi: aletler kurulu gelir, sen yemeğe odaklanırsın.",
+  },
+  {
+    term: "Native & Bridge",
+    category: "Mobil",
+    short: "JS kodunun telefonun gerçek (native) bileşenlerine çevrilmesi.",
+    body: "Mobilde DOM yoktur; yazdığın JS, bir köprü (bridge) üzerinden telefonun gerçek arayüz bileşenlerine ve donanımına bağlanır. Bu yüzden uygulama gerçek bir native app gibi görünür ve hissedilir.",
+    analogy: "Tercüman gibi: senin dilini (JS) telefonun dilini (native) konuşana çevirir.",
+  },
+  {
+    term: "Navigation",
+    category: "Mobil",
+    short: "Mobil uygulamada ekranlar arası geçişi yöneten sistem.",
+    body: "Web'deki sayfa yönlendirmenin mobil karşılığıdır. React Navigation / Expo Router ile stack (ileri-geri), tab (alt menü) ve drawer (yan menü) gibi mobil-doğal gezinme kalıpları kurarsın.",
+    analogy: "Uygulamanın oda planı gibi: hangi kapı nereye açılıyor onu tanımlarsın.",
+  },
+  {
+    term: "Native API",
+    category: "Mobil",
+    short: "Telefonun donanım ve sistem özelliklerine erişim.",
+    body: "Kamera, konum (GPS), kişiler, ivmeölçer, dosya sistemi gibi cihaz yetenekleri native API'lerle (Expo modülleri) kullanılır. Çoğu, kullanıcıdan izin (permission) ister. Web'de olmayan bu güç mobilin avantajıdır.",
+    analogy: "Telefonun organlarına erişmek gibi: gözü (kamera), kulağı (mikrofon), pusulası (GPS).",
+  },
+  {
+    term: "Push Notification",
+    category: "Mobil",
+    short: "Uygulama kapalıyken bile kullanıcıya gönderilen bildirim.",
+    body: "Push notification; sunucudan tetiklenip kullanıcının kilit ekranında görünen mesajdır. Kullanıcıyı geri çağırmanın güçlü yoludur. Apple (APNs) ve Google (FCM) servisleri üzerinden gider; Expo bunu sadeleştirir.",
+    analogy: "Kapı zili gibi: sen uygulamada olmasan da seni çağırır.",
+  },
+  {
+    term: "OTA Update",
+    category: "Mobil",
+    short: "Mağaza onayı beklemeden anında dağıtılan güncelleme.",
+    body: "OTA (Over-The-Air) update ile uygulamanın JS kısmındaki değişiklikleri, App Store/Play Store inceleme sürecini beklemeden kullanıcılara anında gönderirsin (Expo EAS Update). Küçük düzeltmeler için çok pratiktir; native değişiklik gerektiren güncellemeler yine mağazadan geçer.",
+    analogy: "Uygulamayı 'havadan' yamamak gibi: kullanıcı tekrar indirmez.",
+  },
+  {
+    term: "App Store / Play Store",
+    category: "Mobil",
+    short: "iOS ve Android uygulamalarının yayınlandığı resmi mağazalar.",
+    body: "Uygulamanı kullanıcılara ulaştırmak için Apple App Store ve Google Play Store'a göndermen gerekir; her birinin geliştirici hesabı, inceleme süreci ve kuralları vardır. Derleme ve imzalama (EAS Build) bu adımı yönetir.",
+    analogy: "Ürününü zincir mağazanın rafına koymak gibi: önce onların kurallarından geçer.",
+  },
+
+  // ─────────────────────────── DEVOPS ───────────────────────────
+  {
+    term: "Container",
+    category: "DevOps",
+    short: "Uygulamayı bağımlılıklarıyla paketleyen taşınabilir birim.",
+    body: "Container (Docker), uygulamanı çalıştığı ortamla (kütüphaneler, ayarlar) birlikte tek bir kutuya koyar; her makinede aynı çalışır. 'Bende çalışıyordu' sorununu çözer ve ölçeklemeyi kolaylaştırır.",
+    analogy: "Standart kargo konteyneri gibi: içi ne olursa olsun her gemiye, kamyona uyar.",
+  },
+  {
+    term: "Infrastructure as Code",
+    category: "DevOps",
+    short: "Sunucu/altyapıyı tıklayarak değil, kodla tanımlamak.",
+    body: "IaC (Terraform, Pulumi) ile sunucuları, ağları ve servisleri metin dosyalarında tanımlarsın; aynı altyapıyı tek komutla, tekrarlanabilir ve sürümlenebilir şekilde kurarsın. Elle kurulum hatalarını ve 'kar tanesi sunucu' sorununu bitirir.",
+    analogy: "El yordamıyla değil, montaj kılavuzuyla kurmak gibi: her seferinde aynı sonuç.",
+  },
+  {
+    term: "Horizontal Scaling",
+    category: "DevOps",
+    short: "Daha güçlü makine yerine daha ÇOK makine ekleyerek büyümek.",
+    body: "Dikey ölçekleme (vertical) tek makineyi güçlendirir; yatay ölçekleme (horizontal) aynı uygulamadan çok kopya çalıştırır. Yatay, yüksek trafiğe ve dayanıklılığa daha uygundur ama uygulamanın 'durumsuz' (stateless) olmasını ister.",
+    analogy: "Tek dev kasa yerine çok sayıda normal kasa açmak gibi.",
+  },
+  {
+    term: "Load Balancer",
+    category: "DevOps",
+    short: "Gelen trafiği birden çok sunucuya dengeli dağıtan katman.",
+    body: "Load balancer, istekleri arkadaki kopyalara paylaştırır; biri çökerse trafiği sağlamlara yönlendirir. Yatay ölçeklemenin önündeki 'trafik polisi'dir ve sağlık kontrolüyle birlikte çalışır.",
+    analogy: "Marketteki sıra yönlendiricisi gibi: 'şu boş kasaya geçin'.",
+  },
+  {
+    term: "Orchestration",
+    category: "DevOps",
+    short: "Çok sayıda container'ı otomatik yöneten sistem.",
+    body: "Onlarca/yüzlerce container'ı elle yönetmek imkânsızdır. Orchestration (Kubernetes) bunları dağıtır, çökeni yeniden başlatır, yüke göre kopya sayısını ayarlar ve güncellemeleri yönetir.",
+    analogy: "Orkestra şefi gibi: her müzisyeni (container) doğru anda yönetir.",
+  },
+  {
+    term: "Message Queue",
+    category: "DevOps",
+    short: "Ağır işleri arka planda, sırayla yaptıran ara katman.",
+    body: "İstek anında yapılması gerekmeyen işler (e-posta gönder, video işle) bir kuyruğa (RabbitMQ, SQS) konur; işçiler (worker) bunları arka planda tüketir. Kullanıcı beklemez, sistem ani yüke dayanıklı olur.",
+    analogy: "Restoranda sipariş fişi panosu gibi: siparişler sıraya girer, mutfak sırayla yapar.",
+  },
+  {
+    term: "Microservices",
+    category: "DevOps",
+    short: "Uygulamayı bağımsız, küçük servislere bölme yaklaşımı.",
+    body: "Tek büyük uygulama (monolith) yerine, her işi (ödeme, kullanıcı, bildirim) ayrı servis yapar; bağımsız geliştirilip ölçeklenirler. Esneklik kazandırır ama dağıtık sistemin karmaşıklığını (ağ, tutarlılık) getirir — her projeye uygun değildir.",
+    analogy: "Tek dev fabrika yerine, her biri tek işi yapan uzman atölyeler gibi.",
+  },
+  {
+    term: "Observability",
+    category: "DevOps",
+    short: "Sistemin içinde ne olduğunu dışarıdan anlayabilme.",
+    body: "Gözlemlenebilirlik üç ayağa dayanır: log (olay kayıtları), metrik (sayısal ölçümler — CPU, gecikme) ve trace (bir isteğin servisler arası yolculuğu). Bir sorun çıkınca 'nerede ve neden' sorusunu bunlarla yanıtlarsın.",
+    analogy: "Arabanın gösterge paneli gibi: hız, yakıt, ısı — neyin ters gittiğini görürsün.",
+  },
+  {
+    term: "Health Check",
+    category: "DevOps",
+    short: "Bir servisin ayakta ve sağlıklı olup olmadığını yoklayan kontrol.",
+    body: "Sistem, her kopyaya düzenli 'iyi misin?' isteği atar (örn. `/health`). Cevap vermeyen kopya trafikten çıkarılır ve yeniden başlatılır. Otomatik kendini iyileştirmenin temelidir.",
+    analogy: "Nabız ölçmek gibi: durduysa hemen müdahale edilir.",
+  },
+  {
+    term: "Blue-Green Deployment",
+    category: "DevOps",
+    short: "Yeni sürümü kesintisiz yayınlamak için iki ortam kullanma.",
+    body: "İki özdeş ortam tutarsın: biri canlı (blue), diğeri yeni sürümle hazır (green). Trafiği green'e anında çevirirsin; sorun olursa anında blue'ya geri dönersin. Kullanıcı kesinti yaşamaz. Benzeri: canary (önce küçük bir yüzdeye aç).",
+    analogy: "Sahne arkasında hazır ikinci dekoru bir anda öne sürmek gibi: seyirci beklemez.",
   },
 ];
 

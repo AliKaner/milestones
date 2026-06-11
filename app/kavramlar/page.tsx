@@ -13,6 +13,11 @@ const categoryColor: Record<ConceptCategory, string> = {
   Veritabanı: "border-orange-500/40 bg-orange-500/10 text-orange-300",
   Araçlar: "border-amber-500/40 bg-amber-500/10 text-amber-300",
   Kavram: "border-teal-500/40 bg-teal-500/10 text-teal-300",
+  Realtime: "border-rose-500/40 bg-rose-500/10 text-rose-300",
+  Oyun: "border-lime-500/40 bg-lime-500/10 text-lime-300",
+  AI: "border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-300",
+  Mobil: "border-cyan-500/40 bg-cyan-500/10 text-cyan-300",
+  DevOps: "border-indigo-500/40 bg-indigo-500/10 text-indigo-300",
 };
 
 const CATEGORIES = Object.keys(categoryColor) as ConceptCategory[];

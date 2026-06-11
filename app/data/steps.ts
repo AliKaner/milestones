@@ -14,9 +14,18 @@ export type Step = {
   learn?: string[];
 };
 
+/**
+ * Bir projenin hangi "milestone tipine" ait olduğu.
+ *  - frontend / backend: ardışık ilerleyen ana kariyer yolu.
+ *  - branch: ana yolu bitirince açılan, istediğin sırada yapılabilen uzmanlık dalları
+ *    (oyun, AI, mobil, devops, realtime...). Birbirlerine bağlı değildir.
+ */
+export type Track = "frontend" | "backend" | "branch";
+
 export type Level = {
   id: string;
   level: number;
+  track: Track;
   project: string;
   difficulty: string;
   emoji: string;
@@ -25,6 +34,34 @@ export type Level = {
   skills: string[];
   steps: Step[];
 };
+
+/** Section başlıkları için track metası. `levels` bu sırayla gruplanır. */
+export const tracks: {
+  id: Track;
+  label: string;
+  emoji: string;
+  description: string;
+}[] = [
+  {
+    id: "frontend",
+    label: "Frontend",
+    emoji: "🎨",
+    description: "Kullanıcının gördüğü arayüz. Yolculuk buradan başlar.",
+  },
+  {
+    id: "backend",
+    label: "Backend & Full-stack",
+    emoji: "🗄️",
+    description: "Veri, kimlik doğrulama ve sunucu tarafı.",
+  },
+  {
+    id: "branch",
+    label: "Uzmanlık Dalları",
+    emoji: "🌿",
+    description:
+      "Ana yolu (Frontend + Backend) bitirince açılır. Birbirinden bağımsız; ilgini çekenden başla.",
+  },
+];
 
 /**
  * 4 seviyeli React proje yol haritası.
@@ -43,6 +80,7 @@ export const levels: Level[] = [
   {
     id: "todo",
     level: 1,
+    track: "frontend",
     project: "To-Do List (React)",
     difficulty: "Başlangıç",
     emoji: "✅",
@@ -166,7 +204,25 @@ export const levels: Level[] = [
         ],
       },
       {
-        title: "6. Kalıcılık ve yayın",
+        title: "6. Müşteri isteği: Görünüm seçenekleri",
+        learn: ["CSS Grid", "Flexbox", "Conditional Rendering"],
+        tasks: [
+          {
+            goal: "Kullanıcı görevleri liste ve kart (grid) düzeni arasında değiştirebilsin.",
+            tip: "Tek arayüz, iki yerleşim — ipucu: bir `layout` state'i + koşullu className (flex kolon ↔ CSS Grid).",
+          },
+          {
+            goal: "Aktif görünümü değiştiren bir düğme/seçici ekle.",
+            tip: "Duruma göre UI — ipucu: butona basınca `setLayout(...)`, seçili olan vurgulansın.",
+          },
+          {
+            goal: "Seçilen düzen sayfa yenilense de hatırlansın.",
+            tip: "Tercihi de sakla — ipucu: `layout`'u görevlerle aynı şekilde localStorage'a yaz, açılışta oku.",
+          },
+        ],
+      },
+      {
+        title: "7. Kalıcılık ve yayın",
         learn: ["Deploy"],
         tasks: [
           {
@@ -194,6 +250,7 @@ export const levels: Level[] = [
   {
     id: "weather",
     level: 2,
+    track: "frontend",
     project: "Hava Durumu App (Next.js)",
     difficulty: "Kolay-Orta",
     emoji: "🌤️",
@@ -313,6 +370,7 @@ export const levels: Level[] = [
   {
     id: "blog",
     level: 3,
+    track: "backend",
     project: "Blog Platformu (Full-stack + Auth)",
     difficulty: "Orta",
     emoji: "📝",
@@ -407,7 +465,25 @@ export const levels: Level[] = [
         ],
       },
       {
-        title: "5. Cila ve deploy",
+        title: "5. Müşteri isteği: Taslak otomatik kaydı",
+        learn: ["useEffect", "Debounce & Throttle"],
+        tasks: [
+          {
+            goal: "Kullanıcı yazı yazarken taslağı kendiliğinden yerelde saklansın (kaydet'e basmadan).",
+            tip: "Her tuşta değil, ara ara yaz — ipucu: debounce + localStorage; başlık ve içeriği (her bölümü) ayrı anahtarda tut.",
+          },
+          {
+            goal: "Sayfa kazara kapanıp tekrar açılınca yarım kalan taslak forma geri yüklensin.",
+            tip: "Açılışta oku — ipucu: localStorage'daki taslakla formu doldur.",
+          },
+          {
+            goal: "Yazı başarıyla kaydedilince taslak temizlensin (eski taslak tekrar dolmasın).",
+            tip: "İşi bitince sil — ipucu: `localStorage.removeItem(...)`.",
+          },
+        ],
+      },
+      {
+        title: "6. Cila ve deploy",
         learn: ["word-break & overflow"],
         tasks: [
           {
@@ -431,6 +507,7 @@ export const levels: Level[] = [
   {
     id: "saas",
     level: 4,
+    track: "backend",
     project: "SaaS Ürünü (Ödeme + Dashboard)",
     difficulty: "İleri",
     emoji: "🏆",
@@ -533,6 +610,458 @@ export const levels: Level[] = [
           {
             goal: "Ürünü canlıya al, gerçek bir kullanıcıdan geri bildirim topla. 🚀",
             tip: "İlk müşteri — ipucu: deploy + feedback döngüsü.",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ═══════════════════════════ SEVİYE 5 ═══════════════════════════
+  {
+    id: "chat",
+    level: 5,
+    track: "branch",
+    project: "Canlı Sohbet (Realtime)",
+    difficulty: "İleri",
+    emoji: "💬",
+    accent: "rose",
+    description:
+      "Gerçek zamanlı dünya! Mesajlar anında, sayfa yenilemeden gelsin. Amaç: WebSocket, çift yönlü iletişim, optimistic UI ve presence (kim online).",
+    skills: [
+      "WebSocket",
+      "Realtime senkron",
+      "Optimistic UI",
+      "Presence",
+      "Pub/Sub",
+      "Debounce",
+      "Race condition",
+    ],
+    steps: [
+      {
+        title: "1. Bağlantıyı kur",
+        learn: ["WebSocket", "Polling vs Push"],
+        tasks: [
+          {
+            goal: "Sunucuyla SÜREKLİ açık, çift yönlü bir hat kur (her mesaj için yeniden istek atma).",
+            tip: "HTTP'nin iste-cevap modeli yetmez — ipucu: WebSocket (örn. Socket.io).",
+          },
+          {
+            goal: "Bağlantı koptuğunda otomatik yeniden bağlanılsın.",
+            tip: "Ağ her zaman güvenilir değil — ipucu: reconnect + bağlantı durumu state'i.",
+          },
+        ],
+      },
+      {
+        title: "2. Mesajlaşma",
+        learn: ["Optimistic UI", "Broadcast & Room"],
+        tasks: [
+          {
+            goal: "Bir kullanıcının mesajı, odadaki HERKESE anında ulaşsın.",
+            tip: "Sunucu mesajı dağıtsın — ipucu: broadcast / room (pub-sub).",
+          },
+          {
+            goal: "Kullanıcı 'Gönder'e basınca mesaj, sunucudan onay BEKLEMEDEN ekranda görünsün.",
+            tip: "Hızlı his — ipucu: optimistic UI (sonra sunucu onayıyla eşitle).",
+          },
+          {
+            goal: "Gönderilemeyen mesaj 'başarısız' işaretlensin, tekrar denenebilsin.",
+            tip: "İyimserliğin bedeli — ipucu: hata durumunda rollback.",
+          },
+        ],
+      },
+      {
+        title: "3. Canlılık hissi",
+        learn: ["Presence", "Debounce & Throttle"],
+        tasks: [
+          {
+            goal: "Kimlerin online olduğu listede görünsün, çıkınca kaybolsun.",
+            tip: "Kim burada — ipucu: presence (bağlan/kopar olaylarını izle).",
+          },
+          {
+            goal: "Birisi yazarken 'yazıyor…' göstergesi çıksın.",
+            tip: "Her tuşta event atma — ipucu: debounce / throttle.",
+          },
+        ],
+      },
+      {
+        title: "4. Tutarlılık & deploy",
+        learn: ["Race Condition"],
+        tasks: [
+          {
+            goal: "Aynı anda gelen iki mesajın sırası bozulmasın/biri kaybolmasın.",
+            tip: "Eşzamanlılık tuzağı — ipucu: race condition; sunucu zaman damgası/sıra no.",
+          },
+          {
+            goal: "Eski mesajlar veritabanında kalsın, yeni giren geçmişi görsün.",
+            tip: "Realtime + kalıcılık — ipucu: mesajları DB'ye de yaz.",
+          },
+          {
+            goal: "WebSocket destekleyen bir ortama deploy et.",
+            tip: "Her host WS sevmez — ipucu: uygun platform + ölçeklemede sticky session.",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ═══════════════════════════ SEVİYE 6 ═══════════════════════════
+  {
+    id: "game",
+    level: 6,
+    track: "branch",
+    project: "Tarayıcı Oyunu (Canvas)",
+    difficulty: "İleri",
+    emoji: "🎮",
+    accent: "lime",
+    description:
+      "Eğlenceli ve zorlu! Canvas üzerinde çalışan, gerçek bir oyun döngüsü olan basit bir oyun (örn. yılan/uzay). Amaç: game loop, render, çarpışma ve oyun state'i.",
+    skills: [
+      "Game loop",
+      "Canvas",
+      "requestAnimationFrame",
+      "Delta time",
+      "Collision detection",
+      "Oyun state'i",
+      "Input handling",
+    ],
+    steps: [
+      {
+        title: "1. Tuvali hazırla",
+        learn: ["Canvas", "Game Loop", "requestAnimationFrame"],
+        tasks: [
+          {
+            goal: "Ekrana çizim yapabileceğin bir alan oluştur ve bir kare çiz.",
+            tip: "Piksel piksel çizim yüzeyi — ipucu: `<canvas>` + 2D context.",
+          },
+          {
+            goal: "Ekranı saniyede ~60 kez temizleyip yeniden çizen sürekli bir döngü kur.",
+            tip: "Oyunun kalbi — ipucu: game loop + requestAnimationFrame.",
+          },
+        ],
+      },
+      {
+        title: "2. Hareket ve kontrol",
+        learn: ["Delta Time", "Input Handling"],
+        tasks: [
+          {
+            goal: "Oyuncu klavye oklarıyla bir nesneyi hareket ettirsin.",
+            tip: "Tuşları izle — ipucu: keydown/keyup + bir 'keys' durumu.",
+          },
+          {
+            goal: "Hız, bilgisayar hızlı da olsa yavaş da olsa AYNI hissedilsin.",
+            tip: "FPS'e bağlı kalma — ipucu: delta time ile hareketi ölçekle.",
+          },
+        ],
+      },
+      {
+        title: "3. Oyun mekaniği",
+        learn: ["Collision Detection", "Oyun State'i"],
+        tasks: [
+          {
+            goal: "Nesne bir şeye (duvar/yem/düşman) çarptığında bunu algıla.",
+            tip: "Kutular kesişiyor mu — ipucu: collision detection (AABB).",
+          },
+          {
+            goal: "Skor, can, 'oyun bitti' gibi durumları yönet.",
+            tip: "Oyunun beyni — ipucu: tek bir oyun state'i (playing/paused/over).",
+          },
+          {
+            goal: "Oyun bitince tekrar başlatılabilsin.",
+            tip: "Durumu sıfırla — ipucu: restart fonksiyonu.",
+          },
+        ],
+      },
+      {
+        title: "4. Cila & yayın",
+        learn: ["FPS"],
+        tasks: [
+          {
+            goal: "En yüksek skor F5 sonrası unutulmasın.",
+            tip: "Kalıcı kayıt — ipucu: localStorage (high score).",
+          },
+          {
+            goal: "Ses efekti ve basit animasyonlarla oyunu canlandır.",
+            tip: "His kat — ipucu: Web Audio / küçük sprite'lar.",
+          },
+          {
+            goal: "Oyunu yayınla ve arkadaşlarınla skor yarışı yap. 🏆",
+            tip: "Statik deploy yeter — ipucu: Vercel/Netlify.",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ═══════════════════════════ SEVİYE 7 ═══════════════════════════
+  {
+    id: "ai",
+    level: 7,
+    track: "branch",
+    project: "AI Asistan (Claude API)",
+    difficulty: "İleri+",
+    emoji: "🤖",
+    accent: "fuchsia",
+    description:
+      "En güncel track! Claude API ile konuşan, akıllı bir asistan/uygulama yap. Amaç: LLM entegrasyonu, streaming, prompt tasarımı, tool use ve RAG.",
+    skills: [
+      "LLM",
+      "Claude API",
+      "Token & Context",
+      "Streaming",
+      "Prompt engineering",
+      "Tool use",
+      "RAG & Embedding",
+    ],
+    steps: [
+      {
+        title: "1. İlk çağrı",
+        learn: ["LLM", "Claude API", "Token", "Context Window"],
+        tasks: [
+          {
+            goal: "Bir kullanıcı sorusunu modele gönderip cevabını ekranda göster.",
+            tip: "Resmi kütüphane — ipucu: Anthropic SDK (`@anthropic-ai/sdk`), model `claude-opus-4-8`.",
+          },
+          {
+            goal: "API anahtarın tarayıcıya/koda SIZMASIN.",
+            tip: "Çağrıyı sunucuda yap — ipucu: server route + `.env` (ANTHROPIC_API_KEY).",
+          },
+          {
+            goal: "Çok uzun girdide neden hata/kesilme olduğunu anla.",
+            tip: "Modelin sınırı var — ipucu: token + context window.",
+          },
+        ],
+      },
+      {
+        title: "2. Sohbet deneyimi",
+        learn: ["Streaming", "System Prompt"],
+        tasks: [
+          {
+            goal: "Cevap, tamamı beklenmeden kelime kelime akarak görünsün.",
+            tip: "Uzun cevapta bekletme — ipucu: streaming (`messages.stream`).",
+          },
+          {
+            goal: "Asistanın kişiliğini/kurallarını sen belirle (örn. 'kısa ve Türkçe yanıtla').",
+            tip: "Modele rol ver — ipucu: system prompt.",
+          },
+          {
+            goal: "Asistan önceki mesajları hatırlasın (çok turlu sohbet).",
+            tip: "API durumsuzdur — ipucu: tüm geçmişi her istekte gönder.",
+          },
+        ],
+      },
+      {
+        title: "3. Yetenek kazandır",
+        learn: ["Prompt Engineering", "Tool Use", "Hallucination"],
+        tasks: [
+          {
+            goal: "Modelin cevabını istediğin biçime (örn. JSON) güvenle sok.",
+            tip: "Doğru yönlendirme — ipucu: prompt engineering + structured outputs.",
+          },
+          {
+            goal: "Asistan hava durumu/veritabanı gibi GERÇEK aksiyonları çağırabilsin.",
+            tip: "Modele araç ver — ipucu: tool use (function calling).",
+          },
+          {
+            goal: "Modelin 'uydurmasını' (yanlış ama emin cevap) fark et ve azalt.",
+            tip: "Kaynağa dayandır — ipucu: hallucination; doğrulama/araç kullan.",
+          },
+        ],
+      },
+      {
+        title: "4. Kendi verinle konuştur (RAG)",
+        learn: ["RAG", "Embedding", "Vector Database"],
+        tasks: [
+          {
+            goal: "Asistan, senin dökümanlarına dayanarak cevap versin (genel bilgiyle değil).",
+            tip: "Getir-ve-üret — ipucu: RAG (Retrieval-Augmented Generation).",
+          },
+          {
+            goal: "Metni 'anlam'a göre aranabilir hale getir.",
+            tip: "Metni sayıya çevir — ipucu: embedding + vector database.",
+          },
+          {
+            goal: "Asistanı canlıya al, maliyet ve hız dengesini izle.",
+            tip: "Token = para — ipucu: prompt caching + uygun model/effort.",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ═══════════════════════════ SEVİYE 8 ═══════════════════════════
+  {
+    id: "mobile",
+    level: 8,
+    track: "branch",
+    project: "Mobil Uygulama (Expo)",
+    difficulty: "İleri+",
+    emoji: "📱",
+    accent: "cyan",
+    description:
+      "React bilgini telefona taşı! Tek koddan iOS ve Android'de çalışan bir uygulama yap. Amaç: React Native, native API'ler, navigation ve store yayını.",
+    skills: [
+      "React Native",
+      "Expo",
+      "Native API",
+      "Navigation",
+      "Push notification",
+      "OTA update",
+      "App Store / Play Store",
+    ],
+    steps: [
+      {
+        title: "1. Mobil projeyi kur",
+        learn: ["React Native", "Expo", "Native & Bridge"],
+        tasks: [
+          {
+            goal: "Tek bir kod tabanından hem iOS hem Android'de çalışan proje başlat.",
+            tip: "Web değil mobil React — ipucu: React Native + Expo (`npx create-expo-app`).",
+          },
+          {
+            goal: "Uygulamayı kendi telefonunda canlı olarak gör.",
+            tip: "QR ile anında — ipucu: Expo Go uygulaması.",
+          },
+          {
+            goal: "`<div>` yerine neden `<View>`/`<Text>` kullandığını anla.",
+            tip: "DOM yok — ipucu: native bileşenler (bridge ile native'e çevrilir).",
+          },
+        ],
+      },
+      {
+        title: "2. Ekranlar ve gezinme",
+        learn: ["Navigation"],
+        tasks: [
+          {
+            goal: "Birden çok ekran arasında geçiş yapılabilsin (liste → detay).",
+            tip: "Mobilde router — ipucu: React Navigation / Expo Router.",
+          },
+          {
+            goal: "Alt menü (tab bar) ile ana bölümler arasında gezinilsin.",
+            tip: "Mobil kalıp — ipucu: bottom tab navigator.",
+          },
+        ],
+      },
+      {
+        title: "3. Telefonun gücünü kullan",
+        learn: ["Native API", "Push Notification"],
+        tasks: [
+          {
+            goal: "Kamera, konum veya kişiler gibi cihaz özelliklerine eriş.",
+            tip: "Donanıma izinle eriş — ipucu: Expo native API'leri + permission.",
+          },
+          {
+            goal: "Kullanıcıya uygulama kapalıyken bile bildirim gönder.",
+            tip: "Geri çağır — ipucu: push notification.",
+          },
+          {
+            goal: "Veriyi cihazda kalıcı sakla (mobilde localStorage yok).",
+            tip: "Mobil depolama — ipucu: AsyncStorage / SecureStore.",
+          },
+        ],
+      },
+      {
+        title: "4. Yayın",
+        learn: ["OTA Update", "App Store / Play Store"],
+        tasks: [
+          {
+            goal: "Mağaza onayını beklemeden küçük güncellemeleri anında dağıt.",
+            tip: "Havadan güncelleme — ipucu: OTA update (EAS Update).",
+          },
+          {
+            goal: "Uygulamayı App Store ve Play Store'a göndermeye hazırla.",
+            tip: "Derle ve imzala — ipucu: EAS Build + store hesapları.",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ═══════════════════════════ SEVİYE 9 ═══════════════════════════
+  {
+    id: "devops",
+    level: 9,
+    track: "branch",
+    project: "Üretim Altyapısı (DevOps)",
+    difficulty: "Uzman",
+    emoji: "🛰️",
+    accent: "indigo",
+    description:
+      "Son seviye: ölçek! Uygulamanı binlerce kullanıcıya dayanacak, kendini iyileştiren bir sisteme dönüştür. Amaç: container, ölçekleme, kuyruk ve gözlemlenebilirlik.",
+    skills: [
+      "Docker",
+      "Orchestration",
+      "Horizontal scaling",
+      "Load balancer",
+      "Message queue",
+      "Microservices",
+      "Observability",
+    ],
+    steps: [
+      {
+        title: "1. Paketle ve taşınabilir yap",
+        learn: ["Container", "Infrastructure as Code"],
+        tasks: [
+          {
+            goal: "Uygulaman her makinede AYNI şekilde çalışsın ('bende çalışıyordu' bitsin).",
+            tip: "Bağımlılıklarıyla paketle — ipucu: Docker container.",
+          },
+          {
+            goal: "Sunucu kurulumunu tıklayarak değil, kodla tanımla.",
+            tip: "Tekrarlanabilir altyapı — ipucu: Infrastructure as Code (Terraform).",
+          },
+        ],
+      },
+      {
+        title: "2. Ölçeklendir",
+        learn: ["Horizontal Scaling", "Load Balancer", "Orchestration"],
+        tasks: [
+          {
+            goal: "Tek sunucu yetmeyince, aynı uygulamadan çok kopya çalıştır.",
+            tip: "Yatay büyüme — ipucu: horizontal scaling.",
+          },
+          {
+            goal: "Gelen trafiği bu kopyalara dengeli dağıt.",
+            tip: "Trafik polisi — ipucu: load balancer.",
+          },
+          {
+            goal: "Onlarca container'ı elle değil, otomatik yönet.",
+            tip: "Konteyner orkestrası — ipucu: orchestration (Kubernetes).",
+          },
+        ],
+      },
+      {
+        title: "3. Dayanıklılık",
+        learn: ["Message Queue", "Microservices", "Caching"],
+        tasks: [
+          {
+            goal: "Ağır işler (e-posta, video işleme) isteği bekletmeden arka planda yapılsın.",
+            tip: "İşi kuyruğa al — ipucu: message queue (RabbitMQ/SQS).",
+          },
+          {
+            goal: "Dev tek uygulamayı, bağımsız parçalara böl.",
+            tip: "Böl ve yönet — ipucu: microservices (ölçü ve tradeoff'larıyla).",
+          },
+          {
+            goal: "Sık istenen veriyi her seferinde DB'den çekme.",
+            tip: "Önbellek katmanı — ipucu: Redis / CDN cache.",
+          },
+        ],
+      },
+      {
+        title: "4. Gözlemle & güvenle yayınla",
+        learn: ["Observability", "Blue-Green Deployment", "Health Check"],
+        tasks: [
+          {
+            goal: "Sistem yavaşladığında NEREDE olduğunu loglardan/metriklerden gör.",
+            tip: "İçini görebilmek — ipucu: observability (log + metrik + trace).",
+          },
+          {
+            goal: "Bir kopya çökerse otomatik fark edilip yenisi ayağa kalksın.",
+            tip: "Nabız yokla — ipucu: health check + auto-restart.",
+          },
+          {
+            goal: "Yeni sürümü, kullanıcıyı kesintiye uğratmadan yayınla.",
+            tip: "Sıfır kesinti — ipucu: blue-green / canary deployment.",
           },
         ],
       },
