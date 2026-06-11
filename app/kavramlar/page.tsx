@@ -7,6 +7,7 @@ import { concepts } from "../data/concepts";
 const categoryColor: Record<string, string> = {
   Temel: "border-emerald-500/40 bg-emerald-500/10 text-emerald-300",
   Frontend: "border-sky-500/40 bg-sky-500/10 text-sky-300",
+  CSS: "border-pink-500/40 bg-pink-500/10 text-pink-300",
   Backend: "border-violet-500/40 bg-violet-500/10 text-violet-300",
   Araçlar: "border-amber-500/40 bg-amber-500/10 text-amber-300",
 };

@@ -10,6 +10,8 @@ export type Task = {
 export type Step = {
   title: string;
   tasks: Task[];
+  /** Bu adımda işine yarayan, yana dallanan kavramlar (concepts.ts'teki term'ler). */
+  learn?: string[];
 };
 
 export type Level = {
@@ -59,6 +61,7 @@ export const levels: Level[] = [
     steps: [
       {
         title: "1. Repo'yu aç ve bilgisayarına indir",
+        learn: ["Git & GitHub"],
         tasks: [
           {
             goal: "Projen için GitHub'da ortak bir ev (repository) oluştur.",
@@ -76,6 +79,7 @@ export const levels: Level[] = [
       },
       {
         title: "2. React projesini kur ve çalıştır",
+        learn: ["npm", "Bundler", "V8 Engine", "Framework"],
         tasks: [
           {
             goal: "Boş klasörü çalışan bir React projesine dönüştür.",
@@ -97,6 +101,7 @@ export const levels: Level[] = [
       },
       {
         title: "3. Arayüzü component'lere böl",
+        learn: ["Component", "Props", "DOM"],
         tasks: [
           {
             goal: "Örnek sayfayı temizle, ekranda bir başlık ve boş bir liste görünsün.",
@@ -118,6 +123,7 @@ export const levels: Level[] = [
       },
       {
         title: "4. State ile görevleri yönet",
+        learn: ["State", "Hook"],
         tasks: [
           {
             goal: "Uygulama, görevlerin listesini hafızasında tutsun.",
@@ -139,6 +145,7 @@ export const levels: Level[] = [
       },
       {
         title: "5. Sil ve tamamla özelliklerini ekle",
+        learn: ["CSS", "Box Model", "Flexbox", "box-shadow"],
         tasks: [
           {
             goal: "Her görevin yanında 'Sil' butonu olsun, basınca o görev gitsin.",
@@ -160,6 +167,7 @@ export const levels: Level[] = [
       },
       {
         title: "6. Kalıcılık ve yayın",
+        learn: ["Deploy"],
         tasks: [
           {
             goal: "Sayfayı F5 ile yenileyince görevler KAYBOLMASIN.",
@@ -221,6 +229,7 @@ export const levels: Level[] = [
       },
       {
         title: "2. Arama arayüzünü kur",
+        learn: ["Position", "z-index"],
         tasks: [
           {
             goal: "Kullanıcı şehir adını yazabileceği bir arama formu görsün.",
@@ -242,6 +251,7 @@ export const levels: Level[] = [
       },
       {
         title: "3. API'yi bağla",
+        learn: ["API", "JSON"],
         tasks: [
           {
             goal: "Ücretsiz bir hava durumu API'sine kaydol ve erişim anahtarı al.",
@@ -280,6 +290,7 @@ export const levels: Level[] = [
       },
       {
         title: "5. Zenginleştir ve yayınla",
+        learn: ["Responsive & Media Query", "CSS Grid", "Pseudo-class (:hover)"],
         tasks: [
           {
             goal: "5 günlük tahmini, her güne bir kart olacak şekilde listele.",
@@ -375,6 +386,7 @@ export const levels: Level[] = [
       },
       {
         title: "4. CRUD işlemleri",
+        learn: ["CRUD", "RESTful API", "HTTP Status Code'ları"],
         tasks: [
           {
             goal: "Kullanıcı yeni bir yazı oluşturabilsin (başlık + içerik).",
@@ -396,6 +408,7 @@ export const levels: Level[] = [
       },
       {
         title: "5. Cila ve deploy",
+        learn: ["word-break & overflow"],
         tasks: [
           {
             goal: "Boş başlıkla yazı gönderilince kullanıcı uyarılsın, kayıt olmasın.",

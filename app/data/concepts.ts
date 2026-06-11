@@ -3,7 +3,7 @@ export type Concept = {
   short: string; // tek cümlelik özet
   body: string; // anlaşılır, biraz daha uzun açıklama
   analogy?: string; // günlük hayattan benzetme
-  category: "Temel" | "Frontend" | "Backend" | "Araçlar";
+  category: "Temel" | "Frontend" | "CSS" | "Backend" | "Araçlar";
 };
 
 /**
@@ -35,10 +35,73 @@ export const concepts: Concept[] = [
   },
   {
     term: "CSS",
-    category: "Frontend",
+    category: "CSS",
     short: "Web sayfasının görünümünü (renk, boşluk, düzen) belirleyen dil.",
     body: "HTML sayfanın iskeletini ve içeriğini tanımlar; CSS (Cascading Style Sheets) ise onu güzelleştirir: renkler, yazı tipleri, boşluklar, hizalama, animasyonlar ve responsive (mobil uyumlu) düzen hep CSS ile yapılır. Bir elementi seçip ona stil kuralları verirsin.",
     analogy: "Evin kaba inşaatı HTML ise; boya, mobilya ve dekorasyon CSS'tir.",
+  },
+  {
+    term: "Box Model",
+    category: "CSS",
+    short: "Her HTML elementi iç içe katmanlardan oluşan bir kutudur.",
+    body: "CSS'te her element bir kutudur ve dıştan içe dört katmanı vardır: content (içerik), padding (içerikle kenar arası boşluk), border (çerçeve) ve margin (kutunun dış komşularıyla arası). Bir şeyin neden beklediğinden büyük/küçük göründüğünü çoğu zaman bu katmanlar açıklar. `box-sizing: border-box` ile genişliğe padding+border dahil edilir; hayatını kolaylaştırır.",
+    analogy: "Çerçeveli bir tablo gibi: resim (content), iç paspartu (padding), çerçeve (border), duvarla arasındaki boşluk (margin).",
+  },
+  {
+    term: "Flexbox",
+    category: "CSS",
+    short: "Öğeleri tek bir eksende (satır/sütun) kolayca hizalayıp dağıtan düzen sistemi.",
+    body: "`display: flex` verdiğin bir kapsayıcı, içindeki öğeleri tek boyutta düzenler. `flex-direction` yönü (row/column), `justify-content` ana eksende dağılımı, `align-items` dik eksende hizayı belirler. `gap` ile araları açarsın. Ortalama, eşit aralıklı menü, kart satırları gibi şeylerin %90'ı flexbox'la çözülür.",
+    analogy: "Rafa kitap dizmek gibi: hepsini sola yasla, ortala ya da eşit aralıklarla yay — tek komutla.",
+  },
+  {
+    term: "CSS Grid",
+    category: "CSS",
+    short: "İki boyutlu (satır + sütun) düzenler için ızgara sistemi.",
+    body: "Flexbox tek eksen içindir; Grid ise hem satırları hem sütunları aynı anda yönetir. `display: grid` + `grid-template-columns` ile kolon yapısını kurarsın (örn. `repeat(3, 1fr)` = 3 eşit sütun). Galeri, dashboard, kart ızgarası gibi gerçek 2 boyutlu düzenlerde Grid çok güçlüdür.",
+    analogy: "Excel tablosu gibi: satır ve sütunlardan oluşan hücrelere içerik yerleştirirsin.",
+  },
+  {
+    term: "Position",
+    category: "CSS",
+    short: "Bir elementin normal akıştan çıkıp nasıl konumlanacağını belirler.",
+    body: "`position` değeri elementin yerini değiştirir: `static` (varsayılan), `relative` (kendi yerine göre kaydır), `absolute` (en yakın konumlu ataya göre serbest yerleş), `fixed` (ekrana sabitle, kaydırmada durur), `sticky` (belli noktaya gelince yapışır). `top/left/right/bottom` ve `z-index` ile ince ayar yaparsın.",
+    analogy: "Buzdolabı magnetleri gibi: bazıları olduğu yerde durur, bazılarını istediğin köşeye yapıştırırsın.",
+  },
+  {
+    term: "z-index",
+    category: "CSS",
+    short: "Üst üste binen elementlerden hangisinin önde görüneceğini belirler.",
+    body: "Elementler üst üste geldiğinde `z-index` (yığın sırası) kimin önde olduğunu söyler; büyük değer öne gelir. Sadece `position` static olmayan (relative/absolute/fixed/sticky) elementlerde çalışır. Modal, dropdown, tooltip gibi şeylerin arkada kalmasının sebebi genelde budur.",
+    analogy: "Masadaki kağıt yığını gibi: en üste koyduğun kağıt (yüksek z-index) diğerlerini örter.",
+  },
+  {
+    term: "box-shadow",
+    category: "CSS",
+    short: "Bir elemente gölge ekleyerek derinlik/yükseklik hissi verir.",
+    body: "`box-shadow: x y blur spread renk` söz dizimiyle gölge tanımlarsın: yatay/dikey kayma, bulanıklık, yayılma ve renk. Hafif bir gölge bir kartı sayfadan 'yükseltir' ve tıklanabilir hissettirir. `inset` ile gölgeyi içe alırsın. Modern arayüzlerde derinlik algısı çoğunlukla buradan gelir.",
+    analogy: "Masaya bırakılan bir kartın altında oluşan gölge gibi: nesneyi yüzeyden ayırıp havada gibi gösterir.",
+  },
+  {
+    term: "word-break & overflow",
+    category: "CSS",
+    short: "Uzun metin veya içerik kutudan taştığında ne olacağını yönetir.",
+    body: "Çok uzun bir kelime/URL kutuyu patlatabilir. `word-break: break-word` (veya `overflow-wrap`) kelimeyi gerektiğinde alt satıra böler. Taşan içerik için `overflow: hidden/auto/scroll` davranışı seçilir; tek satırda '...' göstermek için `text-overflow: ellipsis` (+ `white-space: nowrap` + `overflow: hidden`) üçlüsü kullanılır.",
+    analogy: "Dar bir kutuya uzun bir cümle sığdırmak gibi: ya alt satıra geçirirsin, ya sonunu '...' ile kırparsın.",
+  },
+  {
+    term: "Responsive & Media Query",
+    category: "CSS",
+    short: "Tasarımın ekran boyutuna göre değişmesini sağlar (mobil/tablet/masaüstü).",
+    body: "Aynı site telefonda da bilgisayarda da iyi görünmeli. Media query (`@media (min-width: 768px) { ... }`) belli genişliklerde farklı stil uygular. Tailwind'de bunu `sm: md: lg:` ön ekleriyle yaparsın. Genelde 'mobile-first' yaklaşılır: önce küçük ekran, sonra büyük ekranlar için ekleme yapılır.",
+    analogy: "Su gibi: hangi kaba (ekrana) koyarsan onun şeklini alır.",
+  },
+  {
+    term: "Pseudo-class (:hover)",
+    category: "CSS",
+    short: "Elementin belli bir durumdayken aldığı stili tanımlar.",
+    body: "Pseudo-class'lar bir elementin durumunu hedefler: `:hover` (fare üzerine gelince), `:focus` (seçiliyken, klavye erişimi için önemli), `:active` (basılıyken), `:disabled`, `:nth-child()` (sıraya göre). Butonların üzerine gelince renk değiştirmesi hep `:hover` iledir. Tailwind'de `hover:` `focus:` ön ekleriyle yazılır.",
+    analogy: "Kapı zili gibi: normalde sessiz, parmağını değdirince (hover/active) tepki verir.",
   },
   {
     term: "DOM",
@@ -132,3 +195,8 @@ export const concepts: Concept[] = [
     analogy: "Evde pişirdiğin yemeği restoranın menüsüne koymak gibi: artık sadece sen değil, herkes erişebilir.",
   },
 ];
+
+/** term -> Concept hızlı erişim haritası (yol haritasındaki dallar için). */
+export const conceptByTerm: Record<string, Concept> = Object.fromEntries(
+  concepts.map((c) => [c.term, c])
+);
