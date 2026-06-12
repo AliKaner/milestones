@@ -128,27 +128,43 @@ convex/
 proxy.ts                   Convex Auth middleware (Next 16 "proxy" konvansiyonu)
 ```
 
-## Production'a alma
+## Production'a alma (Vercel)
 
-Dev ile prod **ayrı** deployment'lardır. Prod'u hazırlamak için:
+Dev ile prod **ayrı** Convex deployment'larıdır. Vercel'e deploy ederken:
+
+**1. Prod deploy key üret** — Convex Dashboard → projen → **Settings → Deploy
+Keys → Production**. Çıkan anahtarı kopyala.
+
+**2. Prod auth env'i kur** (bir kez, lokalden) — JWT anahtarları + `SITE_URL`:
 
 ```bash
-npx convex deploy            # şema + fonksiyonları prod'a push'lar (tablolar oluşur)
-npx @convex-dev/auth --prod  # prod auth anahtarları
-npx convex run seed:run --prod   # prod'u seed'ler
+npx @convex-dev/auth --prod --web-server-url https://milestones-lyart.vercel.app
 ```
 
-Siteyi (ör. Vercel) yayınlarken ortam değişkeni olarak prod URL'ini ver:
+> `SITE_URL` mutlaka yayınladığın domain olmalı; yoksa giriş/kayıt prod'da çalışmaz.
 
-```
-NEXT_PUBLIC_CONVEX_URL=https://<prod-deployment>.convex.cloud
+**3. Vercel ayarları** — proje → **Settings**:
+
+- **Environment Variables (Production):**
+  ```
+  CONVEX_DEPLOY_KEY=<prod deploy key>
+  ```
+  (`NEXT_PUBLIC_CONVEX_URL`'i build komutu otomatik enjekte eder; istersen prod
+  URL'ini elle de ekleyebilirsin.)
+- **Build Command (override):**
+  ```
+  npx convex deploy --cmd 'npm run build'
+  ```
+  Bu komut deploy key sayesinde **etkileşimsiz** çalışır: şema + fonksiyonları
+  prod'a push'lar, `NEXT_PUBLIC_CONVEX_URL`'i ayarlar, sonra `next build` koşar.
+
+**4. Prod'u seed'le** (bir kez):
+
+```bash
+CONVEX_DEPLOY_KEY=<prod deploy key> npx convex run seed:run --prod
 ```
 
-Build komutu olarak Convex'in önerdiği biçim:
-
-```
-npx convex deploy --cmd 'npm run build'
-```
+Sonraki her `git push` → Vercel build → Convex prod otomatik güncellenir.
 
 ## Notlar
 
