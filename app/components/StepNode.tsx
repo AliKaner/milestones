@@ -1,38 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import type { Step } from "../data/steps";
 import { conceptByTerm } from "../data/concepts";
 import { accents, type Accent } from "./accents";
+import type { StepData, SubmissionStatus } from "../lib/roadmap";
 
 type StepNodeProps = {
-  step: Step;
+  step: StepData;
   stepIndex: number;
-  levelId: string;
   accent: Accent;
   isLast: boolean;
   locked: boolean;
-  checkedTasks: Record<string, boolean>;
-  onToggle: (taskKey: string) => void;
+  isLoggedIn: boolean;
+  isChecked: (taskId: string) => boolean;
+  onToggle: (taskId: string) => void;
+  submission?: { status: SubmissionStatus; reviewNote: string | null };
+  onSubmitProof: () => void;
 };
 
 export default function StepNode({
   step,
   stepIndex,
-  levelId,
   accent,
   isLast,
   locked,
-  checkedTasks,
+  isLoggedIn,
+  isChecked,
   onToggle,
+  submission,
+  onSubmitProof,
 }: StepNodeProps) {
-  const c = accents[accent];
+  const c = accents[accent] ?? accents.emerald;
   const [openTips, setOpenTips] = useState<Record<number, boolean>>({});
   const [openConcept, setOpenConcept] = useState<string | null>(null);
 
-  const taskKeys = step.tasks.map((_, i) => `${levelId}:${stepIndex}:${i}`);
-  const doneCount = taskKeys.filter((k) => checkedTasks[k]).length;
-  const allDone = doneCount === step.tasks.length;
+  const doneCount = step.tasks.filter((t) => isChecked(t._id)).length;
+  const allDone = doneCount === step.tasks.length && step.tasks.length > 0;
   const started = doneCount > 0;
   const learn = (step.learn ?? []).filter((t) => conceptByTerm[t]);
 
@@ -60,9 +63,8 @@ export default function StepNode({
         )}
       </div>
 
-      {/* İçerik: kart + yana dallanan kavramlar */}
+      {/* İçerik */}
       <div className="mb-6 flex-1">
-        {/* Adım kartı */}
         <div
           className={`rounded-xl border p-4 transition-all duration-300 ${
             allDone ? c.card : "border-white/10 bg-white/[0.03]"
@@ -70,24 +72,28 @@ export default function StepNode({
         >
           <div className="flex items-center justify-between gap-3">
             <h4 className="text-base font-semibold text-white">{step.title}</h4>
-            <span className="shrink-0 rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-mono text-white/70">
-              {doneCount}/{step.tasks.length}
-            </span>
+            <div className="flex shrink-0 items-center gap-2">
+              <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${c.badge}`}>
+                +{step.points}
+              </span>
+              <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs font-mono text-white/70">
+                {doneCount}/{step.tasks.length}
+              </span>
+            </div>
           </div>
 
           <ul className="mt-3 space-y-2.5">
             {step.tasks.map((task, i) => {
-              const key = `${levelId}:${stepIndex}:${i}`;
-              const checked = !!checkedTasks[key];
+              const checked = isChecked(task._id);
               const tipOpen = !!openTips[i];
               return (
-                <li key={key}>
+                <li key={task._id}>
                   <div className="flex items-start gap-3">
                     <input
                       type="checkbox"
                       checked={checked}
                       disabled={locked}
-                      onChange={() => onToggle(key)}
+                      onChange={() => onToggle(task._id)}
                       aria-label={task.goal}
                       className={`mt-0.5 h-5 w-5 shrink-0 accent-current ${c.text} ${
                         locked ? "cursor-not-allowed" : "cursor-pointer"
@@ -122,6 +128,45 @@ export default function StepNode({
               );
             })}
           </ul>
+
+          {/* Kanıt / review durumu */}
+          {allDone && !locked && (
+            <div className="mt-4 border-t border-white/10 pt-3">
+              {!isLoggedIn ? (
+                <p className="text-xs text-white/50">
+                  💡 Puan kazanmak için giriş yapıp bu adımın kanıtını gönder.
+                </p>
+              ) : submission?.status === "approved" ? (
+                <span className={`text-sm font-semibold ${c.text}`}>
+                  ✓ Onaylandı · +{step.points} puan
+                </span>
+              ) : submission?.status === "pending" ? (
+                <span className="text-sm font-medium text-amber-300">
+                  ⏳ İncelemede — admin onayı bekleniyor
+                </span>
+              ) : submission?.status === "rejected" ? (
+                <div className="space-y-2">
+                  <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+                    ✕ Reddedildi
+                    {submission.reviewNote ? `: ${submission.reviewNote}` : "."}
+                  </p>
+                  <button
+                    onClick={onSubmitProof}
+                    className={`rounded-lg border px-3 py-1.5 text-sm font-medium ${c.badge}`}
+                  >
+                    Yeniden gönder
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={onSubmitProof}
+                  className={`rounded-lg border px-3 py-1.5 text-sm font-medium transition-opacity hover:opacity-90 ${c.badge}`}
+                >
+                  📸 Bu adımı tamamladım — kanıt gönder (+{step.points})
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Yana dallanan kavram node'ları */}
@@ -135,7 +180,6 @@ export default function StepNode({
               const open = openConcept === term;
               return (
                 <div key={term} className="relative pl-7">
-                  {/* Spine'dan dala uzanan dirsek bağlantı */}
                   <span className="pointer-events-none absolute left-1 top-4 h-px w-5 bg-white/20" />
                   <span
                     className={`pointer-events-none absolute left-1 top-1.5 h-2.5 w-2.5 rounded-full border ${

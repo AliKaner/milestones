@@ -53,7 +53,7 @@ export default function ConceptsPage() {
   return (
     <main className="grid-bg min-h-screen">
       {/* Üst bar — arama sticky kalır */}
-      <div className="sticky top-0 z-30 border-b border-white/10 bg-[#0a0a0f]/90 backdrop-blur-md">
+      <div className="sticky top-14 z-30 border-b border-white/10 bg-[#0a0a0f]/90 backdrop-blur-md">
         <div className="mx-auto max-w-5xl px-6 py-4">
           <div className="flex items-center justify-between gap-4">
             <Link

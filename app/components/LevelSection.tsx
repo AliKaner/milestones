@@ -1,39 +1,47 @@
 "use client";
 
-import type { Level } from "../data/steps";
-import { accents } from "./accents";
+import { accents, type Accent } from "./accents";
 import StepNode from "./StepNode";
+import type { LevelData, StepData, SubmissionStatus } from "../lib/roadmap";
 
 type LevelSectionProps = {
-  level: Level;
+  level: LevelData;
   locked: boolean;
-  checkedTasks: Record<string, boolean>;
-  onToggle: (taskKey: string) => void;
+  isLoggedIn: boolean;
+  isChecked: (taskId: string) => boolean;
+  onToggle: (taskId: string) => void;
+  submissionByStep: Record<
+    string,
+    { status: SubmissionStatus; reviewNote: string | null }
+  >;
+  onSubmitProof: (step: StepData) => void;
 };
 
 export default function LevelSection({
   level,
   locked,
-  checkedTasks,
+  isLoggedIn,
+  isChecked,
   onToggle,
+  submissionByStep,
+  onSubmitProof,
 }: LevelSectionProps) {
-  const c = accents[level.accent];
+  const c = accents[level.accent as Accent] ?? accents.emerald;
 
-  // Bu seviyedeki toplam/biten görevleri hesapla
   let total = 0;
   let done = 0;
-  level.steps.forEach((step, si) => {
-    step.tasks.forEach((_, ti) => {
+  level.steps.forEach((step) =>
+    step.tasks.forEach((t) => {
       total += 1;
-      if (checkedTasks[`${level.id}:${si}:${ti}`]) done += 1;
-    });
-  });
+      if (isChecked(t._id)) done += 1;
+    })
+  );
   const percent = total === 0 ? 0 : Math.round((done / total) * 100);
-  const levelDone = done === total;
+  const levelDone = total > 0 && done === total;
+  const isBranch = level.trackKey === "branch";
 
   return (
     <section className="mb-4">
-      {/* Seviye başlığı */}
       <div
         className={`rounded-2xl border p-5 ring-1 ${
           levelDone ? c.card : "border-white/10 bg-white/[0.02]"
@@ -44,9 +52,9 @@ export default function LevelSection({
             <span
               className={`inline-block rounded-full border px-3 py-1 text-xs font-bold ${c.badge}`}
             >
-              {level.track === "branch"
+              {isBranch
                 ? `DAL · ${level.difficulty}`
-                : `SEVİYE ${level.level} · ${level.difficulty}`}
+                : `SEVİYE ${level.levelNo} · ${level.difficulty}`}
             </span>
             <h2 className="mt-3 flex items-center gap-2 text-2xl font-bold text-white">
               <span>{level.emoji}</span>
@@ -63,7 +71,6 @@ export default function LevelSection({
           )}
         </div>
 
-        {/* Kazanılacak yetkinlikler */}
         <div className="mt-4 flex flex-wrap gap-2">
           {level.skills.map((skill) => (
             <span
@@ -75,10 +82,9 @@ export default function LevelSection({
           ))}
         </div>
 
-        {/* Seviye ilerleme çubuğu */}
         <div className="mt-4">
           <div className="mb-1.5 flex justify-between text-xs text-white/50">
-            <span>{locked ? "🔒 Önceki seviyeyi bitir" : "Bu seviye"}</span>
+            <span>{locked ? "🔒 Önce gerekli seviyeleri bitir" : "Bu seviye"}</span>
             <span className="font-mono">
               {done}/{total} · %{percent}
             </span>
@@ -92,24 +98,24 @@ export default function LevelSection({
         </div>
       </div>
 
-      {/* Adım node'ları */}
       <div className="mt-6 pl-2">
         {level.steps.map((step, si) => (
           <StepNode
-            key={si}
+            key={step._id}
             step={step}
             stepIndex={si}
-            levelId={level.id}
-            accent={level.accent}
+            accent={(level.accent as Accent) ?? "emerald"}
             isLast={si === level.steps.length - 1}
             locked={locked}
-            checkedTasks={checkedTasks}
+            isLoggedIn={isLoggedIn}
+            isChecked={isChecked}
             onToggle={onToggle}
+            submission={submissionByStep[step._id]}
+            onSubmitProof={() => onSubmitProof(step)}
           />
         ))}
       </div>
 
-      {/* Seviyeler arası bağlantı */}
       <div className="flex justify-center">
         <div className="h-10 w-0.5 rounded-full bg-white/15" />
       </div>
