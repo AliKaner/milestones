@@ -11,17 +11,19 @@ import { ConvexError } from "convex/values";
 const CustomPassword = Password({
   profile(params) {
     const username = String(params.email ?? "").trim();
-    const password = String(params.password ?? "");
     if (username.length < 3) {
       throw new ConvexError("Kullanıcı adı en az 3 karakter olmalı.");
     }
     if (/\s/.test(username)) {
       throw new ConvexError("Kullanıcı adı boşluk içeremez.");
     }
+    return { email: username, username };
+  },
+  // Varsayılan kural (8+ karakter, büyük/küçük harf, rakam) yerine sade kural.
+  validatePasswordRequirements: (password: string) => {
     if (password.length < 6) {
       throw new ConvexError("Şifre en az 6 karakter olmalı.");
     }
-    return { email: username, username };
   },
 });
 

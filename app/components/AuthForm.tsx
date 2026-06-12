@@ -86,6 +86,9 @@ export default function AuthForm({ flow }: { flow: "signIn" | "signUp" }) {
               placeholder="••••••••"
               className="w-full rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-emerald-500/50 focus:bg-white/10"
             />
+            {isSignUp && (
+              <p className="mt-1 text-xs text-white/40">En az 6 karakter.</p>
+            )}
           </div>
 
           {error && (
