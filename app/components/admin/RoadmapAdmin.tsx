@@ -61,8 +61,12 @@ function EditableStep({ step }: { step: StepData }) {
   const [title, setTitle] = useState(step.title);
   const [type, setType] = useState(step.type);
   const [points, setPoints] = useState(step.points);
+  const [question, setQuestion] = useState(step.question ?? "");
   const dirty =
-    title !== step.title || type !== step.type || points !== step.points;
+    title !== step.title ||
+    type !== step.type ||
+    points !== step.points ||
+    question !== (step.question ?? "");
 
   return (
     <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
@@ -88,7 +92,9 @@ function EditableStep({ step }: { step: StepData }) {
         />
         <button
           disabled={!dirty}
-          onClick={() => update({ id: step._id, title, type, points })}
+          onClick={() =>
+            update({ id: step._id, title, type, points, question })
+          }
           className={`${btnCls} bg-emerald-500/15 text-emerald-300`}
         >
           Kaydet
@@ -103,6 +109,13 @@ function EditableStep({ step }: { step: StepData }) {
           Sil
         </button>
       </div>
+
+      <input
+        value={question}
+        onChange={(e) => setQuestion(e.target.value)}
+        className={`${inputCls} mt-2 w-full`}
+        placeholder="Adım sonu sorusu (boş = soru yok)"
+      />
 
       <div className="mt-2 space-y-2 pl-2">
         {step.tasks.map((t) => (

@@ -12,6 +12,8 @@ export type Step = {
   tasks: Task[];
   /** Bu adımda işine yarayan, yana dallanan kavramlar (concepts.ts'teki term'ler). */
   learn?: string[];
+  /** Adım bitince kullanıcıya sorulan, kanıtla birlikte cevaplanması gereken soru. */
+  question?: string;
 };
 
 /**
@@ -29,7 +31,7 @@ export type Level = {
   project: string;
   difficulty: string;
   emoji: string;
-  accent: Accent; // emerald | sky | violet | amber
+  accent: Accent;
   description: string;
   skills: string[];
   steps: Step[];
@@ -64,13 +66,14 @@ export const tracks: {
 ];
 
 /**
- * 4 seviyeli React proje yol haritası.
+ * Proje yol haritası.
  *
  * Felsefe:
- *  - Her seviye gerçek bir React projesidir (1. seviye dahil hepsi React).
- *  - Her görev BİR HEDEF olarak yazılır (ne yapılacağı), çözüm reçetesi değil.
- *  - Altındaki "ipucu" sadece hangi kavrama / API'ye bakılacağını fısıldar.
- *  - Junior nasıl yapacağını kendi araştırır; böylece gerçekten öğrenir.
+ *  - İlk 4 proje (Frontend + Backend) ÇOK küçük "micro" adımlara bölünmüştür:
+ *    her adım tek bir somut iş (bir component yaz, bir prop geç, bir state ekle).
+ *  - Her adımın sonunda bir SORU vardır; kullanıcı kanıtıyla birlikte cevaplar,
+ *    admin değerlendirir.
+ *  - Uzmanlık dalları (5-9) daha üst seviye, daha geniş adımlardır.
  *
  * Not: Türkçe akıcı tutulur; React/teknik terimler (state, props, hook,
  * component, deploy...) bilerek İngilizce bırakılır çünkü sektör dili budur.
@@ -86,7 +89,7 @@ export const levels: Level[] = [
     emoji: "✅",
     accent: "emerald",
     description:
-      "İlk React projen. Görev ekleyip silebileceğin, tamamlananı işaretleyebileceğin bir yapılacaklar listesi. Amaç: component, props, state ve event mantığına oturmak.",
+      "İlk React projen. Görev ekleyip silebileceğin, tamamlananı işaretleyebileceğin bir liste. Amaç: component, props, state ve event mantığına oturmak — adım adım, en küçük parçalarla.",
     skills: [
       "Git & GitHub",
       "React component",
@@ -98,148 +101,264 @@ export const levels: Level[] = [
     ],
     steps: [
       {
-        title: "1. Repo'yu aç ve bilgisayarına indir",
+        title: "1. Repo'yu hazırla",
         learn: ["Git & GitHub"],
+        question:
+          "`git clone` komutu tam olarak ne yapar? Kendi cümlenle açıkla.",
         tasks: [
           {
-            goal: "Projen için GitHub'da ortak bir ev (repository) oluştur.",
-            tip: "GitHub → 'New repository' → ada `todo-react` ver, 'Add a README' işaretle.",
+            goal: "GitHub'da `todo-react` adında yeni bir repository oluştur.",
+            tip: "GitHub → 'New repository' → 'Add a README' işaretle.",
           },
           {
-            goal: "Bu repo'yu kendi bilgisayarına bir kopya olarak indir.",
-            tip: "Yeşil 'Code' butonundaki URL'i kopyala — ipucu: `git clone <url>`.",
+            goal: "Repoyu bilgisayarına bir kopya olarak indir.",
+            tip: "Yeşil 'Code' butonundaki URL — ipucu: `git clone <url>`.",
           },
           {
-            goal: "Terminalin doğru klasörde olduğundan emin ol.",
-            tip: "İndirdiğin klasörün içine gir — ipucu: `cd todo-react`.",
+            goal: "Terminalde proje klasörünün içine gir.",
+            tip: "İpucu: `cd todo-react`.",
           },
         ],
       },
       {
-        title: "2. React projesini kur ve çalıştır",
-        learn: ["npm", "Bundler", "V8 Engine", "Framework"],
+        title: "2. React projesini kur",
+        learn: ["npm", "Bundler", "Framework"],
+        question:
+          "`npm install` çalışınca oluşan `node_modules` klasöründe ne var?",
         tasks: [
           {
-            goal: "Boş klasörü çalışan bir React projesine dönüştür.",
-            tip: "Hazır şablon var — ipucu: `npm create vite@latest` (React + TypeScript şablonu).",
+            goal: "Klasörü Vite ile React + TypeScript projesine dönüştür.",
+            tip: "İpucu: `npm create vite@latest` (React + TS şablonu).",
           },
           {
-            goal: "Gerekli paketleri indir ki proje çalışabilsin.",
-            tip: "node_modules'ı oluşturan komut — ipucu: `npm install`.",
-          },
-          {
-            goal: "Projeyi tarayıcıda canlı olarak aç ve örnek sayfayı gör.",
-            tip: "Development server'ı başlat — ipucu: `npm run dev`, sonra localhost linkini aç.",
-          },
-          {
-            goal: "Bu ilk halini GitHub'a kaydet ki geri dönebilesin.",
-            tip: "Üç adım — ipucu: `git add .` → `git commit -m \"setup\"` → `git push`.",
+            goal: "Projenin çalışması için gerekli paketleri indir.",
+            tip: "İpucu: `npm install`.",
           },
         ],
       },
       {
-        title: "3. Arayüzü component'lere böl",
-        learn: ["Component", "Props", "DOM"],
+        title: "3. Çalıştır ve ilk commit",
+        learn: ["V8 Engine"],
+        question:
+          "`npm run dev` ile `npm run build` arasındaki fark nedir?",
         tasks: [
           {
-            goal: "Örnek sayfayı temizle, ekranda bir başlık ve boş bir liste görünsün.",
-            tip: "App.tsx içindeki demo içeriği sil — JSX yaz (return içindeki HTML benzeri yapı).",
+            goal: "Development server'ı başlat ve örnek sayfayı tarayıcıda aç.",
+            tip: "İpucu: `npm run dev` → localhost linki.",
           },
           {
-            goal: "Görev yazmak için bir input ve bir 'Ekle' butonu koy.",
-            tip: "`<input>` + `<button>` — şimdilik çalışması gerekmiyor, sadece görünsün.",
-          },
-          {
-            goal: "Tek bir görev satırını ayrı, yeniden kullanılabilir bir parça yap.",
-            tip: "Aynı yapıyı tekrar yazma — ipucu: bir `TodoItem` component'i oluştur.",
-          },
-          {
-            goal: "Görevin metnini bu parçaya dışarıdan gönderebilesin.",
-            tip: "Component'e veri geçmek — ipucu: props (`<TodoItem text={...} />`).",
+            goal: "Bu ilk hali GitHub'a gönder.",
+            tip: "Üç adım — `git add .` → `git commit -m \"setup\"` → `git push`.",
           },
         ],
       },
       {
-        title: "4. State ile görevleri yönet",
-        learn: ["State", "Hook"],
+        title: "4. Sayfayı temizle",
+        learn: ["JSX", "DOM"],
+        question: "JSX nedir ve normal HTML'den farkı nedir?",
         tasks: [
           {
-            goal: "Uygulama, görevlerin listesini hafızasında tutsun.",
-            tip: "Bileşenin hafızası — ipucu: `useState` ile bir dizi (array) tut.",
+            goal: "`App.tsx` içindeki demo içeriği tamamen sil.",
+            tip: "return içini boşalt, sade bir `<div>` bırak.",
           },
           {
-            goal: "Kullanıcı input'a yazdıkça yazdığı değer takip edilsin.",
-            tip: "Input'un value'sunu state'e bağla — ipucu: controlled input (`value` + `onChange`).",
-          },
-          {
-            goal: "'Ekle'ye basınca yeni görev listeye eklensin ve input temizlensin.",
-            tip: "Yeni eleman ekle — ipucu: `setTodos([...todos, yeni])`. Eski diziyi mutasyona uğratma.",
-          },
-          {
-            goal: "Liste, state'teki her görev için otomatik bir satır bassın.",
-            tip: "Diziyi JSX'e çevir — ipucu: `todos.map(...)` ve her elemana benzersiz `key`.",
+            goal: "Ekrana 'Yapılacaklar' başlığı bas.",
+            tip: "Bir `<h1>` ekle (JSX).",
           },
         ],
       },
       {
-        title: "5. Sil ve tamamla özelliklerini ekle",
-        learn: ["CSS", "Box Model", "Flexbox", "box-shadow"],
+        title: "5. Girdi alanını koy",
+        learn: ["Fragment"],
+        question:
+          "Bir component neden tek bir kök element döndürmeli? Fragment bunu nasıl çözer?",
         tasks: [
           {
-            goal: "Her görevin yanında 'Sil' butonu olsun, basınca o görev gitsin.",
-            tip: "Listeden eleman çıkarmak — ipucu: `filter()` ile id'si farklı olanları tut.",
+            goal: "Görev yazmak için bir metin `<input>`'u ekle.",
+            tip: "Şimdilik çalışması gerekmiyor, sadece görünsün.",
           },
           {
-            goal: "Bir göreve tıklayınca 'tamamlandı' olarak işaretlensin (üstü çizili).",
-            tip: "Bir alanı tersine çevir — ipucu: `map()` içinde ilgili id'nin `done` değerini değiştir.",
+            goal: "Yanına bir 'Ekle' `<button>`'ı koy.",
+            tip: "`<input>` + `<button>`.",
+          },
+        ],
+      },
+      {
+        title: "6. TodoItem component'ini oluştur",
+        learn: ["Component"],
+        question:
+          "Arayüzü ayrı component'lere bölmek hangi avantajları sağlar?",
+        tasks: [
+          {
+            goal: "`TodoItem.tsx` adında yeni bir dosya aç ve bir component yaz.",
+            tip: "function component + `export default`.",
+          },
+          {
+            goal: "TodoItem bir `<li>` döndürsün, içinde sabit bir metin olsun.",
+            tip: "Önce sabit; veriyi sonra geçeceğiz.",
+          },
+          {
+            goal: "App içinde TodoItem'ı import edip kullan.",
+            tip: "`import TodoItem from './TodoItem'` → `<TodoItem />`.",
+          },
+        ],
+      },
+      {
+        title: "7. Props ile veri geç",
+        learn: ["Props"],
+        question: "Props neden child component tarafından değiştirilemez?",
+        tasks: [
+          {
+            goal: "TodoItem'a `text` adında bir prop tanımla.",
+            tip: "`function TodoItem({ text })`.",
+          },
+          {
+            goal: "App'ten `<TodoItem text=\"Süt al\" />` ile metni gönder.",
+            tip: "JSX attribute.",
+          },
+          {
+            goal: "Gelen `text`'i `<li>` içinde göster.",
+            tip: "`{text}`.",
+          },
+        ],
+      },
+      {
+        title: "8. State ile listeyi tut",
+        learn: ["State", "useState", "List Rendering", "key Prop"],
+        question: "State değiştiğinde React ne yapar?",
+        tasks: [
+          {
+            goal: "App'te görevleri tutan bir state dizisi oluştur.",
+            tip: "`const [todos, setTodos] = useState([...])` (başta birkaç örnek).",
+          },
+          {
+            goal: "Diziyi `map` ile gezip her eleman için bir TodoItem bas.",
+            tip: "`todos.map(t => <TodoItem key={t.id} text={t.text} />)`.",
+          },
+        ],
+      },
+      {
+        title: "9. Input'u state'e bağla (controlled)",
+        learn: ["Controlled Component"],
+        question: "Controlled component nedir, 'tek doğru kaynak' ne demek?",
+        tasks: [
+          {
+            goal: "Input'un değerini bir state'te tut.",
+            tip: "`const [text, setText] = useState('')`.",
+          },
+          {
+            goal: "Input'a `value` ver ve `onChange` ile state'i güncelle.",
+            tip: "`value={text} onChange={e => setText(e.target.value)}`.",
+          },
+        ],
+      },
+      {
+        title: "10. Görev ekle",
+        learn: ["Spread (...)", "Immutability"],
+        question:
+          "Neden `todos.push(x)` yerine `[...todos, x]` kullanıyoruz?",
+        tasks: [
+          {
+            goal: "'Ekle'ye basınca yeni görevi listeye ekle.",
+            tip: "`setTodos([...todos, { id, text }])`. Eski diziyi mutasyona uğratma.",
+          },
+          {
+            goal: "Ekledikten sonra input'u temizle.",
+            tip: "`setText('')`.",
+          },
+        ],
+      },
+      {
+        title: "11. Görev sil",
+        learn: ["filter()"],
+        question: "Listeden eleman silmek için neden `filter` uygun?",
+        tasks: [
+          {
+            goal: "Her TodoItem'a 'Sil' butonu koy.",
+            tip: "Butonu prop'la gelen bir `onDelete`'e bağla.",
+          },
+          {
+            goal: "Basınca o görevi listeden çıkar.",
+            tip: "`setTodos(todos.filter(t => t.id !== id))`.",
+          },
+        ],
+      },
+      {
+        title: "12. Tamamlandı işareti",
+        learn: ["map()", "Mutation"],
+        question:
+          "Bir dizideki TEK bir elemanı immutable şekilde nasıl güncellersin?",
+        tasks: [
+          {
+            goal: "Bir göreve tıklayınca 'done' değerini tersine çevir.",
+            tip: "`map` içinde id eşleşince `{ ...t, done: !t.done }`.",
           },
           {
             goal: "Tamamlanan görev görsel olarak farklı görünsün.",
-            tip: "Duruma göre stil — ipucu: koşullu className veya inline style (line-through).",
-          },
-          {
-            goal: "Hiç görev yoksa 'Henüz görev yok' mesajı görünsün.",
-            tip: "Duruma göre farklı JSX — ipucu: conditional rendering (`todos.length === 0 ? ... : ...`).",
+            tip: "Koşullu className veya inline style (line-through).",
           },
         ],
       },
       {
-        title: "6. Müşteri isteği: Görünüm seçenekleri",
-        learn: ["CSS Grid", "Flexbox", "Conditional Rendering"],
+        title: "13. Boş durum ve sayaç",
+        learn: ["Conditional Rendering", "Ternary (?:)"],
+        question:
+          "JSX içinde koşullu render için hangi yöntemleri kullanabilirsin?",
         tasks: [
           {
-            goal: "Kullanıcı görevleri liste ve kart (grid) düzeni arasında değiştirebilsin.",
-            tip: "Tek arayüz, iki yerleşim — ipucu: bir `layout` state'i + koşullu className (flex kolon ↔ CSS Grid).",
+            goal: "Hiç görev yoksa 'Henüz görev yok' mesajı göster.",
+            tip: "`todos.length === 0 ? ... : ...`.",
           },
           {
-            goal: "Aktif görünümü değiştiren bir düğme/seçici ekle.",
-            tip: "Duruma göre UI — ipucu: butona basınca `setLayout(...)`, seçili olan vurgulansın.",
+            goal: "Kaç görevin tamamlanmadığını ekranda göster.",
+            tip: "`filter` + `.length`.",
+          },
+        ],
+      },
+      {
+        title: "14. Müşteri isteği: Görünüm seçenekleri",
+        learn: ["CSS Grid", "Flexbox"],
+        question:
+          "Aynı veriyi iki farklı layout'ta (liste/grid) tek component'te nasıl gösterirsin?",
+        tasks: [
+          {
+            goal: "Görevleri liste ve kart (grid) düzeni arasında değiştiren bir düğme ekle.",
+            tip: "Bir `layout` state'i + koşullu className (flex kolon ↔ CSS Grid).",
           },
           {
             goal: "Seçilen düzen sayfa yenilense de hatırlansın.",
-            tip: "Tercihi de sakla — ipucu: `layout`'u görevlerle aynı şekilde localStorage'a yaz, açılışta oku.",
+            tip: "`layout`'u localStorage'a yaz, açılışta oku.",
           },
         ],
       },
       {
-        title: "7. Kalıcılık ve yayın",
-        learn: ["Deploy"],
+        title: "15. Kalıcılık (localStorage)",
+        learn: ["useEffect"],
+        question: "useEffect'in dependency array'i ne işe yarar?",
         tasks: [
           {
-            goal: "Sayfayı F5 ile yenileyince görevler KAYBOLMASIN.",
-            tip: "Tarayıcı veriyi hatırlayabilir — ipucu: `localStorage` + bir `useEffect` ile senkronize et.",
+            goal: "Görevler F5 ile yenileyince KAYBOLMASIN.",
+            tip: "`localStorage` + bir `useEffect` ile senkronize et.",
           },
           {
-            goal: "Açılışta kayıtlı görevler otomatik geri yüklensin.",
-            tip: "İlk render'da oku — ipucu: `useState`'in başlangıç değerini localStorage'dan al.",
+            goal: "Açılışta kayıtlı görevler otomatik yüklensin.",
+            tip: "`useState`'in başlangıç değerini localStorage'dan al.",
+          },
+        ],
+      },
+      {
+        title: "16. Build & deploy",
+        learn: ["Deploy"],
+        question:
+          "Yayınladığın site neden senin localhost'undan farklı bir ortamda çalışır?",
+        tasks: [
+          {
+            goal: "Production için derle ve hatasız olduğunu doğrula.",
+            tip: "`npm run build`.",
           },
           {
-            goal: "Projeyi production için derle ve hatasız olduğunu doğrula.",
-            tip: "Build komutu — ipucu: `npm run build`.",
-          },
-          {
-            goal: "Siteyi internette canlı bir linkle yayınla ve paylaş.",
-            tip: "Repo'yu bağla, otomatik deploy — ipucu: Vercel veya Netlify.",
+            goal: "Siteyi canlı bir linkle yayınla.",
+            tip: "Vercel veya Netlify, repo'yu bağla.",
           },
         ],
       },
@@ -256,7 +375,7 @@ export const levels: Level[] = [
     emoji: "🌤️",
     accent: "sky",
     description:
-      "Gerçek veriyle ilk tanışma. Bir şehir ara, canlı bir API'den hava durumunu çek ve göster. Amaç: useEffect, fetch, async akış, loading/error state ve conditional rendering.",
+      "Gerçek veriyle ilk tanışma. Bir şehir ara, canlı API'den hava durumunu çek ve göster. Amaç: useEffect, fetch, async akış, loading/error state — küçük adımlarla.",
     skills: [
       "Next.js (App Router)",
       "useEffect",
@@ -269,97 +388,143 @@ export const levels: Level[] = [
     steps: [
       {
         title: "1. Next.js projesini kur",
+        learn: ["Next.js", "Framework"],
+        question: "Next.js, React'in üstüne ne katar? Bir framework neden işe yarar?",
         tasks: [
           {
-            goal: "GitHub'da yeni bir repo aç ve modern bir Next.js projesi başlat.",
-            tip: "Hazır kurulum — ipucu: `npx create-next-app@latest` (TypeScript + App Router seç).",
+            goal: "GitHub'da repo aç ve modern bir Next.js projesi başlat.",
+            tip: "`npx create-next-app@latest` (TypeScript + App Router).",
           },
           {
-            goal: "Projeyi çalıştır ve hazır gelen sayfayı tarayıcıda gör.",
+            goal: "Projeyi çalıştır ve hazır sayfayı gör.",
             tip: "`npm run dev` → localhost:3000.",
-          },
-          {
-            goal: "Açılış sayfasını temizle; ortada bir arama kutusu kalsın.",
-            tip: "`app/page.tsx` içindeki örnek içeriği sil. Sayfa interaktif olacağı için en üste `\"use client\"` yaz.",
           },
         ],
       },
       {
-        title: "2. Arama arayüzünü kur",
-        learn: ["Position", "z-index"],
+        title: "2. Sayfayı temizle ve client yap",
+        learn: ["Server Component"],
+        question:
+          "Next.js App Router'da `\"use client\"` ne zaman ve neden gerekir?",
         tasks: [
           {
-            goal: "Kullanıcı şehir adını yazabileceği bir arama formu görsün.",
-            tip: "`<form>` + controlled `<input>` + `<button>`.",
+            goal: "`app/page.tsx` içindeki örnek içeriği sil, ortada bir alan bırak.",
+            tip: "Sade bir `<main>`.",
           },
           {
-            goal: "Kullanıcının yazdığı şehir adı state'te tutulsun.",
-            tip: "Input'u state'e bağla — ipucu: `useState` + `onChange`.",
+            goal: "Sayfa interaktif olacağı için en üste `\"use client\"` yaz.",
+            tip: "Dosyanın ilk satırı.",
+          },
+        ],
+      },
+      {
+        title: "3. Arama formunu kur",
+        learn: ["Controlled Component"],
+        question: "Form gönderiminde `e.preventDefault()` olmazsa ne olur?",
+        tasks: [
+          {
+            goal: "Şehir adı için bir `<form>` + `<input>` + `<button>` koy.",
+            tip: "Controlled input.",
+          },
+          {
+            goal: "Yazılan şehir adını bir state'te tut.",
+            tip: "`useState` + `onChange`.",
           },
           {
             goal: "Form gönderilince sayfa yenilenmesin, senin kodun çalışsın.",
-            tip: "Tarayıcının default davranışını durdur — ipucu: `onSubmit` + `e.preventDefault()`.",
-          },
-          {
-            goal: "Hava durumunu gösterecek kart parçasını ayrı component yap.",
-            tip: "Tekrar kullanılabilir parça — ipucu: `WeatherCard` + props.",
+            tip: "`onSubmit` + `e.preventDefault()`.",
           },
         ],
       },
       {
-        title: "3. API'yi bağla",
-        learn: ["API", "JSON"],
+        title: "4. API anahtarını güvenle sakla",
+        learn: ["API", "Environment Variable"],
+        question:
+          "API anahtarını koda yazmak yerine neden `.env.local` kullanırız?",
         tasks: [
           {
-            goal: "Ücretsiz bir hava durumu API'sine kaydol ve erişim anahtarı al.",
-            tip: "Örnek — ipucu: OpenWeatherMap, ücretsiz API key.",
+            goal: "Ücretsiz bir hava durumu API'sine kaydol ve anahtar al.",
+            tip: "Örn. OpenWeatherMap.",
           },
           {
-            goal: "Anahtarın kaynak kodda açıkça GÖRÜNMESİN.",
-            tip: "Gizli değer — ipucu: `.env.local` dosyası + `.gitignore`'da olduğundan emin ol.",
+            goal: "Anahtar kaynak kodda açıkça GÖRÜNMESİN.",
+            tip: "`.env.local` + `.gitignore`'da olduğundan emin ol.",
           },
+        ],
+      },
+      {
+        title: "5. Veriyi çek",
+        learn: ["fetch API", "async / await", "JSON"],
+        question: "`fetch` neden 404/500'de hata fırlatmaz? Nasıl kontrol edersin?",
+        tasks: [
           {
             goal: "Arama yapılınca o şehrin gerçek verisini internetten getir.",
-            tip: "Sunucudan veri çekmek — ipucu: `fetch(url)` + `async/await`, dönen JSON'u parse et.",
+            tip: "`fetch(url)` + `async/await`, dönen JSON'u parse et.",
           },
           {
-            goal: "Gelen veriyi state'e koy ki ekranda gösterebilesin.",
-            tip: "Veriyi sakla — ipucu: `useState` (örn. `const [weather, setWeather] = useState(null)`).",
-          },
-        ],
-      },
-      {
-        title: "4. Durumları yönet (UX)",
-        tasks: [
-          {
-            goal: "Veri gelene kadar kullanıcı 'Yükleniyor...' görsün.",
-            tip: "Bir loading bayrağı — ipucu: `loading` state'i + conditional rendering.",
-          },
-          {
-            goal: "Olmayan bir şehir aranırsa kullanıcıya anlaşılır bir hata göster.",
-            tip: "Hatayı yakala — ipucu: `try/catch` + bir `error` state'i.",
-          },
-          {
-            goal: "Sayfa ilk açıldığında otomatik bir şehir (örn. konum/varsayılan) yüklensin.",
-            tip: "İlk render'da çalışan kod — ipucu: `useEffect(() => {...}, [])`.",
+            goal: "Gelen veriyi bir state'e koy.",
+            tip: "`const [weather, setWeather] = useState(null)`.",
           },
         ],
       },
       {
-        title: "5. Zenginleştir ve yayınla",
-        learn: ["Responsive & Media Query", "CSS Grid", "Pseudo-class (:hover)"],
+        title: "6. Sonucu göster (WeatherCard)",
+        learn: ["Component", "Props"],
+        question: "Veriyi gösteren parçayı neden ayrı bir component yaptın?",
         tasks: [
           {
-            goal: "5 günlük tahmini, her güne bir kart olacak şekilde listele.",
-            tip: "Diziden JSX üret — ipucu: `forecast.map(...)` + `key`.",
+            goal: "Hava durumunu gösteren `WeatherCard` component'ini yaz.",
+            tip: "Veriyi props ile al.",
           },
           {
-            goal: "Hava durumuna göre arka plan/ikon değişsin (güneşli, yağmurlu...).",
-            tip: "Duruma göre görsel — ipucu: condition → farklı emoji/className.",
+            goal: "Sıcaklık, şehir ve durumu kartta göster.",
+            tip: "`{weather.temp}` vb.",
+          },
+        ],
+      },
+      {
+        title: "7. Durumları yönet (UX)",
+        learn: ["Conditional Rendering", "Error Handling"],
+        question: "Loading, error ve başarı durumlarını nasıl ayrı ayrı yönetirsin?",
+        tasks: [
+          {
+            goal: "Veri gelene kadar 'Yükleniyor...' göster.",
+            tip: "`loading` state + conditional rendering.",
           },
           {
-            goal: "Projeyi her `git push`'ta otomatik güncellenen canlı bir siteye çevir.",
-            tip: "GitHub'a bağlı deploy — ipucu: Vercel. API key'i Vercel'de Environment Variable olarak ekle.",
+            goal: "Olmayan şehir aranınca anlaşılır bir hata göster.",
+            tip: "`try/catch` + `error` state.",
+          },
+        ],
+      },
+      {
+        title: "8. İlk yükleme (useEffect)",
+        learn: ["useEffect"],
+        question: "Boş dependency array'li `useEffect(() => {}, [])` ne zaman çalışır?",
+        tasks: [
+          {
+            goal: "Sayfa ilk açıldığında varsayılan bir şehir otomatik yüklensin.",
+            tip: "`useEffect(() => {...}, [])`.",
+          },
+        ],
+      },
+      {
+        title: "9. Zenginleştir ve yayınla",
+        learn: ["Responsive & Media Query", "CSS Grid", "Deploy"],
+        question:
+          "Vercel'de environment variable'ı neden ayrıca eklemen gerekir?",
+        tasks: [
+          {
+            goal: "5 günlük tahmini her güne bir kart olacak şekilde listele.",
+            tip: "`forecast.map(...)` + `key`.",
+          },
+          {
+            goal: "Hava durumuna göre ikon/arka plan değişsin.",
+            tip: "Koşullu emoji/className.",
+          },
+          {
+            goal: "Projeyi yayınla; API key'i Vercel'de env variable olarak ekle.",
+            tip: "Vercel → Environment Variables.",
           },
         ],
       },
@@ -376,7 +541,7 @@ export const levels: Level[] = [
     emoji: "📝",
     accent: "violet",
     description:
-      "İlk full-stack projen. Kullanıcılar kayıt olup giriş yapsın, kendi yazılarını ekleyip düzenlesin ve silsin. Amaç: database, authentication, CRUD, Context ve custom hook.",
+      "İlk full-stack projen. Kullanıcılar kayıt olup giriş yapsın, kendi yazılarını ekleyip düzenlesin ve silsin. Amaç: database, authentication, CRUD, Context ve custom hook — adım adım.",
     skills: [
       "Database & ORM",
       "Authentication",
@@ -388,115 +553,177 @@ export const levels: Level[] = [
     ],
     steps: [
       {
-        title: "1. Veri katmanını kur",
+        title: "1. Database'i bağla",
+        learn: ["Database", "SQL"],
+        question: "Veriyi tarayıcı (localStorage) yerine neden database'de tutarız?",
         tasks: [
           {
             goal: "Yazılar sunucu kapansa bile kalıcı bir yerde saklansın.",
-            tip: "Tarayıcı değil, gerçek depo — ipucu: bir database (örn. Postgres). Ücretsiz: Supabase / Neon.",
+            tip: "Bir database (Postgres). Ücretsiz: Supabase / Neon.",
           },
           {
-            goal: "Database'i SQL ezberlemeden, JavaScript nesneleriyle yönet.",
-            tip: "Kod ↔ DB köprüsü — ipucu: bir ORM (Prisma).",
+            goal: "Bağlantı bilgisini `.env`'e koy.",
+            tip: "`DATABASE_URL`.",
+          },
+        ],
+      },
+      {
+        title: "2. ORM ve şema",
+        learn: ["ORM", "Schema", "Relation (İlişki)"],
+        question: "ORM ne işe yarar? One-to-many ilişki ne demek?",
+        tasks: [
+          {
+            goal: "Database'i JavaScript nesneleriyle yönetmek için ORM kur.",
+            tip: "Prisma.",
           },
           {
             goal: "`User` ve `Post` tablolarını ve aralarındaki ilişkiyi tanımla.",
-            tip: "Bir kullanıcının çok yazısı olur — ipucu: schema'da one-to-many relation.",
-          },
-          {
-            goal: "Tabloları gerçekten database'e oluştur.",
-            tip: "Schema'yı uygula — ipucu: Prisma migrate.",
+            tip: "Bir kullanıcının çok yazısı olur — one-to-many.",
           },
         ],
       },
       {
-        title: "2. Authentication ekle",
+        title: "3. Migration",
+        learn: ["Migration"],
+        question: "Migration nedir, şema değişince neden gerekir?",
+        tasks: [
+          {
+            goal: "Tanımladığın tabloları gerçekten database'e oluştur.",
+            tip: "`npx prisma migrate dev`.",
+          },
+        ],
+      },
+      {
+        title: "4. Authentication kur",
+        learn: ["Authentication"],
+        question: "Auth'u sıfırdan yazmak yerine hazır çözüm kullanmak neden daha güvenli?",
         tasks: [
           {
             goal: "Kullanıcılar kendi hesabıyla kayıt olup giriş yapabilsin.",
-            tip: "Sıfırdan yazma, hazır çözüm — ipucu: Auth.js (NextAuth).",
+            tip: "Auth.js (NextAuth).",
           },
           {
-            goal: "Şifreleri DÜZ METİN olarak saklama; çalınırsa felaket olur.",
-            tip: "Geri döndürülemez şekilde sakla — ipucu: password hashing (bcrypt) veya OAuth provider.",
-          },
-          {
-            goal: "Giriş yapmamış biri 'Yeni Yazı' sayfasına ULAŞAMASIN.",
-            tip: "Sayfayı koru — ipucu: oturum kontrolü + login'e redirect.",
+            goal: "Şifreleri DÜZ METİN saklama.",
+            tip: "Password hashing (bcrypt) veya OAuth.",
           },
         ],
       },
       {
-        title: "3. Oturum bilgisini paylaş (Context)",
+        title: "5. Sayfayı koru",
+        learn: ["Authorization"],
+        question: "Authentication ile authorization arasındaki fark nedir?",
         tasks: [
           {
-            goal: "Giriş yapan kullanıcının bilgisine HER component'ten ulaşılsın.",
-            tip: "Props'u 5 kat aşağı taşıma — ipucu: Context API (provider + consumer).",
-          },
-          {
-            goal: "Bu kullanıcı bilgisini okuma işini tek satıra indir.",
-            tip: "Tekrarı sarmala — ipucu: bir custom hook (`useAuth()`).",
-          },
-          {
-            goal: "Header'da giriş yapılmışsa 'Çıkış', yapılmamışsa 'Giriş' görünsün.",
-            tip: "Duruma göre UI — ipucu: conditional rendering, oturum state'ine bak.",
+            goal: "Giriş yapmamış biri 'Yeni Yazı' sayfasına ULAŞAMASIN.",
+            tip: "Oturum kontrolü + login'e redirect.",
           },
         ],
       },
       {
-        title: "4. CRUD işlemleri",
-        learn: ["CRUD", "RESTful API", "HTTP Status Code'ları"],
+        title: "6. Oturumu paylaş (Context)",
+        learn: ["Context API", "Prop Drilling"],
+        question: "Context API, prop drilling problemini nasıl çözer?",
+        tasks: [
+          {
+            goal: "Giriş yapan kullanıcı bilgisine her component'ten ulaşılsın.",
+            tip: "Context API (provider + consumer).",
+          },
+        ],
+      },
+      {
+        title: "7. Custom hook",
+        learn: ["Custom Hook"],
+        question: "Custom hook ne zaman yazılır? `use` öneki neden zorunlu?",
+        tasks: [
+          {
+            goal: "Kullanıcı bilgisini okuma işini tek satıra indir.",
+            tip: "Bir `useAuth()` custom hook'u.",
+          },
+          {
+            goal: "Header'da giriş varsa 'Çıkış', yoksa 'Giriş' göster.",
+            tip: "Conditional rendering, oturum state'ine bak.",
+          },
+        ],
+      },
+      {
+        title: "8. Oluştur (Create)",
+        learn: ["CRUD", "RESTful API", "HTTP Metotları"],
+        question: "REST'te Create işlemi için hangi HTTP metodu kullanılır ve neden?",
         tasks: [
           {
             goal: "Kullanıcı yeni bir yazı oluşturabilsin (başlık + içerik).",
-            tip: "Sunucuya veri gönder — ipucu: bir API route + `POST` (Create).",
+            tip: "Bir API route + `POST`.",
+          },
+        ],
+      },
+      {
+        title: "9. Listele ve oku (Read)",
+        learn: ["HTTP Status Code'ları"],
+        question: "Dynamic route (`/post/[id]`) nasıl çalışır?",
+        tasks: [
+          {
+            goal: "Tüm yazılar ana sayfada listelensin.",
+            tip: "Read + map.",
           },
           {
-            goal: "Tüm yazılar ana sayfada listelensin, tıklayınca detayı açılsın.",
-            tip: "Veriyi getir ve göster — ipucu: Read + dynamic route (`/post/[id]`).",
+            goal: "Bir yazıya tıklayınca detayı açılsın.",
+            tip: "Dynamic route (`/post/[id]`).",
+          },
+        ],
+      },
+      {
+        title: "10. Güncelle ve sil (Update/Delete)",
+        question: "PUT ile PATCH arasındaki fark nedir?",
+        tasks: [
+          {
+            goal: "Kullanıcı kendi yazısını düzenleyebilsin.",
+            tip: "`PUT`/`PATCH`.",
           },
           {
-            goal: "Kullanıcı kendi yazısını düzenleyebilsin ve silebilsin.",
-            tip: "Güncelle ve sil — ipucu: `PUT`/`PATCH` ve `DELETE` (Update + Delete).",
+            goal: "Kullanıcı kendi yazısını silebilsin.",
+            tip: "`DELETE`.",
           },
+        ],
+      },
+      {
+        title: "11. Yetki kontrolü",
+        learn: ["Authorization"],
+        question:
+          "Yetki kontrolünü neden hem frontend hem backend'de yapmak gerekir?",
+        tasks: [
           {
             goal: "Bir yazıyı SADECE sahibi düzenleyip silebilsin.",
-            tip: "İşlemden önce kontrol — ipucu: authorization (`post.authorId === session.user.id`).",
+            tip: "`post.authorId === session.user.id` (sunucuda).",
           },
         ],
       },
       {
-        title: "5. Müşteri isteği: Taslak otomatik kaydı",
-        learn: ["useEffect", "Debounce & Throttle"],
+        title: "12. Doğrulama + taslak kaydı",
+        learn: ["word-break & overflow", "useEffect", "Debounce & Throttle"],
+        question: "Form doğrulamasını yalnızca frontend'de yapmak neden yetersiz?",
         tasks: [
           {
-            goal: "Kullanıcı yazı yazarken taslağı kendiliğinden yerelde saklansın (kaydet'e basmadan).",
-            tip: "Her tuşta değil, ara ara yaz — ipucu: debounce + localStorage; başlık ve içeriği (her bölümü) ayrı anahtarda tut.",
+            goal: "Boş başlıkla yazı gönderilince uyarı çıksın, kayıt olmasın.",
+            tip: "Form validation (Zod).",
           },
           {
-            goal: "Sayfa kazara kapanıp tekrar açılınca yarım kalan taslak forma geri yüklensin.",
-            tip: "Açılışta oku — ipucu: localStorage'daki taslakla formu doldur.",
+            goal: "Kullanıcı yazarken taslak otomatik yerelde saklansın.",
+            tip: "Debounce + localStorage; bölüm bazlı anahtar.",
           },
           {
-            goal: "Yazı başarıyla kaydedilince taslak temizlensin (eski taslak tekrar dolmasın).",
-            tip: "İşi bitince sil — ipucu: `localStorage.removeItem(...)`.",
+            goal: "Sayfa kapanıp açılınca yarım taslak geri yüklensin.",
+            tip: "Açılışta localStorage'dan oku.",
           },
         ],
       },
       {
-        title: "6. Cila ve deploy",
-        learn: ["word-break & overflow"],
+        title: "13. Deploy",
+        learn: ["Deploy", "Environment Variable"],
+        question: "Database'li bir uygulamayı canlıya alırken nelere dikkat edersin?",
         tasks: [
-          {
-            goal: "Boş başlıkla yazı gönderilince kullanıcı uyarılsın, kayıt olmasın.",
-            tip: "Gönderimden önce kontrol — ipucu: form validation (örn. Zod).",
-          },
-          {
-            goal: "Yazı kaydedilirken 'Kaydediliyor...', bitince geri bildirim göster.",
-            tip: "İşlem durumu — ipucu: loading state + butonu disable et.",
-          },
           {
             goal: "Projeyi database'iyle birlikte canlıya al.",
-            tip: "Env + DB bağlantısı — ipucu: Vercel + hosted database, `DATABASE_URL` ekle.",
+            tip: "Vercel + hosted DB, `DATABASE_URL` ekle.",
           },
         ],
       },
@@ -526,90 +753,123 @@ export const levels: Level[] = [
     steps: [
       {
         title: "1. Mimariyi planla",
+        question: "Kod yazmadan önce data model tasarlamak neden önemli?",
         tasks: [
           {
-            goal: "Kullanıcı, abonelik ve plan ilişkilerini koda başlamadan tasarla.",
-            tip: "Önce kağıt/diyagram — ipucu: data model / schema tasarımı (free, pro planları).",
+            goal: "Kullanıcı, abonelik ve plan ilişkilerini tasarla.",
+            tip: "Data model / schema (free, pro planları).",
           },
+          {
+            goal: "Klasör yapısını büyüyebilecek şekilde kur.",
+            tip: "Feature-based folder structure.",
+          },
+        ],
+      },
+      {
+        title: "2. Design system",
+        learn: ["Component"],
+        question: "Component library kullanmak tutarlılık için ne sağlar?",
+        tasks: [
           {
             goal: "Buton, input gibi parçalar tüm üründe tutarlı görünsün.",
-            tip: "Tek kaynaktan stil — ipucu: design system / component library (örn. shadcn/ui).",
-          },
-          {
-            goal: "Klasör yapısını büyüyebilecek şekilde düzenle.",
-            tip: "Özellik bazlı ayır — ipucu: feature-based folder structure.",
+            tip: "Design system (örn. shadcn/ui).",
           },
         ],
       },
       {
-        title: "2. Ödeme entegrasyonu",
+        title: "3. Ödemeyi bağla",
+        question: "Kart bilgisini neden kendi sunucunda TUTMAMALISIN?",
         tasks: [
           {
-            goal: "Kullanıcı kredi kartıyla güvenli şekilde ödeme yapabilsin.",
-            tip: "Kart verisini sen tutma — ipucu: Stripe Checkout (hosted page).",
+            goal: "Kullanıcı kredi kartıyla güvenli ödeme yapabilsin.",
+            tip: "Stripe Checkout (hosted page).",
           },
           {
-            goal: "Önce gerçek para harcamadan test edebilesin.",
-            tip: "Sahte kartlar — ipucu: Stripe test mode + test card numaraları.",
+            goal: "Gerçek para harcamadan test et.",
+            tip: "Stripe test mode + test kartları.",
           },
+        ],
+      },
+      {
+        title: "4. Webhook",
+        learn: ["Webhook"],
+        question: "Webhook nedir? Polling yerine neden tercih edilir?",
+        tasks: [
           {
             goal: "Ödeme tamamlanınca kullanıcı OTOMATİK 'Pro' olsun.",
-            tip: "Stripe sana haber versin — ipucu: webhook endpoint, `checkout.session.completed`.",
+            tip: "Webhook endpoint, `checkout.session.completed`.",
           },
           {
-            goal: "Abonelik iptal edilince erişim de geri alınsın.",
-            tip: "Aynı webhook mantığı — ipucu: `customer.subscription.deleted` event'i.",
+            goal: "Abonelik iptal edilince erişim geri alınsın.",
+            tip: "`customer.subscription.deleted` event'i.",
           },
         ],
       },
       {
-        title: "3. Dashboard ve roller",
+        title: "5. Dashboard ve roller",
+        question: "Plan/rol kontrolünü sadece frontend'de yapmak neden tehlikeli?",
         tasks: [
           {
-            goal: "Kullanıcı giriş yapınca kendi paneline ve hesap ayarlarına ulaşsın.",
-            tip: "Korumalı alan — ipucu: protected dashboard route.",
+            goal: "Kullanıcı giriş yapınca kendi paneline ulaşsın.",
+            tip: "Protected dashboard route.",
           },
           {
-            goal: "Free kullanıcı, Pro özelliklerini GÖREMESİN/kullanamasın.",
-            tip: "Plana göre kapı — ipucu: role/plan-based access control (hem frontend hem backend).",
-          },
-          {
-            goal: "Kaç kullanıcı ve abonelik var — yöneticiye özetle.",
-            tip: "Yönetim ekranı — ipucu: admin dashboard + temel analytics.",
+            goal: "Free kullanıcı Pro özelliklerini GÖREMESİN/kullanamasın.",
+            tip: "Role/plan-based access (hem frontend hem backend).",
           },
         ],
       },
       {
-        title: "4. Güven: testler ve CI/CD",
+        title: "6. Admin & analytics",
+        question: "Bir SaaS'ta hangi temel metrikleri izlemek istersin?",
         tasks: [
           {
-            goal: "Bir fonksiyonu bozduğunda bunu canlıdan ÖNCE fark et.",
-            tip: "Mantığı otomatik doğrula — ipucu: unit test (Vitest/Jest).",
+            goal: "Kaç kullanıcı ve abonelik var, yöneticiye özetle.",
+            tip: "Admin dashboard + temel analytics.",
+          },
+        ],
+      },
+      {
+        title: "7. Testler",
+        question: "Unit test ile e2e test arasındaki fark nedir, hangisi ne zaman?",
+        tasks: [
+          {
+            goal: "Bir fonksiyonu bozduğunu canlıdan ÖNCE fark et.",
+            tip: "Unit test (Vitest/Jest).",
           },
           {
-            goal: "'Giriş yap → ödeme yap' gibi tam akış gerçekten çalışsın.",
-            tip: "Kullanıcı gibi test et — ipucu: e2e test (Playwright).",
+            goal: "'Giriş → ödeme' gibi tam akış gerçekten çalışsın.",
+            tip: "e2e test (Playwright).",
           },
+        ],
+      },
+      {
+        title: "8. CI/CD",
+        learn: ["CI/CD"],
+        question: "CI/CD pipeline'ı bir ekibe ne kazandırır?",
+        tasks: [
           {
             goal: "Her push'ta testler otomatik çalışsın; kırmızıysa merge engellensin.",
-            tip: "Otomasyon — ipucu: GitHub Actions (CI/CD pipeline).",
+            tip: "GitHub Actions.",
           },
         ],
       },
       {
-        title: "5. Yayın ve izleme",
+        title: "9. Yayın ve izleme",
+        learn: ["Deploy"],
+        question: "Error monitoring olmadan production'da ne kaçırırsın?",
         tasks: [
           {
             goal: "Canlıda bir kullanıcı hata alınca SENİN haberin olsun.",
-            tip: "Hataları topla — ipucu: error monitoring (Sentry).",
+            tip: "Error monitoring (Sentry).",
           },
           {
-            goal: "Production'a özel ayarlar ve güvenlik kontrollerini gözden geçir.",
-            tip: "Env değişkenleri, rate limit, secret rotation — ipucu: production checklist.",
+            goal: "Production checklist'i gözden geçir (env, rate limit, secrets).",
+            tip: "Güvenlik kontrolleri.",
           },
           {
-            goal: "Ürünü canlıya al, gerçek bir kullanıcıdan geri bildirim topla. 🚀",
-            tip: "İlk müşteri — ipucu: deploy + feedback döngüsü.",
+            goal: "Ürünü canlıya al, gerçek kullanıcıdan geri bildirim topla. 🚀",
+            tip: "Deploy + feedback döngüsü.",
           },
         ],
       },
@@ -642,7 +902,7 @@ export const levels: Level[] = [
         learn: ["WebSocket", "Polling vs Push"],
         tasks: [
           {
-            goal: "Sunucuyla SÜREKLİ açık, çift yönlü bir hat kur (her mesaj için yeniden istek atma).",
+            goal: "Sunucuyla SÜREKLI açık, çift yönlü bir hat kur (her mesaj için yeniden istek atma).",
             tip: "HTTP'nin iste-cevap modeli yetmez — ipucu: WebSocket (örn. Socket.io).",
           },
           {

@@ -6,10 +6,11 @@ import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import ReviewQueue from "../components/admin/ReviewQueue";
 import RoadmapAdmin from "../components/admin/RoadmapAdmin";
+import ArticlesAdmin from "../components/admin/ArticlesAdmin";
 
 export default function AdminPage() {
   const me = useQuery(api.users.me);
-  const [tab, setTab] = useState<"review" | "roadmap">("review");
+  const [tab, setTab] = useState<"review" | "roadmap" | "articles">("review");
 
   if (me === undefined) {
     return (
@@ -48,6 +49,7 @@ export default function AdminPage() {
             [
               ["review", "📥 Review Kuyruğu"],
               ["roadmap", "🗺️ Yol Haritası"],
+              ["articles", "📚 Makaleler"],
             ] as const
           ).map(([key, label]) => (
             <button
@@ -64,7 +66,13 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {tab === "review" ? <ReviewQueue /> : <RoadmapAdmin />}
+        {tab === "review" ? (
+          <ReviewQueue />
+        ) : tab === "roadmap" ? (
+          <RoadmapAdmin />
+        ) : (
+          <ArticlesAdmin />
+        )}
       </div>
     </main>
   );

@@ -287,6 +287,7 @@ export default function Home() {
           stepId={modalStep._id as Id<"steps">}
           stepTitle={modalStep.title}
           stepPoints={modalStep.points}
+          question={modalStep.question}
           rejectedNote={
             submissionByStep[modalStep._id]?.status === "rejected"
               ? submissionByStep[modalStep._id]?.reviewNote

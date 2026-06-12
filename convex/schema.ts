@@ -60,6 +60,7 @@ export default defineSchema({
     points: v.number(),
     type: v.string(), // adım tipi/etiketi (admin düzenler)
     learn: v.array(v.string()), // concepts.ts term'leri
+    question: v.optional(v.string()), // adım sonu sorusu (kanıtla cevaplanır)
   }).index("by_level", ["levelId"]),
 
   tasks: defineTable({
@@ -83,6 +84,7 @@ export default defineSchema({
     stepId: v.id("steps"),
     imageStorageId: v.id("_storage"),
     text: v.string(),
+    answer: v.optional(v.string()), // adım sorusuna verilen cevap
     status: v.union(
       v.literal("pending"),
       v.literal("approved"),
@@ -112,4 +114,14 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_community", ["communityId"])
     .index("by_user_community", ["userId", "communityId"]),
+
+  // Admin'in eklediği makaleler/konular (dev.to dışındaki içerik).
+  articles: defineTable({
+    title: v.string(),
+    url: v.string(),
+    description: v.optional(v.string()),
+    tag: v.optional(v.string()),
+    createdBy: v.id("users"),
+    createdAt: v.number(),
+  }).index("by_created", ["createdAt"]),
 });

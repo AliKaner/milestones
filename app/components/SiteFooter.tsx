@@ -19,6 +19,9 @@ export default function SiteFooter() {
           <Link href="/kavramlar" className="transition-colors hover:text-white">
             Sözlük
           </Link>
+          <Link href="/makaleler" className="transition-colors hover:text-white">
+            Makaleler
+          </Link>
           <Link href="/liderlik" className="transition-colors hover:text-white">
             Liderlik
           </Link>

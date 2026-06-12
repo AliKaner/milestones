@@ -64,6 +64,17 @@ export default function ReviewQueue() {
                 {s.text}
               </p>
 
+              {s.question && (
+                <div className="mt-2 rounded-lg border border-sky-500/30 bg-sky-500/5 px-3 py-2 text-sm">
+                  <p className="font-medium text-sky-200">❓ {s.question}</p>
+                  <p className="mt-1 text-white/80">
+                    {s.answer || (
+                      <span className="text-white/40">(cevap yok)</span>
+                    )}
+                  </p>
+                </div>
+              )}
+
               <textarea
                 value={notes[s._id] ?? ""}
                 onChange={(e) =>

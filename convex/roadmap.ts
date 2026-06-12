@@ -44,6 +44,7 @@ export const getTree = query({
               points: step.points,
               type: step.type,
               learn: step.learn,
+              question: step.question ?? null,
               tasks: byOrder(tasks.filter((t) => t.stepId === step._id)).map(
                 (task, ti) => ({
                   _id: task._id,
@@ -135,6 +136,7 @@ export const createStep = mutation({
     points: v.number(),
     type: v.string(),
     learn: v.array(v.string()),
+    question: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
@@ -150,6 +152,7 @@ export const updateStep = mutation({
     points: v.optional(v.number()),
     type: v.optional(v.string()),
     learn: v.optional(v.array(v.string())),
+    question: v.optional(v.string()),
   },
   handler: async (ctx, { id, ...patch }) => {
     await requireAdmin(ctx);

@@ -9,6 +9,8 @@ type Props = {
   stepId: Id<"steps">;
   stepTitle: string;
   stepPoints: number;
+  /** Adımın sorusu (varsa cevap zorunlu). */
+  question?: string | null;
   /** Reddedilmiş bir gönderim varsa not gösterelim. */
   rejectedNote?: string | null;
   onClose: () => void;
@@ -18,6 +20,7 @@ export default function SubmissionModal({
   stepId,
   stepTitle,
   stepPoints,
+  question,
   rejectedNote,
   onClose,
 }: Props) {
@@ -27,6 +30,7 @@ export default function SubmissionModal({
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [text, setText] = useState("");
+  const [answer, setAnswer] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -40,6 +44,8 @@ export default function SubmissionModal({
     setError(null);
     if (!file) return setError("Lütfen bir ekran görüntüsü / resim ekle.");
     if (text.trim().length < 3) return setError("Lütfen kısa bir açıklama yaz.");
+    if (question && answer.trim().length < 2)
+      return setError("Adımın sorusunu cevapla.");
     setLoading(true);
     try {
       const uploadUrl = await generateUploadUrl();
@@ -56,6 +62,7 @@ export default function SubmissionModal({
         stepId,
         imageStorageId: json.storageId as Id<"_storage">,
         text: text.trim(),
+        answer: question ? answer.trim() : undefined,
       });
       onClose();
     } catch (err) {
@@ -131,6 +138,21 @@ export default function SubmissionModal({
               className="w-full resize-none rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-emerald-500/50 focus:bg-white/10"
             />
           </div>
+
+          {question && (
+            <div className="rounded-lg border border-sky-500/30 bg-sky-500/5 p-3">
+              <label className="mb-1.5 block text-sm font-medium text-sky-200">
+                ❓ {question}
+              </label>
+              <textarea
+                value={answer}
+                onChange={(e) => setAnswer(e.target.value)}
+                rows={2}
+                placeholder="Cevabını kendi cümlenle yaz."
+                className="w-full resize-none rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-white/30 outline-none transition focus:border-sky-500/50 focus:bg-white/10"
+              />
+            </div>
+          )}
 
           {error && (
             <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">

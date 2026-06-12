@@ -10,6 +10,7 @@ import Logo from "./Logo";
 const navLinks = [
   { href: "/", label: "Yol Haritası" },
   { href: "/kavramlar", label: "Sözlük" },
+  { href: "/makaleler", label: "Makaleler" },
   { href: "/liderlik", label: "Liderlik" },
   { href: "/topluluklar", label: "Topluluklar" },
 ];

@@ -22,12 +22,19 @@ export const create = mutation({
     stepId: v.id("steps"),
     imageStorageId: v.id("_storage"),
     text: v.string(),
+    answer: v.optional(v.string()),
   },
-  handler: async (ctx, { stepId, imageStorageId, text }) => {
+  handler: async (ctx, { stepId, imageStorageId, text, answer }) => {
     const userId = await requireUserId(ctx);
     if (text.trim().length < 3) {
       throw new Error("Lütfen kısa bir açıklama yaz.");
     }
+    // Adımın bir sorusu varsa cevap zorunlu.
+    const step = await ctx.db.get(stepId);
+    if (step?.question && (!answer || answer.trim().length < 2)) {
+      throw new Error("Adımın sorusunu cevaplaman gerekiyor.");
+    }
+
     const existing = await ctx.db
       .query("submissions")
       .withIndex("by_user_step", (q) =>
@@ -42,6 +49,7 @@ export const create = mutation({
       await ctx.db.patch(existing._id, {
         imageStorageId,
         text,
+        answer,
         status: "pending",
         reviewNote: undefined,
         reviewedBy: undefined,
@@ -56,6 +64,7 @@ export const create = mutation({
       stepId,
       imageStorageId,
       text,
+      answer,
       status: "pending",
       createdAt: Date.now(),
     });
@@ -78,6 +87,7 @@ export const getMine = query({
         stepId: r.stepId as string,
         status: r.status,
         text: r.text,
+        answer: r.answer ?? null,
         reviewNote: r.reviewNote ?? null,
         imageUrl: await ctx.storage.getUrl(r.imageStorageId),
       }))
@@ -103,6 +113,8 @@ export const listPending = query({
         return {
           _id: r._id,
           text: r.text,
+          answer: r.answer ?? null,
+          question: step?.question ?? null,
           createdAt: r.createdAt,
           imageUrl: await ctx.storage.getUrl(r.imageStorageId),
           username: user?.username ?? user?.email ?? "kullanıcı",

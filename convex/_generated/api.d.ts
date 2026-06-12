@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as articles from "../articles.js";
 import type * as auth from "../auth.js";
 import type * as communities from "../communities.js";
 import type * as http from "../http.js";
@@ -25,6 +26,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  articles: typeof articles;
   auth: typeof auth;
   communities: typeof communities;
   http: typeof http;

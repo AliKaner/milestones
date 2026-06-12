@@ -67,6 +67,7 @@ export const run = internalMutation({
           points: stepPoints,
           type: guessType(step.title),
           learn: step.learn ?? [],
+          question: step.question,
         });
         for (let ti = 0; ti < step.tasks.length; ti++) {
           const task = step.tasks[ti];
