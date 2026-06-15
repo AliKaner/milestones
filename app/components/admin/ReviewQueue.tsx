@@ -12,6 +12,11 @@ export default function ReviewQueue() {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [view, setView] = useState<"pending" | "reviewed">("pending");
+  const [filter, setFilter] = useState<"all" | "approved" | "rejected">("all");
+
+  const reviewedFiltered = (reviewed ?? []).filter((s) =>
+    filter === "all" ? true : s.status === filter
+  );
 
   const act = async (
     id: Id<"submissions">,
@@ -135,13 +140,33 @@ export default function ReviewQueue() {
         )
       ) : reviewed === undefined ? (
         <p className="animate-pulse text-white/50">Yükleniyor…</p>
-      ) : reviewed.length === 0 ? (
-        <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-white/50">
-          Henüz değerlendirme yapmadın.
-        </p>
       ) : (
         <div className="space-y-3">
-          {reviewed.map((s) => (
+          <div className="flex gap-2">
+            {(["all", "approved", "rejected"] as const).map((f) => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`rounded-lg border px-3 py-1 text-xs ${
+                  filter === f
+                    ? "border-white/30 bg-white/10 text-white"
+                    : "border-white/10 text-white/55"
+                }`}
+              >
+                {f === "all"
+                  ? "Hepsi"
+                  : f === "approved"
+                    ? "Onaylı"
+                    : "Reddedilen"}
+              </button>
+            ))}
+          </div>
+          {reviewedFiltered.length === 0 ? (
+            <p className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-8 text-center text-white/50">
+              Bu filtrede kayıt yok.
+            </p>
+          ) : (
+            reviewedFiltered.map((s) => (
             <div
               key={s._id}
               className="rounded-2xl border border-white/10 bg-white/[0.03] p-4"
@@ -210,7 +235,8 @@ export default function ReviewQueue() {
                 </div>
               </div>
             </div>
-          ))}
+            ))
+          )}
         </div>
       )}
     </div>
