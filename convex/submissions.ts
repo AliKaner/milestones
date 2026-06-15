@@ -127,6 +127,48 @@ export const listPending = query({
   },
 });
 
+/** Admin: değerlendirilmiş (onaylı/reddedilmiş) kanıtlar — geçmiş. */
+export const listReviewed = query({
+  args: {},
+  handler: async (ctx) => {
+    await requireAdmin(ctx);
+    const approved = await ctx.db
+      .query("submissions")
+      .withIndex("by_status", (q) => q.eq("status", "approved"))
+      .collect();
+    const rejected = await ctx.db
+      .query("submissions")
+      .withIndex("by_status", (q) => q.eq("status", "rejected"))
+      .collect();
+    const rows = [...approved, ...rejected].sort(
+      (a, b) => (b.reviewedAt ?? 0) - (a.reviewedAt ?? 0)
+    );
+    return Promise.all(
+      rows.map(async (r) => {
+        const user = await ctx.db.get(r.userId);
+        const step = await ctx.db.get(r.stepId);
+        const level = step ? await ctx.db.get(step.levelId) : null;
+        const reviewer = r.reviewedBy ? await ctx.db.get(r.reviewedBy) : null;
+        return {
+          _id: r._id,
+          status: r.status,
+          text: r.text,
+          answer: r.answer ?? null,
+          question: step?.question ?? null,
+          reviewNote: r.reviewNote ?? null,
+          reviewedAt: r.reviewedAt ?? null,
+          imageUrl: await ctx.storage.getUrl(r.imageStorageId),
+          username: user?.username ?? user?.email ?? "kullanıcı",
+          reviewerName: reviewer?.username ?? reviewer?.email ?? null,
+          stepTitle: step?.title ?? "(silinmiş adım)",
+          stepPoints: step?.points ?? 0,
+          levelProject: level?.project ?? "",
+        };
+      })
+    );
+  },
+});
+
 /** Admin: bir kanıtı onayla/reddet (+ not). Onay puanı buradan yönetilir. */
 export const review = mutation({
   args: {

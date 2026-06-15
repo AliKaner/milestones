@@ -137,9 +137,16 @@ export default function StepNode({
                   💡 Puan kazanmak için giriş yapıp bu adımın kanıtını gönder.
                 </p>
               ) : submission?.status === "approved" ? (
-                <span className={`text-sm font-semibold ${c.text}`}>
-                  ✓ Onaylandı · +{step.points} puan
-                </span>
+                <div className="space-y-1.5">
+                  <span className={`text-sm font-semibold ${c.text}`}>
+                    ✓ Onaylandı · +{step.points} puan
+                  </span>
+                  {submission.reviewNote && (
+                    <p className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/70">
+                      📝 Admin notu: {submission.reviewNote}
+                    </p>
+                  )}
+                </div>
               ) : submission?.status === "pending" ? (
                 <span className="text-sm font-medium text-amber-300">
                   ⏳ İncelemede — admin onayı bekleniyor
