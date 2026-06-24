@@ -11,7 +11,8 @@ export type ConceptCategory =
   | "Oyun"
   | "AI"
   | "Mobil"
-  | "DevOps";
+  | "DevOps"
+  | "Data";
 
 export type Concept = {
   term: string;
@@ -2793,6 +2794,80 @@ export const concepts: Concept[] = [
     category: "AI",
     short: "Sadece metni değil; görsel, ses gibi farklı veri türlerini de işleyebilen model.",
     body: "Multimodal modeller bir görseli anlayıp anlatabilir, ekran görüntüsünden kod üretebilir veya sesi metne çevirebilir. Tek bir modelde metin + görüntü + ses birleşince çok daha geniş uygulamalar mümkün olur.",
+  },
+
+  // ─────────────────────────── BACKEND (Node/Express) ───────────────────────────
+  {
+    term: "Express",
+    category: "Backend",
+    short: "Node.js üzerinde HTTP sunucusu ve API yazmayı kolaylaştıran minimal kütüphane.",
+    body: "Express, gelen HTTP isteklerini adrese (route) ve metoda (GET/POST...) göre fonksiyonlara yönlendirir; middleware zinciri, JSON okuma ve cevap döndürme gibi işleri sadeleştirir. Node'un en yaygın web framework'üdür.",
+    analogy: "Sunucuya gelen mektupları doğru masaya dağıtan bir santral memuru gibi.",
+  },
+  {
+    term: "Port",
+    category: "Backend",
+    short: "Bir makinedeki bir uygulamayı adresleyen numara (örn. 3001).",
+    body: "Bir bilgisayarın tek IP'si vardır ama üstünde birçok uygulama çalışır; port, gelen trafiğin hangi uygulamaya gideceğini belirler. Sunucu bir port'u 'dinler' (listen) ve o port'a gelen istekleri karşılar.",
+    analogy: "Aynı binadaki (IP) farklı daire numaraları (port) gibi.",
+  },
+  {
+    term: "nodemon",
+    category: "Backend",
+    short: "Kod her değiştiğinde Node sunucusunu otomatik yeniden başlatan geliştirme aracı.",
+    body: "Geliştirirken her değişiklikte `node index.js`'i elle durdurup başlatmak zaman kaybıdır. nodemon dosyaları izler ve değişince süreci otomatik yeniden başlatır. Sadece geliştirme (dev) bağımlılığıdır; production'da kullanılmaz.",
+    analogy: "Sayfayı sen yenilemeden tazeleyen otomatik bir 'kaydet & çalıştır' gibi.",
+  },
+  {
+    term: "Route Parametre",
+    category: "Backend",
+    short: "URL'nin içine gömülen değişken kısım (örn. `/todos/:id`).",
+    body: "Sabit bir adres yerine, adresin bir bölümünü değişken yaparsın: `/todos/:id`. Gelen istekte `:id` yerine ne yazılmışsa onu okursun (Express'te `req.params.id`). Tek bir route ile sonsuz kaydı adresleyebilirsin.",
+    analogy: "Posta kutusu numarası gibi: kalıp aynı, numara her seferinde değişir.",
+  },
+
+  // ─────────────────────────── DATA ENGINEERING ───────────────────────────
+  {
+    term: "ETL",
+    category: "Data",
+    short: "Extract-Transform-Load: veriyi al, temizle/dönüştür, hedefe yükle.",
+    body: "Veri mühendisliğinin temel akışıdır. Extract: kaynaktan ham veriyi çek. Transform: temizle, tipleri düzelt, birleştir, türet. Load: sorgulanabilir bir hedefe (genelde veri ambarı) yaz. Modern varyantı ELT'de dönüşüm yüklemeden sonra yapılır.",
+    analogy: "Tarladan sebze topla (extract), yıka-doğra (transform), mutfağa diz (load).",
+  },
+  {
+    term: "Veri boru hattı",
+    category: "Data",
+    short: "Veriyi kaynaktan hedefe taşıyan, adımları otomatik çalışan akış (data pipeline).",
+    body: "Bir pipeline; alma, temizleme ve yükleme gibi adımları belirli bir sırayla, tekrarlanabilir ve izlenebilir şekilde çalıştırır. İyi bir pipeline idempotenttir (iki kez çalışınca veri bozulmaz) ve hata durumunda nerede kaldığını bilir.",
+    analogy: "Fabrikadaki yürüyen bant: her istasyon işini yapar, ürün sonda hazır çıkar.",
+  },
+  {
+    term: "CSV",
+    category: "Data",
+    short: "Virgülle ayrılmış değerler — satır/sütunlu veriyi tutan basit metin formatı.",
+    body: "CSV (Comma-Separated Values) her satırın bir kayıt, virgülle ayrılan parçaların sütunlar olduğu düz metin dosyasıdır. Her yerde açılır ama tip bilgisi yoktur (her şey metindir) ve içinde virgül/yeni satır olan değerler tuzak olabilir.",
+    analogy: "Excel tablosunun en sade, formatsız hali.",
+  },
+  {
+    term: "Data Warehouse",
+    category: "Data",
+    short: "Analiz için tasarlanmış, büyük hacimli veriyi sorgulamaya elverişli merkezi depo.",
+    body: "Veri ambarı (BigQuery, Snowflake, Redshift...) farklı kaynaklardan gelen temizlenmiş veriyi bir araya getirir ve analitik sorgular için optimize edilir. Uygulamanın canlı (OLTP) veritabanından ayrıdır; raporlama ve analiz (OLAP) yükünü oradan çeker.",
+    analogy: "Günlük dükkân kasası değil; tüm şubelerin verisinin toplandığı merkez arşiv.",
+  },
+  {
+    term: "Batch vs Stream",
+    category: "Data",
+    short: "Veriyi toplu (batch) mu yoksa geldikçe anlık (stream) mı işliyorsun?",
+    body: "Batch işleme veriyi biriktirip belirli aralıklarla (örn. her gece) topluca işler — basit ve ucuzdur. Stream işleme ise olayları geldikçe (saniyeler içinde) işler — anlık dashboard / dolandırıcılık tespiti gibi gecikmenin önemli olduğu yerlerde gerekir.",
+    analogy: "Çamaşırı biriktirip haftada bir yıkamak (batch) ile bulaşığı kirlendikçe yıkamak (stream).",
+  },
+  {
+    term: "Veri temizliği",
+    category: "Data",
+    short: "Ham veriyi analize hazır hale getirme: eksik, tekrar ve tutarsızlıkları giderme.",
+    body: "Gerçek veri her zaman dağınıktır: boş hücreler, tekrar eden satırlar, farklı tarih formatları, metne kaçmış sayılar... Temizlik adımı bunları düzeltir. 'Çöp girer, çöp çıkar' — analizin kalitesi büyük ölçüde bu adıma bağlıdır.",
+    analogy: "Yemekten önce sebzeleri yıkayıp ayıklamak: pişirmenin değil ama lezzetin yarısı.",
   },
 ];
 

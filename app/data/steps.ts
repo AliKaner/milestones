@@ -17,12 +17,17 @@ export type Step = {
 };
 
 /**
- * Bir projenin hangi "milestone tipine" ait olduğu.
- *  - frontend / backend: ardışık ilerleyen ana kariyer yolu.
- *  - branch: ana yolu bitirince açılan, istediğin sırada yapılabilen uzmanlık dalları
- *    (oyun, AI, mobil, devops, realtime...). Birbirlerine bağlı değildir.
+ * Bir projenin hangi track'e (teknik alana) ait olduğu.
+ * Track'ler, üstlerindeki "path" (kariyer yolu) seçimine göre filtrelenerek gösterilir.
+ *  - frontend / backend / devops: Full-Stack yolunun bileşenleri.
+ *  - data-engineering / ai: bağımsız uzmanlık yolları.
  */
-export type Track = "frontend" | "backend" | "branch";
+export type Track =
+  | "frontend"
+  | "backend"
+  | "devops"
+  | "data-engineering"
+  | "ai";
 
 export type Level = {
   id: string;
@@ -52,16 +57,90 @@ export const tracks: {
   },
   {
     id: "backend",
-    label: "Backend & Full-stack",
+    label: "Backend",
     emoji: "🗄️",
     description: "Veri, kimlik doğrulama ve sunucu tarafı.",
   },
   {
-    id: "branch",
-    label: "Uzmanlık Dalları",
-    emoji: "🌿",
+    id: "devops",
+    label: "DevOps",
+    emoji: "🛰️",
+    description: "Dağıtım, ölçekleme ve üretim altyapısı.",
+  },
+  {
+    id: "data-engineering",
+    label: "Data Engineering",
+    emoji: "📊",
+    description: "Veri boru hatları (pipeline), ETL ve veri depolama.",
+  },
+  {
+    id: "ai",
+    label: "AI",
+    emoji: "🤖",
+    description: "LLM'ler, RAG ve akıllı uygulamalar.",
+  },
+];
+
+/**
+ * Kariyer yolları (path). Kullanıcı bir path seçer; yol haritası o path'in
+ * `tracks` listesine göre filtrelenir. Bir track birden çok path'te yer alabilir
+ * (örn. Full-Stack hem frontend hem backend hem devops'u kapsar).
+ */
+export type Path = {
+  id: string;
+  label: string;
+  emoji: string;
+  description: string;
+  /** Bu path'te (bu sırayla) gösterilecek track'ler. */
+  tracks: Track[];
+  /** İçerik henüz hazırlanıyorsa "yakında" rozeti göster. */
+  soon?: boolean;
+};
+
+export const paths: Path[] = [
+  {
+    id: "fullstack",
+    label: "Full-Stack Developer",
+    emoji: "🧩",
     description:
-      "Ana yolu (Frontend + Backend) bitirince açılır. Birbirinden bağımsız; ilgini çekenden başla.",
+      "Frontend + Backend + DevOps. Uçtan uca ürün geliştirmeyi öğren — varsayılan yol.",
+    tracks: ["frontend", "backend", "devops"],
+  },
+  {
+    id: "frontend",
+    label: "Frontend",
+    emoji: "🎨",
+    description: "Arayüz, React ve kullanıcı deneyimi.",
+    tracks: ["frontend"],
+  },
+  {
+    id: "backend",
+    label: "Backend",
+    emoji: "🗄️",
+    description: "API'ler, veritabanı ve sunucu tarafı — küçük bir Todo API'siyle başla.",
+    tracks: ["backend"],
+  },
+  {
+    id: "devops",
+    label: "DevOps",
+    emoji: "🛰️",
+    description: "Container, ölçekleme ve üretim altyapısı.",
+    tracks: ["devops"],
+  },
+  {
+    id: "data-engineering",
+    label: "Data Engineering",
+    emoji: "📊",
+    description: "Veri boru hatları, ETL ve veri depolama.",
+    tracks: ["data-engineering"],
+  },
+  {
+    id: "ai",
+    label: "AI",
+    emoji: "🤖",
+    description: "LLM uygulamaları, tool use ve RAG. Yakında genişleyecek.",
+    tracks: ["ai"],
+    soon: true,
   },
 ];
 
@@ -531,6 +610,234 @@ export const levels: Level[] = [
     ],
   },
 
+  // ═══════════════════════ BACKEND BAŞLANGIÇ ══════════════════════
+  {
+    id: "todo-api",
+    level: 1,
+    track: "backend",
+    project: "Todo API (Node + Express)",
+    difficulty: "Başlangıç",
+    emoji: "🔌",
+    accent: "cyan",
+    description:
+      "İlk backend projen — arayüz yok, sadece sunucu. Görevleri ekleyip silebileceğin bir REST API yaz. Amaç: server, endpoint, HTTP metotları, request/response ve CRUD mantığına oturmak — en küçük parçalarla.",
+    skills: [
+      "Node.js",
+      "Express",
+      "REST API",
+      "HTTP metotları",
+      "Request & Response",
+      "Middleware",
+      "Validation",
+    ],
+    steps: [
+      {
+        title: "1. Projeyi başlat",
+        learn: ["Node.js", "npm", "package.json"],
+        question: "Node.js, JavaScript'i tarayıcı dışında çalıştırmayı nasıl sağlar?",
+        tasks: [
+          {
+            goal: "GitHub'da `todo-api` adında yeni bir repo oluştur ve bilgisayarına indir.",
+            tip: "İpucu: `git clone <url>` → `cd todo-api`.",
+          },
+          {
+            goal: "Klasörü bir Node projesine dönüştür (bir `package.json` oluşsun).",
+            tip: "İpucu: `npm init -y`.",
+          },
+        ],
+      },
+      {
+        title: "2. Express'i kur ve ilk sunucuyu ayağa kaldır",
+        learn: ["Express", "Server (Sunucu)", "Port"],
+        question: "Bir web sunucusu bir port'u 'dinlemek' ne demek?",
+        tasks: [
+          {
+            goal: "HTTP sunucusu yazmayı kolaylaştıran kütüphaneyi projene ekle.",
+            tip: "İpucu: `npm install express`.",
+          },
+          {
+            goal: "`index.js` içinde belirli bir port'u dinleyen bir sunucu başlat.",
+            tip: "`const app = express()` → `app.listen(3001, ...)`.",
+          },
+          {
+            goal: "Sunucuyu çalıştır ve terminalde 'çalışıyor' mesajını gör.",
+            tip: "İpucu: `node index.js`.",
+          },
+        ],
+      },
+      {
+        title: "3. İlk endpoint",
+        learn: ["Endpoint", "Request & Response", "HTTP Metotları"],
+        question: "Bir istek (request) ile cevap (response) arasında ne taşınır?",
+        tasks: [
+          {
+            goal: "`GET /health` adresine gidilince `{ ok: true }` dönen bir endpoint yaz.",
+            tip: "`app.get('/health', (req, res) => res.json({ ok: true }))`.",
+          },
+          {
+            goal: "Tarayıcıdan (veya curl ile) bu adrese giderek cevabı gör.",
+            tip: "`http://localhost:3001/health` veya `curl ...`.",
+          },
+        ],
+      },
+      {
+        title: "4. Geliştirme döngüsünü hızlandır",
+        learn: ["nodemon"],
+        question: "Kod her değiştiğinde sunucuyu elle yeniden başlatmak yerine ne yaparız?",
+        tasks: [
+          {
+            goal: "Kod değişince sunucu OTOMATİK yeniden başlasın.",
+            tip: "İpucu: `npm install -D nodemon` → `nodemon index.js`.",
+          },
+          {
+            goal: "`package.json`'a `npm run dev` ile başlatan bir script ekle.",
+            tip: "`\"scripts\": { \"dev\": \"nodemon index.js\" }`.",
+          },
+        ],
+      },
+      {
+        title: "5. JSON gövdesini okuyabil",
+        learn: ["Middleware", "JSON"],
+        question: "Middleware nedir? İstek route'a varmadan ne işe yarar?",
+        tasks: [
+          {
+            goal: "Gelen isteklerdeki JSON gövdeyi otomatik parse eden ara katmanı ekle.",
+            tip: "İpucu: `app.use(express.json())`.",
+          },
+          {
+            goal: "Test için `POST /echo` yaz: gelen gövdeyi aynen geri döndürsün.",
+            tip: "`res.json(req.body)`.",
+          },
+        ],
+      },
+      {
+        title: "6. Görevleri bellekte tut",
+        question: "Veriyi bir dizide (bellekte) tutmanın sınırı nedir — sunucu yeniden başlayınca ne olur?",
+        tasks: [
+          {
+            goal: "Görevleri tutacak bir dizi ve artan bir id sayacı oluştur.",
+            tip: "`let todos = []` + `let nextId = 1`.",
+          },
+        ],
+      },
+      {
+        title: "7. Listele (Read)",
+        learn: ["RESTful API", "CRUD"],
+        question: "REST'te bir kaynağı listelemek için hangi metot ve adres kullanılır?",
+        tasks: [
+          {
+            goal: "`GET /todos` tüm görevleri dizi olarak döndürsün.",
+            tip: "`res.json(todos)`.",
+          },
+        ],
+      },
+      {
+        title: "8. Oluştur (Create)",
+        learn: ["HTTP Status Code'ları"],
+        question: "Yeni kayıt oluşturma başarılıysa hangi HTTP durum kodu döner ve neden?",
+        tasks: [
+          {
+            goal: "`POST /todos` gelen `text` ile yeni görev ekleyip eklenen görevi döndürsün.",
+            tip: "`todos.push({ id: nextId++, text, done: false })`.",
+          },
+          {
+            goal: "Başarılı oluşturmada `201` durum kodu dön.",
+            tip: "`res.status(201).json(todo)`.",
+          },
+        ],
+      },
+      {
+        title: "9. Tek kaydı getir",
+        learn: ["Route Parametre"],
+        question: "URL'deki `/todos/:id` kısmındaki `:id` nasıl okunur?",
+        tasks: [
+          {
+            goal: "`GET /todos/:id` ile sadece o id'li görevi döndür.",
+            tip: "`req.params.id` (sayıya çevir) + `find`.",
+          },
+          {
+            goal: "Olmayan id istenince `404` dön.",
+            tip: "`if (!todo) return res.status(404).json({ error: 'yok' })`.",
+          },
+        ],
+      },
+      {
+        title: "10. Güncelle (Update)",
+        learn: ["HTTP Metotları"],
+        question: "PUT ile PATCH arasındaki fark nedir?",
+        tasks: [
+          {
+            goal: "`PATCH /todos/:id` ile bir görevin `done` veya `text` alanını güncelle.",
+            tip: "İlgili kaydı bul, alanlarını değiştir, güncel halini döndür.",
+          },
+        ],
+      },
+      {
+        title: "11. Sil (Delete)",
+        learn: ["CRUD"],
+        question: "Silme isteği başarılıysa gövdesi olmayan hangi durum kodu uygundur?",
+        tasks: [
+          {
+            goal: "`DELETE /todos/:id` ile görevi listeden çıkar.",
+            tip: "`todos = todos.filter(t => t.id !== id)`.",
+          },
+          {
+            goal: "Silme sonrası `204` (içerik yok) dön.",
+            tip: "`res.status(204).end()`.",
+          },
+        ],
+      },
+      {
+        title: "12. Doğrulama ve hata yönetimi",
+        learn: ["Input Validation & Sanitization", "HTTP Status Code'ları"],
+        question: "Doğrulamayı neden frontend'e güvenmeden backend'de yapmak zorundayız?",
+        tasks: [
+          {
+            goal: "Boş/eksik `text` ile görev oluşturulmaya çalışılınca `400` ve anlaşılır hata dön.",
+            tip: "`if (!text?.trim()) return res.status(400)...`.",
+          },
+        ],
+      },
+      {
+        title: "13. Veriyi kalıcı yap (dosya)",
+        learn: ["JSON"],
+        question: "Veriyi bir dosyaya yazmak ile database kullanmak arasındaki temel fark nedir?",
+        tasks: [
+          {
+            goal: "Görevler sunucu yeniden başlasa da KAYBOLMASIN.",
+            tip: "İpucu: `fs` ile bir `todos.json` dosyasına yaz/oku.",
+          },
+        ],
+      },
+      {
+        title: "14. Frontend'e aç (CORS)",
+        learn: ["CORS"],
+        question: "Tarayıcı, farklı origin'deki API'ye isteği neden varsayılan olarak engeller?",
+        tasks: [
+          {
+            goal: "Başka bir origin'deki frontend bu API'yi çağırabilsin.",
+            tip: "İpucu: `npm install cors` → `app.use(cors())`.",
+          },
+        ],
+      },
+      {
+        title: "15. Yayınla",
+        learn: ["Deploy", "Environment Variable"],
+        question: "Port numarasını koda sabit yazmak yerine neden environment variable'dan okuruz?",
+        tasks: [
+          {
+            goal: "Port'u `process.env.PORT`'tan oku (yoksa 3001).",
+            tip: "`const PORT = process.env.PORT || 3001`.",
+          },
+          {
+            goal: "API'yi canlı bir ortama deploy et ve `/health`'i internetten doğrula.",
+            tip: "Render / Railway / Fly.io gibi bir Node host'u.",
+          },
+        ],
+      },
+    ],
+  },
+
   // ═══════════════════════════ SEVİYE 3 ═══════════════════════════
   {
     id: "blog",
@@ -880,7 +1187,7 @@ export const levels: Level[] = [
   {
     id: "chat",
     level: 5,
-    track: "branch",
+    track: "backend",
     project: "Canlı Sohbet (Realtime)",
     difficulty: "İleri",
     emoji: "💬",
@@ -968,7 +1275,7 @@ export const levels: Level[] = [
   {
     id: "game",
     level: 6,
-    track: "branch",
+    track: "frontend",
     project: "Tarayıcı Oyunu (Canvas)",
     difficulty: "İleri",
     emoji: "🎮",
@@ -1056,7 +1363,7 @@ export const levels: Level[] = [
   {
     id: "ai",
     level: 7,
-    track: "branch",
+    track: "ai",
     project: "AI Asistan (Claude API)",
     difficulty: "İleri+",
     emoji: "🤖",
@@ -1152,7 +1459,7 @@ export const levels: Level[] = [
   {
     id: "mobile",
     level: 8,
-    track: "branch",
+    track: "frontend",
     project: "Mobil Uygulama (Expo)",
     difficulty: "İleri+",
     emoji: "📱",
@@ -1240,7 +1547,7 @@ export const levels: Level[] = [
   {
     id: "devops",
     level: 9,
-    track: "branch",
+    track: "devops",
     project: "Üretim Altyapısı (DevOps)",
     difficulty: "Uzman",
     emoji: "🛰️",
@@ -1322,6 +1629,90 @@ export const levels: Level[] = [
           {
             goal: "Yeni sürümü, kullanıcıyı kesintiye uğratmadan yayınla.",
             tip: "Sıfır kesinti — ipucu: blue-green / canary deployment.",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ═══════════════════════ DATA ENGINEERING ═══════════════════════
+  {
+    id: "data-pipeline",
+    level: 2,
+    track: "data-engineering",
+    project: "Veri Boru Hattı 101 (ETL)",
+    difficulty: "Başlangıç-Orta",
+    emoji: "📊",
+    accent: "sky",
+    description:
+      "İlk veri mühendisliği projen. Ham bir veri dosyasını al, temizle ve sorgulanabilir bir tabloya yükle. Amaç: ETL (Extract-Transform-Load) mantığına, veri temizliğine ve veri ambarına oturmak.",
+    skills: [
+      "ETL",
+      "Veri boru hattı",
+      "CSV",
+      "Veri temizliği",
+      "SQL",
+      "Data Warehouse",
+      "Batch vs Stream",
+    ],
+    steps: [
+      {
+        title: "1. Ham veriyi al (Extract)",
+        learn: ["CSV", "ETL"],
+        question: "ETL'in üç adımı (Extract-Transform-Load) ne işe yarar?",
+        tasks: [
+          {
+            goal: "Gerçek, biraz dağınık bir CSV veri seti bul ve bir script ile oku.",
+            tip: "Örn. açık veri / Kaggle CSV; Python `pandas.read_csv` veya Node `csv-parse`.",
+          },
+          {
+            goal: "Kaç satır/sütun olduğunu ve birkaç örnek satırı yazdır.",
+            tip: "Önce veriyi TANI — `df.head()` / ilk N satır.",
+          },
+        ],
+      },
+      {
+        title: "2. Temizle ve dönüştür (Transform)",
+        learn: ["Veri temizliği"],
+        question: "Eksik (null) ve bozuk değerleri olduğu gibi yüklemek neden tehlikeli?",
+        tasks: [
+          {
+            goal: "Eksik değerleri, tekrar eden satırları ve tutarsız tipleri düzelt.",
+            tip: "null doldur/at, tarih & sayı tiplerini normalize et.",
+          },
+          {
+            goal: "Analize uygun yeni bir sütun türet (örn. tarihten 'ay').",
+            tip: "Türetilmiş alan — basit bir map/apply.",
+          },
+        ],
+      },
+      {
+        title: "3. Veri ambarına yükle (Load)",
+        learn: ["SQL", "Data Warehouse", "Schema"],
+        question: "Ham CSV yerine veriyi neden bir tabloya (warehouse) yükleriz?",
+        tasks: [
+          {
+            goal: "Temizlenmiş veriyi sorgulanabilir bir tabloya yaz.",
+            tip: "Başlangıç için SQLite/Postgres; bir `CREATE TABLE` + toplu insert.",
+          },
+          {
+            goal: "Bir SQL sorgusuyla anlamlı bir özet çıkar (örn. aya göre toplam).",
+            tip: "`SELECT ay, COUNT(*) ... GROUP BY ay`.",
+          },
+        ],
+      },
+      {
+        title: "4. Otomatikleştir ve tekrarla",
+        learn: ["Veri boru hattı", "Batch vs Stream", "Idempotency"],
+        question: "Pipeline'ı iki kez çalıştırınca veriler ikiye katlanmamalı — bunu nasıl sağlarsın?",
+        tasks: [
+          {
+            goal: "Extract → Transform → Load adımlarını tek komutla çalışan bir script'e bağla.",
+            tip: "Tek bir `run()` akışı; her adım bir fonksiyon.",
+          },
+          {
+            goal: "Tekrar çalıştırınca veri bozulmasın/çiftlenmesin (idempotent olsun).",
+            tip: "Yüklemeden önce tabloyu temizle veya upsert kullan.",
           },
         ],
       },

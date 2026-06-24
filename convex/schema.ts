@@ -31,7 +31,7 @@ export default defineSchema({
     .index("by_points", ["points"]),
 
   tracks: defineTable({
-    key: v.string(), // "frontend" | "backend" | "branch"
+    key: v.string(), // "frontend" | "backend" | "devops" | "data-engineering" | "ai"
     label: v.string(),
     emoji: v.string(),
     description: v.string(),

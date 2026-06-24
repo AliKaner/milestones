@@ -18,6 +18,7 @@ const categoryColor: Record<ConceptCategory, string> = {
   AI: "border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-300",
   Mobil: "border-cyan-500/40 bg-cyan-500/10 text-cyan-300",
   DevOps: "border-indigo-500/40 bg-indigo-500/10 text-indigo-300",
+  Data: "border-blue-500/40 bg-blue-500/10 text-blue-300",
 };
 
 const CATEGORIES = Object.keys(categoryColor) as ConceptCategory[];

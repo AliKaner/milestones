@@ -9,9 +9,11 @@ import LevelSection from "./components/LevelSection";
 import SubmissionModal from "./components/SubmissionModal";
 import Logo from "./components/Logo";
 import type { LevelData, StepData } from "./lib/roadmap";
+import { paths } from "./data/steps";
 
 const LOCAL_V2 = "devyol-progress-v2"; // string[] taskId
 const LOCAL_OLD = "devyol-progress"; // Record<stableKey, boolean>
+const LOCAL_PATH = "devyol-path"; // seçili kariyer yolu (path id)
 
 export default function Home() {
   const { isAuthenticated, isLoading: authLoading } = useConvexAuth();
@@ -29,7 +31,24 @@ export default function Home() {
 
   const [localChecked, setLocalChecked] = useState<Set<string>>(new Set());
   const [modalStep, setModalStep] = useState<StepData | null>(null);
+  const [pathId, setPathId] = useState<string>("fullstack");
   const migratedRef = useRef(false);
+
+  // Seçili path'i localStorage'dan yükle
+  useEffect(() => {
+    const saved = localStorage.getItem(LOCAL_PATH);
+    if (saved && paths.some((p) => p.id === saved)) setPathId(saved);
+  }, []);
+
+  const selectPath = (id: string) => {
+    setPathId(id);
+    localStorage.setItem(LOCAL_PATH, id);
+  };
+
+  const selectedPath = useMemo(
+    () => paths.find((p) => p.id === pathId) ?? paths[0],
+    [pathId]
+  );
 
   // stableKey → taskId haritası (tree'den)
   const stableKeyToId = useMemo(() => {
@@ -121,30 +140,37 @@ export default function Home() {
     return m;
   }, [mySubs]);
 
-  // ── İlerleme & kilit hesapları ────────────────────────────────
-  const allLevels: LevelData[] = useMemo(
-    () => (tree ?? []).flatMap((t) => t.levels),
-    [tree]
+  // ── Path filtreleme ───────────────────────────────────────────
+  // Seçili path'in track'lerini (o sırayla) tree'den topla.
+  const visibleTracks = useMemo(() => {
+    if (!tree) return [];
+    return selectedPath.tracks
+      .map((key) => tree.find((t) => t.key === key))
+      .filter((t): t is NonNullable<typeof t> => Boolean(t));
+  }, [tree, selectedPath]);
+
+  // Kilit ve ilerleme, sadece seçili path'in seviyeleri üzerinden hesaplanır.
+  const visibleLevels: LevelData[] = useMemo(
+    () => visibleTracks.flatMap((t) => t.levels),
+    [visibleTracks]
   );
 
+  // ── İlerleme & kilit hesapları ────────────────────────────────
   const levelComplete = (level: LevelData) =>
     level.steps.length > 0 &&
     level.steps.every((s) => s.tasks.every((t) => checkedSet.has(t._id)));
 
-  const coreLevels = allLevels.filter((l) => l.trackKey !== "branch");
-  const allCoreDone =
-    coreLevels.length > 0 && coreLevels.every(levelComplete);
-
+  // Seçili path içinde, görüntülenen sırayla ardışık kilitleme:
+  // bir seviye, kendinden önceki tüm seviyeler bitmeden açılmaz.
   const isLevelLocked = (level: LevelData) => {
-    if (level.trackKey === "branch") return !allCoreDone;
-    const idx = coreLevels.findIndex((l) => l._id === level._id);
-    return !coreLevels.slice(0, idx).every(levelComplete);
+    const idx = visibleLevels.findIndex((l) => l._id === level._id);
+    return !visibleLevels.slice(0, idx).every(levelComplete);
   };
 
   const { total, completed } = useMemo(() => {
     let total = 0;
     let completed = 0;
-    allLevels.forEach((l) =>
+    visibleLevels.forEach((l) =>
       l.steps.forEach((s) =>
         s.tasks.forEach((t) => {
           total += 1;
@@ -153,7 +179,7 @@ export default function Home() {
       )
     );
     return { total, completed };
-  }, [allLevels, checkedSet]);
+  }, [visibleLevels, checkedSet]);
 
   const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
@@ -183,8 +209,8 @@ export default function Home() {
             </span>
           </div>
           <span className="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1 text-xs font-medium text-emerald-300">
-            JUNIOR DEVELOPER YOL HARİTASI · {tree.length} TRACK ·{" "}
-            {allLevels.length} PROJE
+            JUNIOR DEVELOPER YOL HARİTASI · {visibleTracks.length} TRACK ·{" "}
+            {visibleLevels.length} PROJE
           </span>
           <h1 className="mt-4 bg-gradient-to-r from-white via-white to-emerald-300 bg-clip-text text-4xl font-bold text-transparent sm:text-5xl">
             Sıfırdan Geliştiriciye 🚀
@@ -193,6 +219,40 @@ export default function Home() {
             Her seviyede gerçek bir proje yap. Görevleri bitir, kanıtını gönder,
             onaylanınca puan kazan ve liderlik tablosuna yüksel.
           </p>
+
+          {/* Kariyer yolu (path) seçici */}
+          <div className="mx-auto mt-7 max-w-xl">
+            <p className="mb-2 text-xs uppercase tracking-wide text-white/40">
+              Kariyer yolunu seç
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {paths.map((p) => {
+                const active = p.id === selectedPath.id;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => selectPath(p.id)}
+                    className={`rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors ${
+                      active
+                        ? "border-emerald-400/60 bg-emerald-500/15 text-emerald-200"
+                        : "border-white/15 text-white/60 hover:border-white/30 hover:text-white/80"
+                    }`}
+                  >
+                    <span className="mr-1">{p.emoji}</span>
+                    {p.label}
+                    {p.soon && (
+                      <span className="ml-1.5 rounded-full bg-white/10 px-1.5 py-0.5 text-[10px] text-white/50">
+                        yakında
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-2.5 text-sm text-white/50">
+              {selectedPath.description}
+            </p>
+          </div>
 
           {/* Genel ilerleme */}
           <div className="mx-auto mt-6 max-w-md">
@@ -244,20 +304,21 @@ export default function Home() {
           )}
         </header>
 
-        {tree.map((track) => {
-          const locked = track.key === "branch" && !allCoreDone;
+        {visibleTracks.map((track) => {
           return (
             <div key={track._id}>
-              <div className="mb-5 mt-2 flex items-center gap-3">
-                <span className="text-2xl">{track.emoji}</span>
-                <div>
-                  <h2 className="flex items-center gap-2 text-lg font-bold uppercase tracking-wide text-white/90">
-                    {track.label}
-                    {locked && <span className="text-sm">🔒</span>}
-                  </h2>
-                  <p className="text-xs text-white/50">{track.description}</p>
+              {/* Tek track'li path'lerde başlık tekrarı olmasın */}
+              {visibleTracks.length > 1 && (
+                <div className="mb-5 mt-2 flex items-center gap-3">
+                  <span className="text-2xl">{track.emoji}</span>
+                  <div>
+                    <h2 className="flex items-center gap-2 text-lg font-bold uppercase tracking-wide text-white/90">
+                      {track.label}
+                    </h2>
+                    <p className="text-xs text-white/50">{track.description}</p>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {track.levels.map((level) => (
                 <LevelSection

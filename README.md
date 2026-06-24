@@ -1,7 +1,8 @@
 # DevYol 🚀
 
-Junior developer'lar için **interaktif yol haritası**. Sıfırdan gerçek projeler
-yaparak frontend → backend → uzmanlık dallarına ilerlersin. Her adımı bitirince
+Junior developer'lar için **interaktif yol haritası**. Bir **kariyer yolu (path)**
+seçersin — Full-Stack, Frontend, Backend, DevOps, Data Engineering (AI yakında) —
+ve o yola özel gerçek projeleri sırayla yaparsın. Her adımı bitirince
 **kanıt (resim + metin)** gönderirsin; admin onaylayınca **puan** kazanır,
 **liderlik tablosuna** ve **topluluk yarışlarına** girersin.
 
@@ -9,8 +10,11 @@ Yanında 400+ terimlik bir **kavram sözlüğü** (`/kavramlar`) bulunur.
 
 ## Özellikler
 
-- 🗺️ **Yol haritası** — track'lere (Frontend / Backend / Uzmanlık Dalları)
-  gruplanmış, bağımlılık bazlı kilitlenen seviyeler ve adımlar.
+- 🧩 **Kariyer yolları (path)** — Full-Stack (Frontend+Backend+DevOps), Frontend,
+  Backend, DevOps, Data Engineering ve (yakında) AI. Seçtiğin path'in track'leri
+  filtrelenip sırayla kilit açılır; seçim tarayıcında hatırlanır.
+- 🗺️ **Yol haritası** — track'lere gruplanmış, bağımlılık bazlı kilitlenen
+  seviyeler ve adımlar. Backend, küçük bir **Todo API** ile başlar.
 - 👤 **Auth** — kullanıcı adı + şifre ile kayıt/giriş (Convex Auth).
 - ✅ **İlerleme** — anonimken tarayıcıda (localStorage), giriş yapınca buluta
   taşınır ve senkronlanır.
@@ -65,7 +69,7 @@ npx convex run seed:run
 ```
 
 `app/data/steps.ts` içeriğini Convex tablolarına yükler. Çıktı:
-`{ tracks: 3, levels: 9, steps: 43, tasks: 132 }`. Komut idempotenttir (önce
+`{ tracks: 5, levels: 11, steps: 86, tasks: 177 }`. Komut idempotenttir (önce
 roadmap tablolarını temizler), istediğinde tekrar çalıştırabilirsin.
 
 ### 4. Uygulamayı çalıştır

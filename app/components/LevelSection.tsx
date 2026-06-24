@@ -38,7 +38,6 @@ export default function LevelSection({
   );
   const percent = total === 0 ? 0 : Math.round((done / total) * 100);
   const levelDone = total > 0 && done === total;
-  const isBranch = level.trackKey === "branch";
 
   return (
     <section className="mb-4">
@@ -52,9 +51,7 @@ export default function LevelSection({
             <span
               className={`inline-block rounded-full border px-3 py-1 text-xs font-bold ${c.badge}`}
             >
-              {isBranch
-                ? `DAL · ${level.difficulty}`
-                : `SEVİYE ${level.levelNo} · ${level.difficulty}`}
+              {`SEVİYE ${level.levelNo} · ${level.difficulty}`}
             </span>
             <h2 className="mt-3 flex items-center gap-2 text-2xl font-bold text-white">
               <span>{level.emoji}</span>
