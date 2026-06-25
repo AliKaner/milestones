@@ -2,6 +2,7 @@
 
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { tiers } from "../data/steps";
 
 const medal = (rank: number) =>
   rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : null;
@@ -42,10 +43,18 @@ export default function LeaderboardPage() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-sky-500 text-sm font-bold text-black">
                   {r.username.charAt(0).toLocaleUpperCase("tr")}
                 </span>
-                <span className="flex-1 font-medium text-white">
+                <span className="flex-1 font-medium text-white flex items-center gap-2">
                   {r.username}
+                  {(() => {
+                    const userTier = r.tier ? tiers.find((t) => t.id === r.tier) : null;
+                    return userTier ? (
+                      <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[10px] font-bold text-white/80">
+                        {userTier.emoji} {userTier.label}
+                      </span>
+                    ) : null;
+                  })()}
                   {r.isMe && (
-                    <span className="ml-2 text-xs text-emerald-400">(sen)</span>
+                    <span className="text-xs text-emerald-400">(sen)</span>
                   )}
                 </span>
                 <span className="font-mono text-sm font-semibold text-emerald-400">

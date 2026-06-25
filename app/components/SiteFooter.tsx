@@ -30,7 +30,7 @@ export default function SiteFooter() {
           </Link>
         </nav>
         <p className="text-center text-white/40">
-          © {year} DevYol — Tüm hakları saklıdır.
+          © {year} Milestones — Tüm hakları saklıdır.
         </p>
       </div>
     </footer>

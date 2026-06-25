@@ -51,7 +51,7 @@ export default function AuthForm({ flow }: { flow: "signIn" | "signUp" }) {
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
           <Logo size={44} />
           <h1 className="text-2xl font-bold text-white">
-            {isSignUp ? "DevYol'a kayıt ol" : "Tekrar hoş geldin"}
+            {isSignUp ? "Milestones'a kayıt ol" : "Tekrar hoş geldin"}
           </h1>
           <p className="text-sm text-white/55">
             {isSignUp

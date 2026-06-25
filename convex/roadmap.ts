@@ -37,6 +37,7 @@ export const getTree = query({
           description: level.description,
           skills: level.skills,
           trackKey: track.key,
+          tier: level.tier ?? "intern",
           steps: byOrder(steps.filter((s) => s.levelId === level._id)).map(
             (step, si) => ({
               _id: step._id,

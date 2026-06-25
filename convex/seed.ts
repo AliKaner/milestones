@@ -55,6 +55,7 @@ export const run = internalMutation({
         description: level.description,
         skills: level.skills,
         order: levelOrder++,
+        tier: level.tier ?? "intern",
       });
 
       const stepPoints = 20 + level.level * 10; // L1=30 ... L9=110

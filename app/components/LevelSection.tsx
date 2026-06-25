@@ -2,6 +2,7 @@
 
 import { accents, type Accent } from "./accents";
 import StepNode from "./StepNode";
+import LevelForum from "./LevelForum";
 import type { LevelData, StepData, SubmissionStatus } from "../lib/roadmap";
 
 type LevelSectionProps = {
@@ -15,6 +16,7 @@ type LevelSectionProps = {
     { status: SubmissionStatus; reviewNote: string | null }
   >;
   onSubmitProof: (step: StepData) => void;
+  forumCount: number;
 };
 
 export default function LevelSection({
@@ -25,6 +27,7 @@ export default function LevelSection({
   onToggle,
   submissionByStep,
   onSubmitProof,
+  forumCount,
 }: LevelSectionProps) {
   const c = accents[level.accent as Accent] ?? accents.emerald;
 
@@ -112,6 +115,16 @@ export default function LevelSection({
           />
         ))}
       </div>
+
+      {!locked && (
+        <div className="pl-2">
+          <LevelForum
+            levelId={level._id}
+            isLoggedIn={isLoggedIn}
+            count={forumCount}
+          />
+        </div>
+      )}
 
       <div className="flex justify-center">
         <div className="h-10 w-0.5 rounded-full bg-white/15" />

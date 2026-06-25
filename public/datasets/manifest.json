@@ -1,0 +1,96 @@
+{
+  "base": "/datasets",
+  "guncelleme": "2026-06-25",
+  "setler": [
+    {
+      "dosya": "musteriler.csv",
+      "ad": "Müşteriler",
+      "satir": 80,
+      "temiz": true,
+      "kullanim": [
+        "SQL JOIN",
+        "müşteri segmentasyonu"
+      ],
+      "sutunlar": {
+        "musteri_id": "benzersiz id",
+        "ad": "ad soyad",
+        "sehir": "şehir",
+        "kayit_tarihi": "YYYY-AA-GG",
+        "segment": "bireysel|kurumsal"
+      }
+    },
+    {
+      "dosya": "urunler.csv",
+      "ad": "Ürünler",
+      "satir": 20,
+      "temiz": true,
+      "kullanim": [
+        "SQL JOIN",
+        "kategori analizi"
+      ],
+      "sutunlar": {
+        "urun_id": "benzersiz id",
+        "ad": "ürün adı",
+        "kategori": "kategori",
+        "liste_fiyati": "TL",
+        "stok": "adet"
+      }
+    },
+    {
+      "dosya": "siparisler.csv",
+      "ad": "Siparişler (dağınık)",
+      "satir": 420,
+      "temiz": false,
+      "not": "Bilerek dağınık: boş fiyatlar, 3 farklı tarih formatı (ISO/TR/slash), mükerrer satırlar, tutarsız durum yazımı (Teslim/TESLIM/teslim).",
+      "kullanim": [
+        "ETL / veri temizliği",
+        "pipeline",
+        "SQL"
+      ],
+      "sutunlar": {
+        "siparis_id": "id",
+        "musteri_id": "→ musteriler",
+        "urun_id": "→ urunler",
+        "adet": "adet",
+        "birim_fiyat": "TL (bazıları boş)",
+        "tarih": "karışık format",
+        "durum": "tutarsız yazım"
+      }
+    },
+    {
+      "dosya": "sensor-olaylari.csv",
+      "ad": "Sensör Olayları (zaman serisi)",
+      "satir": 600,
+      "temiz": true,
+      "kullanim": [
+        "streaming",
+        "pencere (window) agregasyon",
+        "zaman serisi"
+      ],
+      "sutunlar": {
+        "zaman": "ISO 8601 UTC",
+        "sensor_id": "S1..S5",
+        "sicaklik": "°C",
+        "nem": "%"
+      }
+    },
+    {
+      "dosya": "ev-fiyatlari.csv",
+      "ad": "Ev Fiyatları (ML)",
+      "satir": 250,
+      "temiz": true,
+      "kullanim": [
+        "EDA",
+        "regresyon",
+        "makine öğrenmesi"
+      ],
+      "sutunlar": {
+        "metrekare": "m²",
+        "oda_sayisi": "oda",
+        "bina_yasi": "yıl",
+        "semt": "kategori",
+        "fiyat": "TL (hedef değişken)"
+      }
+    }
+  ]
+}

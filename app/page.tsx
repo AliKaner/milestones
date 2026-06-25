@@ -9,7 +9,7 @@ import LevelSection from "./components/LevelSection";
 import SubmissionModal from "./components/SubmissionModal";
 import Logo from "./components/Logo";
 import type { LevelData, StepData } from "./lib/roadmap";
-import { paths } from "./data/steps";
+import { paths, tiers, type TierId } from "./data/steps";
 
 const LOCAL_V2 = "devyol-progress-v2"; // string[] taskId
 const LOCAL_OLD = "devyol-progress"; // Record<stableKey, boolean>
@@ -28,6 +28,9 @@ export default function Home() {
   );
   const toggleServer = useMutation(api.progress.toggle);
   const syncLocal = useMutation(api.progress.syncLocal);
+  const setMyPath = useMutation(api.users.setMyPath);
+  const me = useQuery(api.users.me, isAuthenticated ? {} : "skip");
+  const forumCounts = useQuery(api.forum.counts);
 
   const [localChecked, setLocalChecked] = useState<Set<string>>(new Set());
   const [modalStep, setModalStep] = useState<StepData | null>(null);
@@ -40,10 +43,21 @@ export default function Home() {
     if (saved && paths.some((p) => p.id === saved)) setPathId(saved);
   }, []);
 
+  const serverPathApplied = useRef(false);
+
   const selectPath = (id: string) => {
     setPathId(id);
     localStorage.setItem(LOCAL_PATH, id);
+    if (isAuthenticated) void setMyPath({ path: id });
   };
+
+  // Giriş yapan kullanıcının kayıtlı path'i varsa (bir kez) onu uygula.
+  useEffect(() => {
+    if (me?.path && !serverPathApplied.current) {
+      serverPathApplied.current = true;
+      setPathId(me.path);
+    }
+  }, [me]);
 
   const selectedPath = useMemo(
     () => paths.find((p) => p.id === pathId) ?? paths[0],
@@ -150,10 +164,20 @@ export default function Home() {
   }, [tree, selectedPath]);
 
   // Kilit ve ilerleme, sadece seçili path'in seviyeleri üzerinden hesaplanır.
-  const visibleLevels: LevelData[] = useMemo(
-    () => visibleTracks.flatMap((t) => t.levels),
-    [visibleTracks]
-  );
+  const visibleLevels: LevelData[] = useMemo(() => {
+    if (!tree) return [];
+    const list = visibleTracks.flatMap((t) => t.levels);
+    const tierSequence = ["intern", "junior", "mid", "senior", "staff", "architect", "lead"];
+    return [...list].sort((a, b) => {
+      const aTier = a.tier ?? "intern";
+      const bTier = b.tier ?? "intern";
+      const aIdx = tierSequence.indexOf(aTier);
+      const bIdx = tierSequence.indexOf(bTier);
+      if (aIdx !== bIdx) return aIdx - bIdx;
+      // Keep original relative order for levels in the same tier
+      return list.indexOf(a) - list.indexOf(b);
+    });
+  }, [tree, visibleTracks]);
 
   // ── İlerleme & kilit hesapları ────────────────────────────────
   const levelComplete = (level: LevelData) =>
@@ -165,6 +189,109 @@ export default function Home() {
   const isLevelLocked = (level: LevelData) => {
     const idx = visibleLevels.findIndex((l) => l._id === level._id);
     return !visibleLevels.slice(0, idx).every(levelComplete);
+  };
+
+  // ── Earned tier & next tier calculations ──
+  const { earnedTier, projectsLeft, nextTier } = useMemo(() => {
+    const tierSequence = ["intern", "junior", "mid", "senior", "staff", "architect", "lead"];
+    let earnedTierIndex = 0; // Intern by default
+    
+    for (let i = 0; i < tierSequence.length; i++) {
+      const tierId = tierSequence[i];
+      const levelsInTier = visibleLevels.filter((l) => (l.tier ?? "intern") === tierId);
+      if (levelsInTier.length > 0) {
+        const allCompleted = levelsInTier.every(levelComplete);
+        if (allCompleted) {
+          earnedTierIndex = Math.min(i + 1, tierSequence.length - 1);
+        } else {
+          break;
+        }
+      }
+    }
+
+    const earnedTierId = tierSequence[earnedTierIndex];
+    const earnedTierMeta = tiers.find((t) => t.id === earnedTierId) ?? tiers[0];
+
+    const nextTierId = tierSequence[earnedTierIndex]; // the one they are working on
+    const nextTierLevels = visibleLevels.filter((l) => (l.tier ?? "intern") === nextTierId);
+    const uncompletedNextLevels = nextTierLevels.filter((l) => !levelComplete(l));
+    const nextTierMeta = tiers.find((t) => t.id === nextTierId) ?? tiers[0];
+
+    return {
+      earnedTier: earnedTierMeta,
+      projectsLeft: uncompletedNextLevels.length,
+      nextTier: nextTierMeta,
+    };
+  }, [visibleLevels, checkedSet]);
+
+  const [activeTierId, setActiveTierId] = useState<string>("intern");
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const tier = entry.target.getAttribute("data-tier");
+            if (tier) {
+              setActiveTierId(tier);
+            }
+          }
+        });
+      },
+      {
+        rootMargin: "-20% 0px -60% 0px",
+      }
+    );
+
+    const sections = document.querySelectorAll(".tier-section");
+    sections.forEach((s) => observer.observe(s));
+
+    return () => {
+      sections.forEach((s) => observer.unobserve(s));
+    };
+  }, [visibleLevels]);
+
+  function getTierBgGradient(tierId: string) {
+    switch (tierId) {
+      case "intern":
+        return "bg-[radial-gradient(ellipse_at_top,rgba(30,41,59,0.25),transparent_60%)]";
+      case "junior":
+        return "bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.12),transparent_60%)]";
+      case "mid":
+        return "bg-[radial-gradient(ellipse_at_top,rgba(14,165,233,0.12),transparent_60%)]";
+      case "senior":
+        return "bg-[radial-gradient(ellipse_at_top,rgba(139,92,246,0.12),transparent_60%)]";
+      case "staff":
+        return "bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.12),transparent_60%)]";
+      case "architect":
+        return "bg-[radial-gradient(ellipse_at_top,rgba(244,63,94,0.12),transparent_60%)]";
+      case "lead":
+        return "bg-[radial-gradient(ellipse_at_top,rgba(234,179,8,0.12),transparent_60%)]";
+      default:
+        return "";
+    }
+  }
+
+  const groupedLevels = useMemo(() => {
+    const groups: Record<string, LevelData[]> = {};
+    visibleLevels.forEach((level) => {
+      const t = level.tier ?? "intern";
+      if (!groups[t]) groups[t] = [];
+      groups[t].push(level);
+    });
+    return groups;
+  }, [visibleLevels]);
+
+  const activeTiersInPath = useMemo(() => {
+    const set = new Set<string>();
+    visibleLevels.forEach((l) => set.add(l.tier ?? "intern"));
+    return tiers.filter((t) => set.has(t.id));
+  }, [visibleLevels]);
+
+  const isTierLocked = (tierId: string) => {
+    const levelsInTier = groupedLevels[tierId] ?? [];
+    if (levelsInTier.length === 0) return false;
+    return isLevelLocked(levelsInTier[0]);
   };
 
   const { total, completed } = useMemo(() => {
@@ -200,16 +327,17 @@ export default function Home() {
 
   return (
     <main className="grid-bg min-h-screen">
+      <div className={`fixed inset-0 -z-10 transition-all duration-1000 ${getTierBgGradient(activeTierId)}`} />
       <div className="mx-auto max-w-3xl px-6 py-12">
         <header className="mb-12 text-center">
           <div className="mb-6 flex items-center justify-center gap-2.5">
             <Logo size={34} />
             <span className="text-xl font-bold tracking-tight text-white">
-              Dev<span className="text-emerald-400">Yol</span>
+              Mile<span className="text-emerald-400">stones</span>
             </span>
           </div>
           <span className="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1 text-xs font-medium text-emerald-300">
-            JUNIOR DEVELOPER YOL HARİTASI · {visibleTracks.length} TRACK ·{" "}
+            YAZILIM KARİYER YOL HARİTASI · {visibleTracks.length} TRACK ·{" "}
             {visibleLevels.length} PROJE
           </span>
           <h1 className="mt-4 bg-gradient-to-r from-white via-white to-emerald-300 bg-clip-text text-4xl font-bold text-transparent sm:text-5xl">
@@ -304,23 +432,65 @@ export default function Home() {
           )}
         </header>
 
-        {visibleTracks.map((track) => {
-          return (
-            <div key={track._id}>
-              {/* Tek track'li path'lerde başlık tekrarı olmasın */}
-              {visibleTracks.length > 1 && (
-                <div className="mb-5 mt-2 flex items-center gap-3">
-                  <span className="text-2xl">{track.emoji}</span>
-                  <div>
-                    <h2 className="flex items-center gap-2 text-lg font-bold uppercase tracking-wide text-white/90">
-                      {track.label}
-                    </h2>
-                    <p className="text-xs text-white/50">{track.description}</p>
-                  </div>
-                </div>
+        {/* Sticky Tier Banner */}
+        <div className="sticky top-[57px] z-30 -mx-6 mb-8 border-b border-white/5 bg-[#0a0a0f]/80 px-6 py-2.5 backdrop-blur-md">
+          <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="text-white/40">Görüntülenen Seviye:</span>
+              {(() => {
+                const currentTierMeta = tiers.find((t) => t.id === activeTierId);
+                return currentTierMeta ? (
+                  <span className="flex items-center gap-1 font-bold text-white">
+                    <span>{currentTierMeta.emoji}</span> {currentTierMeta.label}
+                  </span>
+                ) : null;
+              })()}
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1.5">
+                <span className="text-white/40">Ünvanın:</span>
+                <span className="rounded-full bg-white/5 px-2 py-0.5 font-bold text-emerald-400">
+                  {earnedTier.emoji} {earnedTier.label}
+                </span>
+              </div>
+              {projectsLeft > 0 ? (
+                <span className="text-white/50">
+                  Bir sonraki seviyeye <strong className="font-bold text-white">{projectsLeft}</strong> proje kaldı
+                </span>
+              ) : (
+                <span className="text-emerald-400 font-medium">🎉 Zirvedesin!</span>
               )}
+            </div>
+          </div>
+        </div>
 
-              {track.levels.map((level) => (
+        {activeTiersInPath.map((tier) => {
+          const levelsInTier = groupedLevels[tier.id] ?? [];
+          const locked = isTierLocked(tier.id);
+          return (
+            <div
+              key={tier.id}
+              data-tier={tier.id}
+              className="tier-section py-4"
+            >
+              {/* Tier Divider */}
+              <div className="relative my-10 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                  <div className="w-full border-t border-white/10"></div>
+                </div>
+                <div className="relative flex flex-col items-center bg-[#0a0a0f] px-6 text-center">
+                  <span className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wider text-white">
+                    <span>{tier.emoji}</span> {tier.label}
+                  </span>
+                  <span className="mt-1 text-[11px] text-white/40">
+                    {locked
+                      ? "🔒 Kilitli — Önceki seviyeleri tamamla"
+                      : `🔓 Açık · ${levelsInTier.length} Proje`}
+                  </span>
+                </div>
+              </div>
+
+              {levelsInTier.map((level) => (
                 <LevelSection
                   key={level._id}
                   level={level}
@@ -330,6 +500,7 @@ export default function Home() {
                   onToggle={onToggle}
                   submissionByStep={submissionByStep}
                   onSubmitProof={(step) => setModalStep(step)}
+                  forumCount={forumCounts?.[level._id] ?? 0}
                 />
               ))}
             </div>

@@ -3,7 +3,7 @@ import { authTables } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 
 /**
- * DevYol veri modeli.
+ * Milestones veri modeli.
  * - authTables: Convex Auth'un yönettiği oturum/hesap tabloları.
  * - users: Convex Auth'un users tablosunu genişletiyoruz (username, role, points).
  * - Yol haritası (tracks → levels → steps → tasks) admin tarafından düzenlenebilsin
@@ -21,17 +21,18 @@ export default defineSchema({
     phone: v.optional(v.string()),
     phoneVerificationTime: v.optional(v.number()),
     isAnonymous: v.optional(v.boolean()),
-    // DevYol'a özel:
+    // Milestones'a özel:
     username: v.optional(v.string()),
     role: v.optional(v.union(v.literal("admin"), v.literal("user"))),
     points: v.optional(v.number()),
+    path: v.optional(v.string()), // seçili kariyer yolu (path id)
   })
     .index("email", ["email"])
     .index("phone", ["phone"])
     .index("by_points", ["points"]),
 
   tracks: defineTable({
-    key: v.string(), // "frontend" | "backend" | "devops" | "data-engineering" | "ai"
+    key: v.string(), // "frontend" | "backend" | "devops" | "data-engineering" | "data-science" | "ai"
     label: v.string(),
     emoji: v.string(),
     description: v.string(),
@@ -49,6 +50,7 @@ export default defineSchema({
     description: v.string(),
     skills: v.array(v.string()),
     order: v.number(),
+    tier: v.optional(v.string()),
   })
     .index("by_track", ["trackId"])
     .index("by_order", ["order"]),
@@ -114,6 +116,16 @@ export default defineSchema({
     .index("by_user", ["userId"])
     .index("by_community", ["communityId"])
     .index("by_user_community", ["userId", "communityId"]),
+
+  // Proje (level) bazında forum mesajları (düz akış).
+  forumPosts: defineTable({
+    levelId: v.id("levels"),
+    userId: v.id("users"),
+    body: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_level", ["levelId"])
+    .index("by_user", ["userId"]),
 
   // Admin'in eklediği makaleler/konular (dev.to dışındaki içerik).
   articles: defineTable({

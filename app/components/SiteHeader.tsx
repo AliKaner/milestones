@@ -7,10 +7,12 @@ import { useQuery } from "convex/react";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { api } from "@/convex/_generated/api";
 import Logo from "./Logo";
+import { tiers } from "../data/steps";
 
 const navLinks = [
   { href: "/", label: "Yol Haritası" },
   { href: "/kavramlar", label: "Sözlük" },
+  { href: "/veri-setleri", label: "Veri Setleri" },
   { href: "/makaleler", label: "Makaleler" },
   { href: "/liderlik", label: "Liderlik" },
   { href: "/topluluklar", label: "Topluluklar" },
@@ -37,7 +39,7 @@ export default function SiteHeader() {
         <Link href="/" className="flex items-center gap-2">
           <Logo size={30} />
           <span className="text-lg font-bold tracking-tight text-white">
-            Dev<span className="text-emerald-400">Yol</span>
+            Mile<span className="text-emerald-400">stones</span>
           </span>
         </Link>
 
@@ -66,19 +68,29 @@ export default function SiteHeader() {
             <div className="h-9 w-24 animate-pulse rounded-lg bg-white/5" />
           ) : me ? (
             <>
-              <div className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-sky-500 text-xs font-bold text-black">
-                  {me.username.charAt(0).toLocaleUpperCase("tr")}
-                </span>
-                <div className="leading-tight">
-                  <div className="text-sm font-medium text-white">
-                    {me.username}
+              {(() => {
+                const userTier = me.tier ? tiers.find((t) => t.id === me.tier) : null;
+                return (
+                  <div className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-1.5">
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-sky-500 text-xs font-bold text-black">
+                      {me.username.charAt(0).toLocaleUpperCase("tr")}
+                    </span>
+                    <div className="leading-tight">
+                      <div className="flex items-center gap-1.5 text-sm font-medium text-white">
+                        {me.username}
+                        {userTier && (
+                          <span className="rounded-full bg-white/10 px-1.5 py-0.5 text-[9px] font-bold text-white/80">
+                            {userTier.emoji} {userTier.label}
+                          </span>
+                        )}
+                      </div>
+                      <div className="font-mono text-[11px] text-emerald-400">
+                        {me.points} puan
+                      </div>
+                    </div>
                   </div>
-                  <div className="font-mono text-[11px] text-emerald-400">
-                    {me.points} puan
-                  </div>
-                </div>
-              </div>
+                );
+              })()}
               <button
                 onClick={() => signOut()}
                 className="hidden rounded-lg border border-white/15 px-3 py-1.5 text-sm text-white/60 transition-colors hover:border-red-500/40 hover:text-red-300 sm:block"
