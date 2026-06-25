@@ -937,6 +937,502 @@ export const levels: Level[] = [
     ],
   },
 
+  // ═══════════════════════ FRONTEND EK PROJELER ══════════════════════
+  {
+    id: "calculator",
+    level: 1,
+    track: "frontend",
+    project: "Hesap Makinesi & Birim Çevirici",
+    difficulty: "Başlangıç",
+    emoji: "🧮",
+    accent: "sky",
+    tier: "junior",
+    description:
+      "Küçük ama öğretici. Çalışan bir hesap makinesi ve bir birim çevirici (örn. para/sıcaklık) yap. Amaç: controlled input, olay yönetimi, saf hesap fonksiyonları ve hata durumları — adım adım.",
+    skills: ["Controlled input", "Event handling", "Pure function", "State", "Hata durumu", "Formatlama"],
+    steps: [
+      {
+        title: "1. Arayüzü kur",
+        learn: ["Component", "State"],
+        question: "Hesap makinesinin 'ekranı'nı tek bir state'te tutmak neden mantıklı?",
+        tasks: [
+          { goal: "Rakam ve işlem tuşlarından oluşan bir tuş takımı çiz.", tip: "Buton ızgarası (CSS Grid); ekran için bir state." },
+          { goal: "Bir tuşa basınca ekrandaki ifade güncellensin.", tip: "onClick → state'e ekle." },
+        ],
+      },
+      {
+        title: "2. Hesabı yap (saf fonksiyon)",
+        learn: ["Pure Function", "Function (Fonksiyon)"],
+        question: "Hesaplama mantığını UI'dan ayrı saf bir fonksiyona almak test ve bakım açısından ne kazandırır?",
+        tasks: [
+          { goal: "'=' basınca ifadeyi hesaplayıp sonucu göster.", tip: "Hesabı saf bir `hesapla(ifade)` fonksiyonunda yap." },
+          { goal: "Temizle (C) ve geri sil tuşlarını ekle.", tip: "State'i sıfırla / son karakteri çıkar." },
+        ],
+      },
+      {
+        title: "3. Hata durumları",
+        learn: ["Error Handling", "Truthy / Falsy"],
+        question: "Sıfıra bölme veya geçersiz ifade gibi durumları çökmeden nasıl yönetirsin?",
+        tasks: [
+          { goal: "Geçersiz işlemde 'Hata' göster, uygulama çökmesin.", tip: "try/catch + anlamlı mesaj." },
+        ],
+      },
+      {
+        title: "4. Birim çevirici sekmesi",
+        learn: ["Controlled Component", "Conditional Rendering"],
+        question: "İki farklı aracı (hesap / çevirici) tek sayfada nasıl yönetirsin?",
+        tasks: [
+          { goal: "Sıcaklık veya para birimi çeviren ikinci bir mod ekle.", tip: "Bir 'mod' state'i + koşullu render." },
+          { goal: "Sonucu okunur biçimde formatla (ondalık/binlik).", tip: "`Intl.NumberFormat`." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "quiz",
+    level: 1,
+    track: "frontend",
+    project: "Quiz / Bilgi Yarışması",
+    difficulty: "Başlangıç",
+    emoji: "❓",
+    accent: "fuchsia",
+    tier: "junior",
+    description:
+      "Sorulardan oluşan, skor tutan bir bilgi yarışması. Amaç: adım adım state, koşullu render, skor mantığı ve sonuç ekranı — küçük parçalarla.",
+    skills: ["State", "Conditional rendering", "List rendering", "Skor mantığı", "Array metodları", "Sonuç ekranı"],
+    steps: [
+      {
+        title: "1. Soruları modelle",
+        learn: ["Array (Dizi)", "Object (Nesne)"],
+        question: "Bir soruyu (metin, şıklar, doğru cevap) nasıl bir veri yapısıyla temsil edersin?",
+        tasks: [
+          { goal: "Soruları bir dizi nesne olarak tanımla ve ilkini ekrana bas.", tip: "`[{ soru, secenekler, dogru }]`." },
+        ],
+      },
+      {
+        title: "2. Şıkları göster ve seçtir",
+        learn: ["List Rendering", "State"],
+        question: "Hangi şıkkın seçildiğini takip etmek için neye ihtiyacın var?",
+        tasks: [
+          { goal: "Şıkları map ile butonlara dök.", tip: "`secenekler.map(...)` + key." },
+          { goal: "Seçilen şıkkı işaretle.", tip: "Bir `secili` state." },
+        ],
+      },
+      {
+        title: "3. Skor ve ilerleme",
+        learn: ["Conditional Rendering", "Immutability"],
+        question: "Doğru cevap sayısını (skor) güncellerken state'i neden doğrudan değiştirmemelisin?",
+        tasks: [
+          { goal: "Doğru cevapta skoru artır, sonraki soruya geç.", tip: "`setSkor(s => s + 1)`; indeks ilerlet." },
+          { goal: "İlerlemeyi göster (3/10 gibi).", tip: "Mevcut indeks + toplam." },
+        ],
+      },
+      {
+        title: "4. Sonuç ve tekrar",
+        learn: ["Conditional Rendering", "Ternary (?:)"],
+        question: "Sorular bitince farklı bir ekran göstermeyi nasıl kararlaştırırsın?",
+        tasks: [
+          { goal: "Son soru bitince skoru özetleyen bir sonuç ekranı göster.", tip: "Koşullu render: soru ekranı ↔ sonuç." },
+          { goal: "'Tekrar oyna' ile baştan başlat.", tip: "State'leri sıfırla." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "markdown-notes",
+    level: 2,
+    track: "frontend",
+    project: "Markdown Not Defteri",
+    difficulty: "Kolay-Orta",
+    emoji: "📝",
+    accent: "amber",
+    tier: "junior",
+    description:
+      "Yazarken canlı önizleme veren bir not defteri. Markdown yaz, sağda HTML olarak gör, notlar kaybolmasın. Amaç: controlled input, canlı dönüşüm, kalıcılık ve debounce.",
+    skills: ["Controlled input", "Live preview", "localStorage", "Debounce", "Klavye kısayolu", "useEffect"],
+    steps: [
+      {
+        title: "1. Editör + önizleme",
+        learn: ["Controlled Component"],
+        question: "Metin alanının değerini state'te tutmak (controlled) canlı önizleme için neden gerekli?",
+        tasks: [
+          { goal: "Solda bir textarea, sağda önizleme alanı koy.", tip: "İki sütun (Flexbox/Grid); metin bir state." },
+        ],
+      },
+      {
+        title: "2. Markdown'ı HTML'e çevir",
+        learn: ["Library (Kütüphane)", "DOM"],
+        question: "Markdown'ı kendin parse etmek yerine hazır bir kütüphane kullanmanın artısı/riski nedir (XSS)?",
+        tasks: [
+          { goal: "Yazılan markdown anında HTML olarak görünsün.", tip: "Bir markdown kütüphanesi (örn. marked); güvenli render." },
+        ],
+      },
+      {
+        title: "3. Kalıcılık + debounce",
+        learn: ["useEffect", "localStorage / sessionStorage", "Debounce & Throttle"],
+        question: "Her tuşta localStorage'a yazmak yerine debounce kullanmak neyi iyileştirir?",
+        tasks: [
+          { goal: "Notlar F5 sonrası kaybolmasın.", tip: "useEffect + localStorage." },
+          { goal: "Yazma durunca (örn. 500ms) kaydet.", tip: "Debounce." },
+        ],
+      },
+      {
+        title: "4. Cila: kısayol ve dışa aktar",
+        learn: ["Input Handling"],
+        question: "Klavye kısayolu eklerken tarayıcının varsayılan davranışını ne zaman engellemelisin?",
+        tasks: [
+          { goal: "Ctrl/Cmd+S ile kaydet (sayfa kaydetme açılmasın).", tip: "keydown + preventDefault." },
+          { goal: "Notu .md dosyası olarak indir.", tip: "Blob + indirme linki." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "pomodoro",
+    level: 2,
+    track: "frontend",
+    project: "Pomodoro & Alışkanlık Takibi",
+    difficulty: "Kolay-Orta",
+    emoji: "🍅",
+    accent: "rose",
+    tier: "junior",
+    description:
+      "Odak zamanlayıcısı + günlük alışkanlık serisi (streak). Amaç: zamanlayıcı yönetimi, useEffect temizliği, useRef ve kalıcı seri takibi.",
+    skills: ["Timer", "setInterval", "useEffect cleanup", "useRef", "Streak", "Bildirim"],
+    steps: [
+      {
+        title: "1. Geri sayan zamanlayıcı",
+        learn: ["setTimeout / setInterval", "useEffect"],
+        question: "Zamanlayıcıyı `useEffect` içinde kurarken temizlik (cleanup) fonksiyonu neden şart?",
+        tasks: [
+          { goal: "25 dakikadan geri sayan bir sayaç yap.", tip: "setInterval + saniye state; cleanup ile temizle." },
+          { goal: "Başlat / duraklat / sıfırla kontrolleri ekle.", tip: "Bir 'çalışıyor' state." },
+        ],
+      },
+      {
+        title: "2. Doğru zaman (drift'siz)",
+        learn: ["useRef", "Event Loop"],
+        question: "setInterval zamanla kayabilir (drift); gerçek geçen süreyi nasıl daha doğru ölçersin?",
+        tasks: [
+          { goal: "Geçen süreyi başlangıç zaman damgasından hesapla.", tip: "`Date.now()` farkı; useRef ile başlangıcı tut." },
+        ],
+      },
+      {
+        title: "3. Mola döngüsü + bildirim",
+        learn: ["Conditional Rendering", "Native API"],
+        question: "Tarayıcı bildirimi göndermeden önce neden izin istemen gerekir?",
+        tasks: [
+          { goal: "Süre bitince çalışma↔mola moduna geç.", tip: "Mod state + otomatik geçiş." },
+          { goal: "Süre dolunca bildirim/ses ver.", tip: "Notification API (izinle) veya ses." },
+        ],
+      },
+      {
+        title: "4. Alışkanlık serisi (streak)",
+        learn: ["localStorage / sessionStorage", "useEffect"],
+        question: "Günlük seriyi (streak) hesaplarken 'dün' ve 'bugün'ü nasıl karşılaştırırsın?",
+        tasks: [
+          { goal: "Tamamlanan pomodoroları güne göre kaydet.", tip: "localStorage; tarih anahtarı." },
+          { goal: "Kaç gündür üst üste çalıştığını göster.", tip: "Ardışık günleri say." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "infinite-scroll",
+    level: 3,
+    track: "frontend",
+    project: "Sonsuz Akış (Infinite Scroll)",
+    difficulty: "Orta",
+    emoji: "♾️",
+    accent: "cyan",
+    tier: "mid",
+    description:
+      "Sona gelince otomatik daha fazla içerik yükleyen bir akış. Amaç: IntersectionObserver, sayfalama (pagination), iskelet (skeleton) ve custom hook.",
+    skills: ["IntersectionObserver", "Pagination", "Skeleton", "Custom hook", "Loading state", "fetch"],
+    steps: [
+      {
+        title: "1. Sayfalı veri çek",
+        learn: ["fetch API", "Pagination"],
+        question: "Tüm veriyi tek seferde çekmek yerine sayfalamak (pagination) neden önemlidir?",
+        tasks: [
+          { goal: "Bir API'den ilk sayfayı (örn. 20 öğe) çekip listele.", tip: "`?page=1&limit=20`." },
+          { goal: "Yüklenirken iskelet (skeleton) göster.", tip: "Koşullu placeholder." },
+        ],
+      },
+      {
+        title: "2. Sona gelmeyi algıla",
+        learn: ["IntersectionObserver"],
+        question: "Scroll olayını dinlemek yerine IntersectionObserver kullanmak performans açısından neden daha iyi?",
+        tasks: [
+          { goal: "Listenin sonundaki bir 'sentinel' eleman görününce tetikle.", tip: "IntersectionObserver + ref." },
+        ],
+      },
+      {
+        title: "3. Bir sonraki sayfayı ekle",
+        learn: ["Spread (...)", "Immutability"],
+        question: "Yeni sayfayı mevcut listeye eklerken state'i nasıl immutable güncellersin?",
+        tasks: [
+          { goal: "Tetiklenince sonraki sayfayı çekip listeye EKLE (sıfırlama).", tip: "`setItems(prev => [...prev, ...yeni])`." },
+          { goal: "Veri bitince daha fazla istek atma.", tip: "'hasMore' bayrağı." },
+        ],
+      },
+      {
+        title: "4. Custom hook'a topla",
+        learn: ["Custom Hook"],
+        question: "Bu mantığı `useInfiniteScroll` gibi bir hook'a almak hangi tekrarları önler?",
+        tasks: [
+          { goal: "Yükleme/sayfa/observer mantığını tek bir custom hook'ta topla.", tip: "`const { items, loading } = useInfinite(fetcher)`." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "ecommerce-store",
+    level: 3,
+    track: "frontend",
+    project: "E-ticaret Vitrini + Sepet",
+    difficulty: "Orta",
+    emoji: "🛒",
+    accent: "emerald",
+    tier: "mid",
+    description:
+      "Ürün listele, filtrele ve bir sepete ekle. Amaç: global state (sepet), filtreleme, türetilmiş toplam ve kalıcılık — gerçek bir mağaza akışı.",
+    skills: ["Global state", "Context/Reducer", "Filtreleme", "Türetilmiş değer", "localStorage", "Sepet mantığı"],
+    steps: [
+      {
+        title: "1. Ürün vitrini",
+        learn: ["List Rendering", "CSS Grid"],
+        question: "Ürünleri tek bir 'kaynak listeden' türetip göstermek neden iyi bir başlangıç?",
+        tasks: [
+          { goal: "Ürünleri kart ızgarasında listele.", tip: "Grid; her ürün bir kart." },
+          { goal: "Kategori/fiyat/arama ile filtrele.", tip: "Türetilmiş liste (orijinali bozma)." },
+        ],
+      },
+      {
+        title: "2. Sepet (global state)",
+        learn: ["Context API", "useReducer"],
+        question: "Sepete birçok component'ten erişileceği için state'i nereye koymalısın?",
+        tasks: [
+          { goal: "'Sepete ekle' her yerden çalışsın.", tip: "Context + reducer (add/remove/qty)." },
+          { goal: "Aynı ürün tekrar eklenince adet artsın.", tip: "Reducer içinde id eşleşmesi." },
+        ],
+      },
+      {
+        title: "3. Türetilmiş toplam",
+        learn: ["reduce()", "useMemo"],
+        question: "Sepet toplamını ayrı bir state'te tutmak yerine üründen TÜRETMEK neden daha güvenli?",
+        tasks: [
+          { goal: "Ara toplam, adet ve indirimi sepetten hesapla.", tip: "`reduce`; gerekirse useMemo." },
+        ],
+      },
+      {
+        title: "4. Kalıcılık + checkout UI",
+        learn: ["localStorage / sessionStorage", "Conditional Rendering"],
+        question: "Sepetin yenileme sonrası kalması kullanıcı deneyimini nasıl etkiler?",
+        tasks: [
+          { goal: "Sepet F5 sonrası korunsun.", tip: "localStorage senkronu." },
+          { goal: "Boş sepet ve checkout özet ekranını göster.", tip: "Koşullu durumlar." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "form-wizard",
+    level: 3,
+    track: "frontend",
+    project: "Çok Adımlı Form (Wizard)",
+    difficulty: "Orta",
+    emoji: "🧩",
+    accent: "indigo",
+    tier: "mid",
+    description:
+      "Birden çok adıma yayılan, doğrulamalı bir kayıt sihirbazı. Amaç: adımlar arası state, alan doğrulama, ilerleme göstergesi ve taslak kaydı.",
+    skills: ["Multi-step state", "Validation", "Türetilmiş ilerleme", "useReducer", "Taslak kaydı", "UX"],
+    steps: [
+      {
+        title: "1. Adımları kur",
+        learn: ["Conditional Rendering", "State"],
+        question: "Hangi adımda olduğunu tek bir state'le yönetmek neyi kolaylaştırır?",
+        tasks: [
+          { goal: "3 adımlı bir form yap; ileri/geri ile gez.", tip: "`adim` state + koşullu render." },
+          { goal: "Üstte ilerleme göstergesi (1/3) çiz.", tip: "Türetilmiş ilerleme." },
+        ],
+      },
+      {
+        title: "2. Tüm veriyi tek yerde tut",
+        learn: ["useReducer", "Lifting State Up"],
+        question: "Her adımın verisini ayrı tutmak yerine tek bir form state'inde toplamak neden daha iyi?",
+        tasks: [
+          { goal: "Tüm alanları tek bir form state'inde (veya reducer'da) topla.", tip: "Alan adıyla güncelle." },
+        ],
+      },
+      {
+        title: "3. Doğrulama",
+        learn: ["Controlled Component", "Error Handling"],
+        question: "Bir adımı geçmeden önce doğrulamak (inline) kullanıcıya neden daha iyi gelir?",
+        tasks: [
+          { goal: "Eksik/geçersiz alanda ilerlemeyi engelle, hatayı göster.", tip: "Adım bazlı validate." },
+        ],
+      },
+      {
+        title: "4. Taslak + gönderim",
+        learn: ["localStorage / sessionStorage"],
+        question: "Kullanıcı yarıda bırakırsa veriyi korumak güveni nasıl artırır?",
+        tasks: [
+          { goal: "Yarım form sayfa kapanınca kaybolmasın.", tip: "localStorage'a yaz, açılışta oku." },
+          { goal: "Son adımda özetle ve 'gönder' ile tamamla.", tip: "Özet ekranı + submit." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "dashboard-charts",
+    level: 4,
+    track: "frontend",
+    project: "Dashboard & Grafikler",
+    difficulty: "İleri",
+    emoji: "📊",
+    accent: "violet",
+    tier: "senior",
+    description:
+      "Veriyi grafiklerle gösteren bir yönetim paneli. Amaç: veri çekme, görselleştirme, filtre/zaman aralığı ve türetilmiş metrikler. (Veri: /datasets kullanabilirsin)",
+    skills: ["Veri çekme", "Chart kütüphanesi", "Veri görselleştirme", "Filtre", "Türetilmiş metrik", "useMemo"],
+    steps: [
+      {
+        title: "1. Veriyi getir",
+        learn: ["Data Fetching Library (React Query/SWR)", "fetch API"],
+        question: "Veri çekme kütüphanesi (React Query/SWR) ham `fetch`'e göre cache/loading/error'da ne kazandırır?",
+        tasks: [
+          { goal: "Bir veri kaynağından (örn. /datasets/siparisler.csv veya bir API) veriyi çek.", tip: "Loading/error durumlarını yönet." },
+        ],
+      },
+      {
+        title: "2. Metrikleri türet",
+        learn: ["useMemo", "reduce()"],
+        question: "Özet kartlardaki (toplam ciro, sipariş sayısı) sayıları neden ham veriden türetmelisin?",
+        tasks: [
+          { goal: "Toplam, ortalama, sayım gibi özet metrikleri hesapla.", tip: "`reduce`/`groupby`; useMemo ile önbellekle." },
+          { goal: "Bunları özet kartlarında göster.", tip: "KPI kartları." },
+        ],
+      },
+      {
+        title: "3. Grafikler",
+        learn: ["Veri Görselleştirme", "Component"],
+        question: "Aynı veri için bar, çizgi ve pasta grafiklerinden hangisi hangi soruya uygundur?",
+        tasks: [
+          { goal: "Zaman serisi için çizgi, kategori için bar grafiği çiz.", tip: "Bir chart kütüphanesi (Recharts/Chart.js)." },
+        ],
+      },
+      {
+        title: "4. Filtre ve zaman aralığı",
+        learn: ["Conditional Rendering", "useEffect"],
+        question: "Filtre değişince tüm grafiklerin tutarlı güncellenmesini nasıl sağlarsın?",
+        tasks: [
+          { goal: "Tarih aralığı/kategori filtresi tüm paneli etkilesin.", tip: "Tek kaynak filtre state'i; türetilmiş veri." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "design-system-a11y",
+    level: 4,
+    track: "frontend",
+    project: "Tasarım Sistemi & Erişilebilirlik",
+    difficulty: "İleri",
+    emoji: "🎛️",
+    accent: "lime",
+    tier: "senior",
+    description:
+      "Tutarlı ve erişilebilir bir component kütüphanesi. Amaç: design token'lar, varyantlı component'ler, klavye/ARIA erişilebilirliği ve dark mode.",
+    skills: ["Design tokens", "Component varyantları", "ARIA", "Klavye navigasyonu", "Dark mode", "Kontrast"],
+    steps: [
+      {
+        title: "1. Design token'lar",
+        learn: ["CSS Variables", "Tailwind CSS"],
+        question: "Renk/boşluk/yazı ölçeğini token'lara almak tutarlılık ve tema değişimi için ne sağlar?",
+        tasks: [
+          { goal: "Renk, boşluk ve yazı ölçeğini merkezi token'larda tanımla.", tip: "CSS değişkenleri / Tailwind theme." },
+        ],
+      },
+      {
+        title: "2. Varyantlı component'ler",
+        learn: ["Component", "Props"],
+        question: "Bir Button'un (primary/ghost, sm/lg) varyantlarını prop ile yönetmenin avantajı nedir?",
+        tasks: [
+          { goal: "Button ve Input'u varyant/boyut prop'larıyla yap.", tip: "Varyant → className haritası." },
+        ],
+      },
+      {
+        title: "3. Erişilebilirlik (a11y)",
+        learn: ["ARIA", "Accessibility (a11y)", "Semantic HTML"],
+        question: "Bir modal'ı klavyeyle erişilebilir kılmak için odak (focus) yönetimi neden kritiktir?",
+        tasks: [
+          { goal: "Component'ler sadece fareyle değil klavyeyle de kullanılabilsin.", tip: "Doğru rol/etiket (ARIA), focus halkası." },
+          { goal: "Bir modal aç/kapa: odak içeride tutulsun, Esc kapatsın.", tip: "Focus trap + klavye olayları." },
+        ],
+      },
+      {
+        title: "4. Dark mode + kontrast",
+        learn: ["Dark Mode", "CSS Variables"],
+        question: "Dark mode'u token'larla yapmak, her component'i tek tek elden geçirmeye göre neden üstün?",
+        tasks: [
+          { goal: "Token'ları değiştirerek tüm UI'da dark mode'a geç.", tip: "Tema sınıfı + değişken override." },
+          { goal: "Metin/arka plan kontrastının yeterli olduğunu doğrula.", tip: "Kontrast oranı kontrolü (WCAG)." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "frontend-performance",
+    level: 5,
+    track: "frontend",
+    project: "Performans & Cila",
+    difficulty: "İleri+",
+    emoji: "⚡",
+    accent: "amber",
+    tier: "staff",
+    description:
+      "Yavaş bir uygulamayı hızlandır. Amaç: ölçüm (Lighthouse/Core Web Vitals), code splitting, lazy loading, memoization ve gereksiz render avı.",
+    skills: ["Lighthouse", "Core Web Vitals", "Code splitting", "Lazy loading", "Memoization", "Render optimizasyonu"],
+    steps: [
+      {
+        title: "1. Önce ölç",
+        learn: ["Core Web Vitals", "DevTools"],
+        question: "Optimizasyona başlamadan önce ölçmek ('önce ölç') neden şarttır? Core Web Vitals neyi ölçer?",
+        tasks: [
+          { goal: "Lighthouse/Performance ile mevcut skoru ve darboğazları çıkar.", tip: "LCP/CLS/INP'e bak; tahmin etme, ölç." },
+        ],
+      },
+      {
+        title: "2. Bundle'ı böl",
+        learn: ["Code Splitting", "Lazy Loading"],
+        question: "Tüm JS'i tek pakette göndermek ilk yükü neden yavaşlatır? Code splitting bunu nasıl çözer?",
+        tasks: [
+          { goal: "Ağır/az kullanılan parçaları ayrı parçalara böl.", tip: "Dynamic import; route/Component bazlı." },
+          { goal: "Görseller ve ağır component'leri ihtiyaç anında yükle.", tip: "Lazy loading + Suspense." },
+        ],
+      },
+      {
+        title: "3. Gereksiz render avı",
+        learn: ["memo", "useMemo", "useCallback"],
+        question: "Bir component neden gereksiz yere yeniden render olur ve bunu nasıl tespit edersin?",
+        tasks: [
+          { goal: "Profiler ile gereksiz render eden component'i bul.", tip: "React DevTools Profiler." },
+          { goal: "Doğru yerde memo/useMemo/useCallback uygula (aşırıya kaçmadan).", tip: "Önce ölç, sonra uygula." },
+        ],
+      },
+      {
+        title: "4. Doğrula ve cila",
+        learn: ["Core Web Vitals", "Reflow & Repaint"],
+        question: "Optimizasyon sonrası tekrar ölçmek neden bu kadar önemli (bazı 'optimizasyonlar' işi yavaşlatabilir)?",
+        tasks: [
+          { goal: "Değişiklik sonrası skoru tekrar ölç, gerçek iyileşmeyi doğrula.", tip: "Öncesi/sonrası karşılaştır." },
+          { goal: "Layout shift (CLS) ve takılmaları gider.", tip: "Boyut rezervasyonu; reflow tetikleyicilerini azalt." },
+        ],
+      },
+    ],
+  },
+
   // ═══════════════════════ BACKEND BAŞLANGIÇ ══════════════════════
   {
     id: "todo-api",
@@ -2420,6 +2916,154 @@ export const levels: Level[] = [
     ],
   },
 
+  // ═══════════════════════ AI EK PROJELER ═══════════════════════
+  {
+    id: "doc-extraction",
+    level: 3,
+    track: "ai",
+    project: "Doküman Veri Çıkarımı (Extraction)",
+    difficulty: "Orta",
+    emoji: "🧾",
+    accent: "fuchsia",
+    tier: "mid",
+    description:
+      "Serbest metni yapıya sok. Bir fatura/CV/e-postadan alanları (tutar, tarih, isim) güvenilir JSON olarak çıkar. Amaç: yapılandırılmış çıktı, şema zorlama, doğrulama ve uydurmayı (hallucination) önleme.",
+    skills: ["Structured output", "Şema zorlama", "JSON doğrulama", "Few-shot", "Hata toleransı", "Batch işleme"],
+    steps: [
+      {
+        title: "1. Hedef şemayı tanımla",
+        learn: ["Yapılandırılmış Çıktı (Structured Output)", "JSON"],
+        question: "Modelden serbest metin yerine sabit bir JSON şeması istemek sonraki kodun işini neden kolaylaştırır?",
+        tasks: [
+          { goal: "Çıkarılacak alanları bir JSON şeması olarak tanımla.", tip: "Alan adları + tipler; zorunlu/opsiyonel." },
+          { goal: "Bir örnek metinden bu şemada çıktı al.", tip: "Prompt'ta şemayı net tarif et." },
+        ],
+      },
+      {
+        title: "2. Örnekle güçlendir (few-shot)",
+        learn: ["Few-shot & Zero-shot", "Prompt Engineering"],
+        question: "Birkaç örnek (few-shot) eklemek, modelin biçime uymasını neden artırır?",
+        tasks: [
+          { goal: "Zor/kenar durumlar için 2-3 örnek girdi→çıktı ekle.", tip: "Eksik alan, farklı format örnekleri." },
+        ],
+      },
+      {
+        title: "3. Doğrula ve uydurmayı engelle",
+        learn: ["Hallucination", "Error Handling"],
+        question: "Model olmayan bir alanı 'uydurursa' bunu nasıl yakalar ve önlersin?",
+        tasks: [
+          { goal: "Dönen JSON'u şemaya göre doğrula; uymazsa tekrar dene.", tip: "Parse + şema validasyonu (örn. Zod/Pydantic)." },
+          { goal: "Metinde olmayan alan 'null' kalsın, uydurulmasın.", tip: "Prompt: 'yoksa null, tahmin etme'." },
+        ],
+      },
+      {
+        title: "4. Toplu işle",
+        learn: ["Token", "Caching"],
+        question: "Yüzlerce dokümanı işlerken token maliyetini ve hızını nasıl dengelersin?",
+        tasks: [
+          { goal: "Bir klasör/dizi dokümanı sırayla işleyip tek bir tabloya yaz.", tip: "Batch akışı + hata olanı atlama/loglama." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "content-moderation",
+    level: 7,
+    track: "ai",
+    project: "İçerik Moderasyonu (AI + İnsan)",
+    difficulty: "İleri+",
+    emoji: "🛡️",
+    accent: "rose",
+    tier: "senior",
+    description:
+      "Kullanıcı içeriğini güvenli tut. Yorumları toksiklik/spam açısından sınıflandır, eşik uygula ve gri bölgeyi insana yönlendir. Amaç: sınıflandırma, eşik tasarımı, human-in-the-loop ve güvenlik/maliyet dengesi.",
+    skills: ["Sınıflandırma", "Toxicity", "Eşik tasarımı", "Human-in-the-loop", "Guardrails", "Yanlış pozitif/negatif"],
+    steps: [
+      {
+        title: "1. Sınıflandır",
+        learn: ["İçerik Moderasyonu", "Few-shot & Zero-shot"],
+        question: "İçeriği 'güvenli / şüpheli / zararlı' diye etiketlemek tek bir evet/hayır'dan neden daha iyidir?",
+        tasks: [
+          { goal: "Bir yorumu kategorilere (toksik, spam, güvenli) sınıflandırt.", tip: "Net tanımlı etiketler + few-shot örnek." },
+        ],
+      },
+      {
+        title: "2. Eşik ve aksiyon",
+        learn: ["İçerik Moderasyonu", "Guardrails & Eval"],
+        question: "Eşiği çok düşük/çok yüksek tutmanın bedeli nedir (yanlış pozitif vs negatif)?",
+        tasks: [
+          { goal: "Güven skoruna göre otomatik engelle / yayınla / beklet kararını ver.", tip: "Eşik üstü engelle, gri bölge → kuyruğa." },
+        ],
+      },
+      {
+        title: "3. İnsanı devreye al",
+        learn: ["Human-in-the-loop"],
+        question: "Hangi kararları otomatik vermek tehlikeli, hangileri için insan onayı şart?",
+        tasks: [
+          { goal: "Gri bölgedeki içerikleri bir moderatör kuyruğuna düşür.", tip: "İnceleme listesi + onay/ret aksiyonu." },
+          { goal: "Moderatör kararını sisteme geri besle.", tip: "Kararlar ileride eval/few-shot için kayıt." },
+        ],
+      },
+      {
+        title: "4. Ölç ve sağlamlaştır",
+        learn: ["Guardrails & Eval", "Prompt Injection"],
+        question: "Moderasyon sisteminin 'iyi çalışıyor' olduğunu öznel histen çıkarıp nasıl ölçersin?",
+        tasks: [
+          { goal: "Etiketli bir test setiyle yanlış pozitif/negatif oranını ölç.", tip: "Küçük gold set; precision/recall." },
+          { goal: "Kötü niyetli girdinin filtreyi atlatmasını zorlaştır.", tip: "Girdi sınırla; jailbreak denemelerini test et." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "chatbot-memory",
+    level: 8,
+    track: "ai",
+    project: "Chatbot + Kalıcı Hafıza",
+    difficulty: "Uzman",
+    emoji: "🧠",
+    accent: "violet",
+    tier: "staff",
+    description:
+      "Seni hatırlayan bir asistan. Uzayan sohbette bağlamı yönet, eski mesajları özetle ve kullanıcıya özel kalıcı bilgiyi sakla. Amaç: konuşma hafızası, context window yönetimi, özetleme ve kullanıcı profili.",
+    skills: ["Konuşma hafızası", "Context window", "Özetleme", "Kullanıcı profili", "Token bütçesi", "Kalıcılık"],
+    steps: [
+      {
+        title: "1. Çok turlu sohbet",
+        learn: ["Konuşma Hafızası (Memory)", "System Prompt"],
+        question: "LLM API'leri durumsuzken asistan önceki mesajları nasıl 'hatırlar'?",
+        tasks: [
+          { goal: "Geçmiş mesajları her istekte gönderip tutarlı bir sohbet kur.", tip: "messages dizisini biriktir." },
+        ],
+      },
+      {
+        title: "2. Context sınırını yönet",
+        learn: ["Context Window", "Token"],
+        question: "Sohbet uzayıp context window dolunca ne olur ve ne yaparsın?",
+        tasks: [
+          { goal: "Sohbet büyüyünce eski mesajları özetleyerek yer aç.", tip: "Son N mesaj + öncekinin özeti." },
+        ],
+      },
+      {
+        title: "3. Kalıcı kullanıcı profili",
+        learn: ["Konuşma Hafızası (Memory)", "Database"],
+        question: "Kullanıcının tercihlerini (dil, ton) sohbet geçmişinde değil ayrı saklamak neden daha iyi?",
+        tasks: [
+          { goal: "Kullanıcıya özel kalıcı bilgileri bir veritabanında sakla.", tip: "Profil tablosu; her sohbette yükle." },
+        ],
+      },
+      {
+        title: "4. Maliyet ve yayın",
+        learn: ["Caching", "Token"],
+        question: "Hafıza büyüdükçe maliyet artar; token bütçesini nasıl kontrol altında tutarsın?",
+        tasks: [
+          { goal: "Gönderilen geçmişi token bütçesine göre kırp/özetle.", tip: "Bütçe aşımında en eskileri özetle." },
+          { goal: "Asistanı yayınla ve maliyeti izle.", tip: "Prompt caching; deploy." },
+        ],
+      },
+    ],
+  },
+
   // ═══════════════════════════ SEVİYE 8 ═══════════════════════════
   {
     id: "mobile",
@@ -2977,6 +3621,156 @@ export const levels: Level[] = [
     ],
   },
 
+  // ═══════════════════════ DEVOPS EK PROJELER ═══════════════════════
+  {
+    id: "git-workflow",
+    level: 2,
+    track: "devops",
+    project: "Git İş Akışı & Branch Stratejisi",
+    difficulty: "Kolay-Orta",
+    emoji: "🌿",
+    accent: "emerald",
+    tier: "junior",
+    description:
+      "Tek başına 'commit -m fix' devri biter. Ekip gibi çalış: branch aç, PR ile gözden geçir, conflict çöz ve sürüm etiketle. Amaç: branch stratejisi, pull request, merge/rebase, conflict çözümü ve temiz commit geçmişi.",
+    skills: ["Branch", "Pull Request", "Merge vs Rebase", "Conflict çözümü", "Conventional Commits", "Tag/Release"],
+    steps: [
+      {
+        title: "1. Branch ile çalış",
+        learn: ["Branch", "Git & GitHub"],
+        question: "Doğrudan main'e commit atmak yerine feature branch kullanmak bir ekibe ne kazandırır?",
+        tasks: [
+          { goal: "Bir özelliği ayrı bir branch'te geliştir.", tip: "`git switch -c feature/x`; main'e dokunma." },
+          { goal: "Anlamlı, küçük commit'ler at.", tip: "Conventional Commits: `feat:`, `fix:` …" },
+        ],
+      },
+      {
+        title: "2. Pull Request ile gözden geçir",
+        learn: ["Pull Request", "Code Review Kültürü"],
+        question: "Küçük PR'lar büyük PR'lara göre review kalitesini neden artırır?",
+        tasks: [
+          { goal: "Branch'ini PR olarak aç; ne yaptığını net açıkla.", tip: "Başlık + açıklama + ekran görüntüsü." },
+          { goal: "Bir gözden geçirme yorumunu uygula.", tip: "Yorum → düzelt → tekrar push." },
+        ],
+      },
+      {
+        title: "3. Conflict çöz",
+        learn: ["Merge Conflict", "Merge"],
+        question: "Merge conflict tam olarak ne zaman oluşur ve neden korkutucu değildir?",
+        tasks: [
+          { goal: "Bilerek çakışan iki değişiklik üret ve conflict'i çöz.", tip: "Çakışma işaretlerini elle çöz; test et." },
+        ],
+      },
+      {
+        title: "4. Geçmişi temiz tut + sürüm",
+        learn: ["git rebase", "Conventional Commits"],
+        question: "Merge ile rebase arasındaki fark nedir? Hangisi 'düz bir geçmiş' verir?",
+        tasks: [
+          { goal: "Dağınık commit'leri temizle (squash/rebase).", tip: "İnteraktif olmayan ortamda dikkatli; küçük adımlarla." },
+          { goal: "Bir sürümü etiketle.", tip: "`git tag v1.0.0` + release notu." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "reverse-proxy",
+    level: 4,
+    track: "devops",
+    project: "Reverse Proxy & TLS (nginx)",
+    difficulty: "İleri",
+    emoji: "🔀",
+    accent: "violet",
+    tier: "senior",
+    description:
+      "Uygulamanın önüne profesyonel bir kapı koy. nginx ile trafiği yönlendir, HTTPS (TLS) sonlandır, statik dosya sun ve sıkıştır. Amaç: reverse proxy, TLS sertifikası, yönlendirme ve önbellek/sıkıştırma.",
+    skills: ["Reverse proxy", "nginx", "TLS/SSL", "Yönlendirme", "Gzip/Brotli", "Statik sunum"],
+    steps: [
+      {
+        title: "1. Reverse proxy kur",
+        learn: ["Reverse Proxy & Nginx", "Load Balancer"],
+        question: "Uygulamayı doğrudan internete açmak yerine önüne reverse proxy koymanın faydaları neler?",
+        tasks: [
+          { goal: "nginx'i, gelen istekleri uygulamana ileten bir proxy olarak yapılandır.", tip: "`proxy_pass http://app:3000`." },
+        ],
+      },
+      {
+        title: "2. HTTPS (TLS) ekle",
+        learn: ["TLS / SSL", "HTTPS"],
+        question: "TLS sonlandırmayı proxy katmanında yapmak uygulamanı neden basitleştirir?",
+        tasks: [
+          { goal: "Siteyi HTTPS ile servis et ve HTTP'yi HTTPS'e yönlendir.", tip: "Let's Encrypt (Certbot) ücretsiz sertifika." },
+        ],
+      },
+      {
+        title: "3. Yönlendirme ve statik",
+        learn: ["CDN", "Caching"],
+        question: "Statik dosyaları uygulama yerine nginx'in sunması performansı nasıl etkiler?",
+        tasks: [
+          { goal: "Alan adı/yola göre farklı servislere yönlendir (örn. /api → backend).", tip: "location blokları." },
+          { goal: "Statik dosyaları doğrudan nginx'ten sun ve önbellekle.", tip: "`expires` + cache header." },
+        ],
+      },
+      {
+        title: "4. Sıkıştır ve sağlamlaştır",
+        learn: ["Health Check", "Rate Limiting"],
+        question: "Gzip/Brotli sıkıştırma neyi azaltır ve hangi içerik tiplerinde işe yarar?",
+        tasks: [
+          { goal: "Yanıtları sıkıştır (gzip/brotli).", tip: "nginx gzip ayarları." },
+          { goal: "Basit bir istek sınırlama (rate limit) ekle.", tip: "limit_req zone." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "observability-stack",
+    level: 5,
+    track: "devops",
+    project: "Gözlemlenebilirlik (Prometheus/Grafana)",
+    difficulty: "İleri+",
+    emoji: "📡",
+    accent: "amber",
+    tier: "staff",
+    description:
+      "Üretimde 'neden yavaş?' sorusuna tahminle değil veriyle cevap ver. Metrik topla, dashboard kur, alarm yaz ve istekleri uçtan uca izle. Amaç: metrik, dashboard, alerting, log ve trace.",
+    skills: ["Observability", "Prometheus", "Grafana", "Alerting", "Structured logging", "Tracing"],
+    steps: [
+      {
+        title: "1. Metrik üret ve topla",
+        learn: ["Observability", "Prometheus & Grafana"],
+        question: "Log, metrik ve trace gözlemlenebilirliğin üç direği — her biri hangi soruyu yanıtlar?",
+        tasks: [
+          { goal: "Uygulamana temel metrikler ekle (istek sayısı, gecikme, hata).", tip: "Bir Prometheus client; `/metrics` endpoint'i." },
+          { goal: "Prometheus bu metrikleri düzenli toplasın.", tip: "scrape config." },
+        ],
+      },
+      {
+        title: "2. Dashboard kur",
+        learn: ["Prometheus & Grafana", "SLA / SLO / SLI"],
+        question: "Hangi metrikleri 'altın sinyaller' (latency, traffic, errors, saturation) olarak izlemelisin?",
+        tasks: [
+          { goal: "Grafana'da gecikme ve hata oranını gösteren bir dashboard yap.", tip: "PromQL ile panel sorguları." },
+        ],
+      },
+      {
+        title: "3. Alarm yaz",
+        learn: ["Alerting (Alarm)", "Health Check"],
+        question: "İyi bir alarm ile 'gürültülü' bir alarmı ayıran nedir (alert fatigue)?",
+        tasks: [
+          { goal: "Hata oranı eşiği aşılınca tetiklenen bir alarm tanımla.", tip: "Alert rule + bir bildirim kanalı." },
+        ],
+      },
+      {
+        title: "4. Log + trace",
+        learn: ["Structured Logging", "Distributed Tracing"],
+        question: "Yapılandırılmış (JSON) log, düz metin log'a göre arama/analizde neden üstündür?",
+        tasks: [
+          { goal: "Logları yapılandırılmış (JSON) ve korelasyon id'li hale getir.", tip: "request id'yi her log'a koy." },
+          { goal: "Bir isteği servisler arası uçtan uca izle.", tip: "Distributed tracing (OpenTelemetry)." },
+        ],
+      },
+    ],
+  },
+
   // ═══════════════════════════ SEVİYE 9 ═══════════════════════════
   {
     id: "devops",
@@ -3523,6 +4317,106 @@ export const levels: Level[] = [
     ],
   },
 
+  // ═══════════════════════ DATA ENGINEERING EK ═══════════════════════
+  {
+    id: "web-scraping",
+    level: 2,
+    track: "data-engineering",
+    project: "Web Scraping Pipeline",
+    difficulty: "Kolay-Orta",
+    emoji: "🕸️",
+    accent: "lime",
+    tier: "junior",
+    description:
+      "API olmayan yerden veri topla — ama nazikçe. Bir siteyi tara, alanları ayıkla, tekrarı engelle ve düzenli sakla. Amaç: crawl/parse, rate limit, dedup, etik scraping ve idempotent depolama.",
+    skills: ["Web scraping", "HTML parse", "Rate limit", "Deduplication", "Etik/robots.txt", "Depolama"],
+    steps: [
+      {
+        title: "1. Bir sayfayı çek ve ayıkla",
+        learn: ["Web Scraping", "CSV"],
+        question: "HTML'i string olarak aramak yerine bir parser kullanmak neden daha sağlamdır?",
+        tasks: [
+          { goal: "Bir sayfayı indirip içinden yapısal alanları (başlık, fiyat…) ayıkla.", tip: "BeautifulSoup/Playwright; seçicilerle." },
+          { goal: "Çıkardığın veriyi bir tabloya/CSV'ye yaz.", tip: "Sütunları netleştir." },
+        ],
+      },
+      {
+        title: "2. Nazik ol (rate limit + robots)",
+        learn: ["robots.txt & Etik Scraping", "Rate Limiting"],
+        question: "İstekleri yavaşlatmamak (rate limit yok) hem sana hem siteye nasıl zarar verir?",
+        tasks: [
+          { goal: "İstekler arasına gecikme koy ve robots.txt'e uy.", tip: "Bekleme + kimlik belirten User-Agent." },
+        ],
+      },
+      {
+        title: "3. Çok sayfa (crawl) + dedup",
+        learn: ["Web Scraping", "Veri temizliği"],
+        question: "Aynı kaydın iki kez toplanmasını (duplicate) nasıl engellersin?",
+        tasks: [
+          { goal: "Birden çok sayfayı (pagination) gez.", tip: "Sonraki sayfa linkini takip et." },
+          { goal: "Tekrar eden kayıtları benzersiz bir anahtarla ele.", tip: "Dedup: url/id seti." },
+        ],
+      },
+      {
+        title: "4. Tekrar çalıştırılabilir yap",
+        learn: ["Idempotency", "Veri boru hattı"],
+        question: "Scraper'ı her gün çalıştırınca verinin çiftlenmemesini nasıl garanti edersin?",
+        tasks: [
+          { goal: "Tekrar koşunca yalnızca yeni kayıtlar eklensin (upsert).", tip: "Anahtara göre upsert; idempotent." },
+        ],
+      },
+    ],
+  },
+  {
+    id: "dbt-modeling",
+    level: 4,
+    track: "data-engineering",
+    project: "Veri Modelleme & dbt",
+    difficulty: "İleri",
+    emoji: "🧱",
+    accent: "violet",
+    tier: "senior",
+    description:
+      "Ham veriyi güvenilir 'mart'lara dönüştür. dbt ile staging→mart katmanları kur, star schema tasarla, test/dokümantasyon ekle ve incremental çalıştır. Amaç: katmanlı modelleme, test, dokümantasyon ve artımlı işleme.",
+    skills: ["dbt", "Star schema", "Staging→Mart", "Test", "Dokümantasyon", "Incremental"],
+    steps: [
+      {
+        title: "1. Katmanları kur",
+        learn: ["dbt (Data Build Tool)", "Staging vs Mart"],
+        question: "Ham veriyi doğrudan rapora bağlamak yerine staging→mart katmanlamak ne kazandırır?",
+        tasks: [
+          { goal: "Kaynağı staging modelleriyle temizle (tip/isim standardı).", tip: "Her kaynağa bir stg_ modeli." },
+          { goal: "İş sorularına cevap veren mart modelleri üret.", tip: "`ref()` ile bağımlılık." },
+        ],
+      },
+      {
+        title: "2. Star schema tasarla",
+        learn: ["Star Schema", "Relation (İlişki)"],
+        question: "Analitik için tam normalizasyondan ödün verip star schema kullanmanın mantığı nedir?",
+        tasks: [
+          { goal: "Bir fact tablosu + dimension tabloları tasarla.", tip: "Ölçümler fact'te, bağlam dimension'da." },
+        ],
+      },
+      {
+        title: "3. Test ve dokümantasyon",
+        learn: ["dbt (Data Build Tool)", "Veri temizliği"],
+        question: "Veri pipeline'ında 'test' ne anlama gelir (örn. null/unique) ve neden kritiktir?",
+        tasks: [
+          { goal: "Anahtar sütunlara not_null/unique testleri ekle.", tip: "dbt schema testleri." },
+          { goal: "Modelleri dokümante et.", tip: "description + dbt docs." },
+        ],
+      },
+      {
+        title: "4. Incremental çalıştır",
+        learn: ["Incremental Model", "Partitioning"],
+        question: "Milyarlarca satırı her seferinde baştan üretmek yerine incremental işlemek neyi çözer?",
+        tasks: [
+          { goal: "Büyük bir modeli yalnızca yeni/değişen satırları işleyecek şekilde kur.", tip: "incremental materialization + tarih filtresi." },
+        ],
+      },
+    ],
+  },
+
   // ═══════════════════════ DATA SCIENCE ═══════════════════════
   {
     id: "data-intro",
@@ -3868,6 +4762,106 @@ export const levels: Level[] = [
             goal: "Hangi feature'ların tahmine en çok katkı verdiğini yorumla.",
             tip: "Model katsayılarına (`model.coef_`) bak; korelasyonla kıyasla.",
           },
+        ],
+      },
+    ],
+  },
+
+  // ═══════════════════════════ SEVİYE 4 ═══════════════════════════
+  {
+    id: "classification",
+    level: 4,
+    track: "data-science",
+    project: "Sınıflandırma & Model Değerlendirme",
+    difficulty: "İleri",
+    emoji: "🎯",
+    accent: "cyan",
+    tier: "senior",
+    description:
+      "Sayı değil, kategori tahmin et: bir siparişin 'iptal' olup olmayacağını sınıflandır. Amaç: sınıflandırma, confusion matrix, precision/recall ve cross-validation ile dürüst değerlendirme. (Veri: /datasets/siparisler.csv)",
+    skills: ["Sınıflandırma", "Confusion matrix", "Precision/Recall", "Cross-validation", "Eşik", "Dengesiz veri"],
+    steps: [
+      {
+        title: "1. Problemi kur",
+        learn: ["Regresyon vs Sınıflandırma", "Feature & Feature Engineering"],
+        question: "'İptal mi?' tahmini neden bir sınıflandırma problemidir? Hedef nasıl tanımlanır?",
+        tasks: [
+          { goal: "siparisler.csv'den hedefi (durum=iptal mı) ve feature'ları hazırla.", tip: "İkili etiket; kategorikleri encode et." },
+        ],
+      },
+      {
+        title: "2. Eğit ve tahmin et",
+        learn: ["Train/Test Split", "Makine Öğrenmesi"],
+        question: "Sınıflar dengesizse (çok az iptal) sadece 'doğruluk'a bakmak neden yanıltıcıdır?",
+        tasks: [
+          { goal: "Train/test ayır ve bir sınıflandırıcı eğit.", tip: "LogisticRegression / ağaç tabanlı." },
+        ],
+      },
+      {
+        title: "3. Doğru ölç",
+        learn: ["Confusion Matrix", "Precision & Recall"],
+        question: "Precision ile recall arasındaki ödünleşim bu problemde hangi yöne çekilmeli?",
+        tasks: [
+          { goal: "Confusion matrix çıkar; precision/recall/F1 hesapla.", tip: "Yanlış pozitif vs negatifin maliyetini düşün." },
+          { goal: "Karar eşiğini değiştirip etkiyi gözle.", tip: "Eşik ↑ precision ↑, recall ↓." },
+        ],
+      },
+      {
+        title: "4. Güvenilir değerlendir",
+        learn: ["Cross-validation", "Overfitting & Underfitting"],
+        question: "Tek bir test ayrımı yerine cross-validation neden daha güvenilir bir tahmin verir?",
+        tasks: [
+          { goal: "K-fold cross-validation ile skoru daha kararlı ölç.", tip: "Katların ortalaması + sapması." },
+        ],
+      },
+    ],
+  },
+
+  // ═══════════════════════════ SEVİYE 5 ═══════════════════════════
+  {
+    id: "timeseries",
+    level: 5,
+    track: "data-science",
+    project: "Zaman Serisi Analizi & Tahmin",
+    difficulty: "İleri+",
+    emoji: "⏱️",
+    accent: "rose",
+    tier: "staff",
+    description:
+      "Zamana bağlı veriyle geleceği tahmin et. Sağladığımız sensör verisinde trend ve mevsimselliği ayrıştır, basit bir tahmin yap ve dürüstçe değerlendir. Amaç: zaman serisi, trend/mevsimsellik, doğru bölme ve tahmin. (Veri: /datasets/sensor-olaylari.csv)",
+    skills: ["Zaman serisi", "Trend/Mevsimsellik", "Resampling", "Tahmin", "Zaman bazlı bölme", "Değerlendirme"],
+    steps: [
+      {
+        title: "1. Zaman serisini hazırla",
+        learn: ["Zaman Serisi (Time Series)", "Veri temizliği"],
+        question: "Zaman serisinde satırların sırası neden 'sadece bir sütun' değil, işin özüdür?",
+        tasks: [
+          { goal: "Zaman sütununu parse edip indeks yap; düzenli aralığa getir (resample).", tip: "`set_index` + `resample('1min')`." },
+        ],
+      },
+      {
+        title: "2. Trend ve mevsimselliği gör",
+        learn: ["Trend & Mevsimsellik", "Veri Görselleştirme"],
+        question: "Bir seriyi trend + mevsimsellik + artık (residual) olarak ayrıştırmak neyi ortaya çıkarır?",
+        tasks: [
+          { goal: "Seriyi çiz; hareketli ortalama ile trendi göster.", tip: "rolling mean; mevsimsel tekrarı gözle." },
+        ],
+      },
+      {
+        title: "3. Tahmin et",
+        learn: ["Makine Öğrenmesi", "Zaman Serisi (Time Series)"],
+        question: "Zaman serisinde train/test'i NEDEN rastgele değil, zaman sırasına göre bölmelisin?",
+        tasks: [
+          { goal: "Geçmişle eğitip geleceği tahmin eden basit bir model kur.", tip: "Naif/hareketli ortalama veya basit bir model." },
+          { goal: "Geleceği eğitime sızdırma (leakage) yapma.", tip: "Geçmiş = train, sonrası = test." },
+        ],
+      },
+      {
+        title: "4. Değerlendir ve yorumla",
+        learn: ["Trend & Mevsimsellik", "Overfitting & Underfitting"],
+        question: "Tahmin hatasını yorumlarken mevsimsel bir 'naif tahmin' neden iyi bir kıyas (baseline) olur?",
+        tasks: [
+          { goal: "Tahmini gerçekle karşılaştır; hatayı bir baseline ile kıyasla.", tip: "Naif baseline'ı geçebildin mi?" },
         ],
       },
     ],

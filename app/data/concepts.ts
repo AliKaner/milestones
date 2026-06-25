@@ -3318,6 +3318,147 @@ export const concepts: Concept[] = [
     body: "Tablo dolusu sayı yerine doğru grafik (histogram = dağılım, scatter = ilişki, çizgi = zaman serisi, bar = kategori karşılaştırma) örüntüyü saniyede anlatır. Hem keşifte (EDA) hem de bulguyu paylaşmada kullanılır. Python'da Matplotlib/Seaborn yaygındır.",
     analogy: "Bir sayfa rakam yerine tek bir grafik: 'bir resim bin kelimeye bedel'.",
   },
+
+  // ─────────────────────── DEVOPS (EK 2) ───────────────────────
+  {
+    term: "Prometheus & Grafana",
+    category: "DevOps",
+    short: "Metrik toplayan (Prometheus) ve onları görselleştiren (Grafana) gözlem ikilisi.",
+    body: "Prometheus, servislerinden düzenli aralıkla metrik (CPU, istek sayısı, gecikme) çeker ve zaman serisi olarak saklar; PromQL ile sorgulanır. Grafana bu metrikleri dashboard'larda grafikler ve eşik aşılınca alarm üretir. Gözlemlenebilirliğin 'metrik' ayağının fiili standardıdır.",
+    analogy: "Prometheus uçağın kara kutusu (kaydeder), Grafana kokpit göstergeleri (gösterir).",
+  },
+  {
+    term: "Alerting (Alarm)",
+    category: "DevOps",
+    short: "Bir metrik eşiği aşınca otomatik bildirim gönderme.",
+    body: "Alerting, 'hata oranı %5'i geçerse' veya 'disk %90 dolarsa' gibi kurallarla tetiklenir ve ekibe (Slack/PagerDuty) haber verir. İyi alarm gürültüsüzdür: yalnızca aksiyon gerektiren, gerçek sorunlarda çalar — yoksa ekip alarmları görmezden gelmeye başlar (alert fatigue).",
+    analogy: "Yangın alarmı gibi: her tost yandığında değil, gerçek tehlikede çalmalı.",
+  },
+
+  // ─────────────────────── DATA (EK 2) ───────────────────────
+  {
+    term: "Web Scraping",
+    category: "Data",
+    short: "Web sayfalarından programatik olarak veri çekme.",
+    body: "API olmayan sitelerden veri toplamak için HTML indirilir ve parse edilir (örn. BeautifulSoup, Playwright). Sayfa yapısı değişince kırılır, bu yüzden kırılgandır; ayrıca nazik olmalısın: istekleri yavaşlat (rate limit), tekrarı engelle (dedup) ve sitenin kurallarına uy.",
+    analogy: "Bir dergiyi tarayıp içindeki tabloları tek tek elle kopyalamanın otomatik hali.",
+  },
+  {
+    term: "robots.txt & Etik Scraping",
+    category: "Data",
+    short: "Sitenin hangi sayfaların taranabileceğini bildirdiği kurallar ve nazik tarama ilkeleri.",
+    body: "robots.txt, sitenin botlara 'şuraya girme' dediği dosyadır. Etik scraping: bu kurallara saygı, makul hız (rate limit), kimliğini belirten User-Agent, kişisel/telifli veriden kaçınma ve sunucuyu yormama. Yoksa hem yasal hem teknik (IP ban) sorun çıkar.",
+    analogy: "Bir eve girerken 'özel' tabelalarına uymak ve kapıyı kırmamak gibi.",
+  },
+  {
+    term: "Staging vs Mart",
+    category: "Data",
+    short: "Ham veriyi hafifçe düzelten ara katman (staging) ile iş için hazır son tablo (mart).",
+    body: "dbt gibi araçlarda akış katmanlıdır: kaynak → staging (tip düzeltme, isim standardı) → intermediate → mart (iş sorularına doğrudan cevap veren, birleştirilmiş tablo). Katmanlamak, dönüşümü anlaşılır, test edilebilir ve yeniden kullanılabilir kılar.",
+    analogy: "Ham sebzeyi yıkayıp doğramak (staging), sonra yemeği tabağa hazırlamak (mart).",
+  },
+  {
+    term: "Incremental Model",
+    category: "Data",
+    short: "Tüm tabloyu baştan değil, yalnızca yeni/değişen satırları işleme.",
+    body: "Milyarlarca satırı her çalıştırmada baştan üretmek pahalıdır. Incremental model yalnızca son çalıştırmadan beri eklenen/değişen kayıtları işler (genelde bir tarih/updated_at sütununa göre). Çok daha hızlı ve ucuzdur; doğru olması için idempotent tasarlanmalıdır.",
+    analogy: "Tüm defteri yeniden yazmak yerine yalnızca yeni girilen sayfaları eklemek gibi.",
+  },
+  {
+    term: "Confusion Matrix",
+    category: "Data",
+    short: "Sınıflandırma modelinin doğru/yanlış tahminlerini tablo halinde gösteren araç.",
+    body: "Confusion matrix; gerçek vs tahmin'i karşılaştırır ve dört kutu üretir: doğru pozitif (TP), doğru negatif (TN), yanlış pozitif (FP), yanlış negatif (FN). Tek bir 'doğruluk' sayısının gizlediği hataları (örn. nadir sınıfı hiç bulamama) görünür kılar.",
+    analogy: "Bir sınav sonucunu 'kaç doğru' değil, 'neyi neyle karıştırdı' diye dökmek gibi.",
+  },
+  {
+    term: "Precision & Recall",
+    category: "Data",
+    short: "Sınıflandırmada iki temel başarı ölçütü: isabet (precision) ve yakalama (recall).",
+    body: "Precision: 'pozitif dediklerimin ne kadarı gerçekten pozitif?' (yanlış alarmı cezalandırır). Recall: 'gerçek pozitiflerin ne kadarını yakaladım?' (kaçırmayı cezalandırır). Aralarında ödünleşim vardır; dengesi F1 ile özetlenir. Hangisinin önemli olduğu probleme bağlıdır (spam vs kanser teşhisi).",
+    analogy: "Precision = attığın okların kaçı hedefte; Recall = hedeflerin kaçını vurabildin.",
+  },
+  {
+    term: "Cross-validation",
+    category: "Data",
+    short: "Veriyi katlara bölüp modeli birden çok kez test ederek daha güvenilir ölçme.",
+    body: "Tek bir train/test ayrımı şansa bağlı olabilir. K-fold cross-validation, veriyi K parçaya böler; her turda biri test, gerisi eğitim olur ve sonuçlar ortalanır. Modelin gerçek performansını daha kararlı tahmin eder, özellikle veri azken değerlidir.",
+    analogy: "Bir öğrenciyi tek sınavla değil, farklı sınavların ortalamasıyla değerlendirmek gibi.",
+  },
+  {
+    term: "Zaman Serisi (Time Series)",
+    category: "Data",
+    short: "Zamana göre sıralı ölçümlerden oluşan, sırası anlamlı veri.",
+    body: "Satış, sıcaklık, trafik gibi zaman damgalı veriler zaman serisidir. Sıra önemlidir: geçmiş geleceği etkiler. Analiz ve tahminde özel dikkat ister — rastgele train/test ayrımı yapılmaz (geleceği eğitime sızdırmamak için zaman sırasına göre bölünür).",
+    analogy: "Bir hastanın gün gün ateş takibi gibi: sıra bozulursa anlam kaybolur.",
+  },
+  {
+    term: "Trend & Mevsimsellik",
+    category: "Data",
+    short: "Zaman serisindeki uzun vadeli yön (trend) ve düzenli tekrar (mevsimsellik).",
+    body: "Trend, verinin genel yükseliş/düşüş eğilimidir. Mevsimsellik (seasonality), sabit aralıklarla tekrar eden örüntüdür (her cuma artan satış, yazın yükselen elektrik). Bir seriyi trend + mevsimsellik + artık (residual) olarak ayrıştırmak, tahminin temelidir.",
+    analogy: "İklim (uzun vadeli trend) ile mevsimlerin her yıl dönmesi (mevsimsellik) gibi.",
+  },
+
+  // ─────────────────────── AI (EK 2) ───────────────────────
+  {
+    term: "Yapılandırılmış Çıktı (Structured Output)",
+    category: "AI",
+    short: "Modelden serbest metin yerine sabit şemalı (JSON) çıktı almak.",
+    body: "Çıktıyı sonraki kod işleyecekse, modelden belirli bir JSON şemasına uyması istenir (alan adları, tipler). Böylece serbest metni parse etme kırılganlığı ortadan kalkar. Şemayı net tarif et, dönen JSON'u doğrula; uymazsa tekrar dene veya tool use ile şemayı zorla.",
+    analogy: "Boş bir kompozisyon yerine, her kutusu belli bir form doldurtmak gibi.",
+  },
+  {
+    term: "Konuşma Hafızası (Memory)",
+    category: "AI",
+    short: "Asistanın geçmiş mesajları hatırlaması için bağlamı yönetme.",
+    body: "LLM API'leri durumsuzdur; 'hafıza' için geçmişi her istekte geri gönderirsin. Sohbet uzayınca context window dolar; bu yüzden eski mesajlar özetlenir (summary memory) veya alakalılar seçilir. Kullanıcıya özel kalıcı bilgi (tercihler) ayrıca dışarıda (DB) saklanabilir.",
+    analogy: "Her görüşmeden önce 'şimdiye kadar ne konuştuk' notunu masaya koymak gibi.",
+  },
+  {
+    term: "İçerik Moderasyonu",
+    category: "AI",
+    short: "Zararlı/uygunsuz içeriği sınıflandırıp filtreleme veya işaretleme.",
+    body: "Kullanıcı içeriğini (yorum, mesaj) toksiklik/spam/uygunsuzluk açısından sınıflandırır; eşik üstünü engeller, gri bölgeyi insana yönlendirir. Tamamen otomatik karar risklidir (yanlış pozitif/negatif); bu yüzden eşik ayarı ve insan onayı (human-in-the-loop) ile tasarlanır.",
+    analogy: "Bir forumun moderatörü gibi: netteki ihlali siler, şüpheliyi insana sorar.",
+  },
+  {
+    term: "Human-in-the-loop",
+    category: "AI",
+    short: "Kritik kararlarda otomasyonun son sözü insana bırakması.",
+    body: "Model her şeyi otomatik yapmaz; emin olunmayan veya dönüşü zor kararlarda (içerik silme, ödeme, teşhis) bir insanın onayına sunulur. Hız ile güvenliği dengeler: rutin işleri otomatikleştirir, riskli olanı insana getirir. Eval ve geri bildirim döngüsünün de parçasıdır.",
+    analogy: "Otopilot uçağı uçurur ama inişte/krizde kontrolü pilota verir.",
+  },
+
+  // ─────────────────────── SOFT SKILLS (KAVRAM) ───────────────────────
+  {
+    term: "Soft Skills (Pasif Yetenekler)",
+    category: "Kavram",
+    short: "Teknik olmayan ama kariyeri belirleyen insani/iş becerileri.",
+    body: "İletişim, takım çalışması, çatışma çözme, geri bildirim, zaman yönetimi ve öğrenme isteği gibi becerilerdir. Kod yazmak kadar önemlidir: senior olmak çoğu zaman 'daha zor kod' değil, 'daha iyi iş birliği ve karar' demektir. Ölçmesi zordur ama öz-değerlendirme ve geri bildirimle geliştirilebilir.",
+    analogy: "Bir takımın yıldız oyuncusu değil, herkesi daha iyi oynatan oyuncusu olmak gibi.",
+  },
+  {
+    term: "Çatışma Çözme",
+    category: "Kavram",
+    short: "Anlaşmazlıkları kişiselleştirmeden, soruna odaklanarak çözme becerisi.",
+    body: "Teknik ekiplerde anlaşmazlık normaldir (mimari, öncelik, kod stili). İyi çözüm: önce dinle, niyeti değil davranışı konuş, ortak hedefe (ürün/kullanıcı) dön, gerekirse veriyle karar ver ve kararı yazılı netleştir. Amaç 'haklı çıkmak' değil, birlikte ilerleyebilmektir.",
+    analogy: "İki kişinin pencereyi açma-kapama kavgası değil, 'asıl ihtiyaç hava mı ısı mı' sorusudur.",
+  },
+  {
+    term: "Code Review Kültürü",
+    category: "Kavram",
+    short: "Kodu değil fikri değerlendiren, öğreten ve saygılı inceleme alışkanlığı.",
+    body: "Sağlıklı code review: küçük PR'lar, net açıklama, 'sen' yerine 'bu satır' dili, öneriyi gerekçeyle sunma ve nit/blocker ayrımı. İnceleyen öğretir, incelenen savunmaya geçmeden dinler. Hedef kapı bekçiliği değil, ortak kod sahipliği ve birlikte yükselen kalite.",
+    analogy: "Bir yazıyı editörün düzeltmesi gibi: yazarı değil metni daha iyi yapmak için.",
+  },
+  {
+    term: "Yapıcı Geri Bildirim",
+    category: "Kavram",
+    short: "Davranışa odaklı, somut ve karşıdakini büyüten geri bildirim verme/alma.",
+    body: "İyi geri bildirim spesifik ve zamanındadır: 'kötü iş' değil, 'şu fonksiyon çok şey yapıyor, bölsek test kolaylaşır'. Övgüyü de aynı netlikte ver. Almak da bir beceridir: savunmaya geçme, soru sor, teşekkür et. Düzenli geri bildirim, sürprizleri ve birikmiş gerginliği önler.",
+    analogy: "Aynaya değil, yol gösteren bir koça benzer: ne, neden, nasıl daha iyi.",
+  },
 ];
 
 /** term -> Concept hızlı erişim haritası (yol haritasındaki dallar için). */

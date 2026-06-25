@@ -13,6 +13,7 @@ const navLinks = [
   { href: "/", label: "Yol Haritası" },
   { href: "/kavramlar", label: "Sözlük" },
   { href: "/veri-setleri", label: "Veri Setleri" },
+  { href: "/oz-degerlendirme", label: "Öz-Değerlendirme" },
   { href: "/makaleler", label: "Makaleler" },
   { href: "/liderlik", label: "Liderlik" },
   { href: "/topluluklar", label: "Topluluklar" },
