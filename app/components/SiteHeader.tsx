@@ -22,6 +22,7 @@ import {
 /** Üst seviye gezinme — sade tutulur ki header taşmasın. */
 const primaryLinks = [
   { href: "/", label: "Yol Haritası" },
+  { href: "/gelisim", label: "Gelişim" },
   { href: "/oz-degerlendirme", label: "Öz-Değerlendirme" },
   { href: "/liderlik", label: "Liderlik" },
   { href: "/topluluklar", label: "Topluluklar" },
