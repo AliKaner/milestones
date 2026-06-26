@@ -3459,6 +3459,57 @@ export const concepts: Concept[] = [
     body: "İyi geri bildirim spesifik ve zamanındadır: 'kötü iş' değil, 'şu fonksiyon çok şey yapıyor, bölsek test kolaylaşır'. Övgüyü de aynı netlikte ver. Almak da bir beceridir: savunmaya geçme, soru sor, teşekkür et. Düzenli geri bildirim, sürprizleri ve birikmiş gerginliği önler.",
     analogy: "Aynaya değil, yol gösteren bir koça benzer: ne, neden, nasıl daha iyi.",
   },
+
+  // ─────────────────────── SEED ROADMAP (EKLENENLER) ───────────────────────
+  {
+    term: "Design Tokens",
+    category: "CSS",
+    short: "Tasarım sisteminin temel yapı taşlarını (renk, font, boşluk) tutan değişkenler.",
+    body: "Tasarım token'ları; renk kodları (`#3b82f6`), font boyutları veya animasyon süreleri gibi tasarım kararlarını platformdan bağımsız isimli değişkenlerde (`--color-primary`) saklar. Geliştiriciler ve tasarımcılar arasında ortak bir dil kurar; tema değiştirmeyi (örn. dark mode) ve tutarlılığı çok kolaylaştırır.",
+    analogy: "Bir mimari projede kullanılan standart tuğla ve boya kodları gibi: herkes aynı malzemeyi tanır ve kullanır.",
+  },
+  {
+    term: "Signed URL",
+    category: "Backend",
+    short: "Özel bir dosyaya yalnızca belirli bir süre için erişim veya yükleme izni veren şifreli bağlantı.",
+    body: "Bulut depolamada (örn. AWS S3) dosyaları herkese açık yapmak yerine gizli tutarsın. Bir kullanıcı dosyaya erişmek veya dosya yüklemek istediğinde, backend geçici bir imza taşıyan URL üretir (örn. 15 dakika geçerli). Süre bitince bağlantı geçersiz olur; yetkisiz erişimleri engellemenin en güvenli yoludur.",
+    analogy: "Bir müzeye girmek için üzerinde saati yazan, süreli ziyaretçi kartı vermek gibi.",
+  },
+  {
+    term: "Idempotency Key",
+    category: "Backend",
+    short: "Aynı kritik isteğin (örn. ödeme) ağ hataları yüzünden tekrarlansa bile yalnızca bir kez işlenmesini sağlayan benzersiz anahtar.",
+    body: "Kullanıcı ödeme yaparken internet koparsa veya butona iki kez basarsa aynı istek sunucuya tekrar gidebilir. İstemci isteğe benzersiz bir `Idempotency-Key` ekler; sunucu bu anahtarı önbellekte (Redis) kilitler ve işlemi bir kez yapar. Aynı anahtar tekrar gelirse, yeni işlem yapmadan önceki başarılı cevabı döner.",
+    analogy: "Aynı faturayı yanlışlıkla ikinci kez ödemeye gittiğinde veznedarın 'bu numara zaten ödendi' deyip dekontu tekrar vermesi gibi.",
+  },
+  {
+    term: "SRE / SLO / SLI",
+    category: "DevOps",
+    short: "Sistem güvenilirliğini yazılım mühendisliğiyle yönetme disiplini ve başarı metrikleri.",
+    body: "SRE (Site Reliability Engineering), altyapı operasyonlarına yazılım mühendisliği prensipleriyle yaklaşır. SLI (Service Level Indicator) mevcut durumu ölçer (örn. başarılı istek oranı). SLO (Service Level Objective) ise ekibin hedefidir (örn. %99.9 başarı). Hata bütçesi (error budget) dolana kadar yeni özellik çıkılır; bütçe aşılırsa öncelik güvenilirliğe verilir.",
+    analogy: "SLI arabanın anlık hız göstergesi, SLO ise otobanda gitmeyi hedeflediğin ortalama hız sınırı gibidir.",
+  },
+  {
+    term: "Data Lineage",
+    category: "Data",
+    short: "Verinin kaynağından son rapor tablosuna kadar geçirdiği tüm dönüşüm yolculuğunun haritası.",
+    body: "Bir dashboard'da yanlış bir sayı gördüğünde 'bu veri nereden geldi ve yolda hangi işlemlere uğradı?' sorusunu sorman gerekir. Data lineage (veri soybilimi), tablolar ve boru hatları arasındaki bağımlılıkları görselleştirir. Hem hata ayıklamayı hem de bir sütunu değiştirdiğinde nelerin etkileneceğini (impact analysis) önceden görmeyi sağlar.",
+    analogy: "Bir gıda paketinin üzerindeki çiftlikten sofraya takip kodu gibi: hangi tarladan çıktı, nerede işlendi bilinir.",
+  },
+  {
+    term: "Agent Loop",
+    category: "AI",
+    short: "AI ajanın bir hedefe ulaşana kadar sürekli gözlem yapıp karar verdiği çalışma döngüsü.",
+    body: "Agent loop (Düşün → Araç Çağır → Sonucu Gözlemle → Tekrar), modelin tek seferlik cevap üretmek yerine adım adım ilerlemesini sağlar. Model bir araç çalıştırır (örn. arama yapar), çıkan sonuca bakar, gerekirse başka bir araç çağırır ve görevi bitirdiğine kanaat getirdiğinde durur. Otonom problem çözmenin kalbidir.",
+    analogy: "Bir tamircinin arızayı ararken 'bak, test et, parça değiştir, tekrar dene' döngüsüyle sonuca ulaşması gibi.",
+  },
+  {
+    term: "Eval & Regression",
+    category: "AI",
+    short: "AI sistemlerinin kalitesini veri setleriyle ölçme ve yeni değişikliklerin eskiyi bozmasını engelleme.",
+    body: "Prompt veya model değiştirdiğinde bir sorunu çözerken başka bir sorunu bozabilirsin (regresyon). Eval (evaluations), asistanın başarısını yüzlerce örnek test vakası üzerinden otomatik veya insan gözetiminde puanlar. Geleneksel yazılımdaki birim testlerinin yapay zeka dünyasındaki karşılığıdır; varsayımla değil, metrikle geliştirme yapmayı sağlar.",
+    analogy: "Yeni bir gözlük camı taktığında sadece uzaktaki tek harfe değil, tüm panodaki harflere bakarak genel görüşü test etmek gibi.",
+  },
 ];
 
 /** term -> Concept hızlı erişim haritası (yol haritasındaki dallar için). */

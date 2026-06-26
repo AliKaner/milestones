@@ -1,5 +1,9 @@
 import { internalMutation } from "./_generated/server";
-import { levels as staticLevels, tracks as staticTracks } from "../app/data/steps";
+import { levels as coreLevels, tracks as staticTracks } from "../app/data/steps";
+import { extraLevels } from "../app/data/extraLevels";
+
+/** Çekirdek + ek müfredat birlikte seed edilir. */
+const staticLevels = [...coreLevels, ...extraLevels];
 
 /** Adım tipini başlığa göre kabaca tahmin eder (admin sonradan düzenler). */
 function guessType(title: string): string {
@@ -89,5 +93,92 @@ export const run = internalMutation({
       tasks: (await ctx.db.query("tasks").collect()).length,
     };
     return counts;
+  },
+});
+
+/**
+ * EK müfredatı (extraLevels) mevcut veriye DOKUNMADAN ekler.
+ * - Çekirdek level'ları, kullanıcı ilerlemesini (completions) ve kanıtları KORUR;
+ *   sadece extraLevels'i ekler/günceller.
+ * - Idempotent: aynı key'e sahip bir ek level zaten varsa, önce onun
+ *   step/task'larını silip yeniden yazar (id'ler değişir ama yalnızca ek
+ *   içerikte; çekirdek görevlerin id'leri sabit kalır).
+ * Çalıştır: `npx convex run seed:runExtra`
+ */
+export const runExtra = internalMutation({
+  args: {},
+  handler: async (ctx) => {
+    const tracks = await ctx.db.query("tracks").collect();
+    const trackIdByKey = new Map<string, any>();
+    for (const t of tracks) trackIdByKey.set(t.key, t._id);
+
+    const allLevels = await ctx.db.query("levels").collect();
+    // Ek level'ların devam edeceği sıralama numarası (çakışmasın diye sona ekle).
+    let levelOrder = allLevels.reduce((m, l) => Math.max(m, l.order), 0) + 1;
+
+    const extraKeys = new Set(extraLevels.map((l) => l.id));
+
+    // Önce: aynı key'li eski ek level varsa temizle (idempotent yeniden yazım).
+    for (const lvl of allLevels) {
+      if (!extraKeys.has(lvl.key)) continue;
+      const steps = await ctx.db
+        .query("steps")
+        .withIndex("by_level", (q) => q.eq("levelId", lvl._id))
+        .collect();
+      for (const s of steps) {
+        const tasks = await ctx.db
+          .query("tasks")
+          .withIndex("by_step", (q) => q.eq("stepId", s._id))
+          .collect();
+        for (const t of tasks) await ctx.db.delete(t._id);
+        await ctx.db.delete(s._id);
+      }
+      await ctx.db.delete(lvl._id);
+    }
+
+    let added = 0;
+    for (const level of extraLevels) {
+      const trackId = trackIdByKey.get(level.track);
+      if (!trackId) continue;
+      const levelId = await ctx.db.insert("levels", {
+        trackId,
+        key: level.id,
+        levelNo: level.level,
+        project: level.project,
+        difficulty: level.difficulty,
+        emoji: level.emoji,
+        accent: level.accent,
+        description: level.description,
+        skills: level.skills,
+        order: levelOrder++,
+        tier: level.tier ?? "intern",
+      });
+
+      const stepPoints = 20 + level.level * 10;
+      for (let si = 0; si < level.steps.length; si++) {
+        const step = level.steps[si];
+        const stepId = await ctx.db.insert("steps", {
+          levelId,
+          title: step.title,
+          order: si,
+          points: stepPoints,
+          type: guessType(step.title),
+          learn: step.learn ?? [],
+          question: step.question,
+        });
+        for (let ti = 0; ti < step.tasks.length; ti++) {
+          const task = step.tasks[ti];
+          await ctx.db.insert("tasks", {
+            stepId,
+            goal: task.goal,
+            tip: task.tip,
+            order: ti,
+          });
+        }
+      }
+      added++;
+    }
+
+    return { addedLevels: added };
   },
 });

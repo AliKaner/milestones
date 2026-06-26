@@ -8,8 +8,20 @@ import type { Id } from "@/convex/_generated/dataModel";
 import LevelSection from "./components/LevelSection";
 import SubmissionModal from "./components/SubmissionModal";
 import Logo from "./components/Logo";
+import { StarIcon, LockIcon } from "./components/icons";
 import type { LevelData, StepData } from "./lib/roadmap";
 import { paths, tiers, type TierId } from "./data/steps";
+
+/** Tier ayracındaki dikey renk çubuğu — kıdem aksanına göre. */
+const TIER_BAR: Record<string, string> = {
+  intern: "bg-slate-400",
+  junior: "bg-emerald-400",
+  mid: "bg-sky-400",
+  senior: "bg-violet-400",
+  staff: "bg-amber-400",
+  architect: "bg-rose-400",
+  lead: "bg-yellow-400",
+};
 
 const LOCAL_V2 = "devyol-progress-v2"; // string[] taskId
 const LOCAL_OLD = "devyol-progress"; // Record<stableKey, boolean>
@@ -473,20 +485,30 @@ export default function Home() {
               data-tier={tier.id}
               className="tier-section py-4"
             >
-              {/* Tier Divider */}
-              <div className="relative my-10 flex items-center justify-center">
-                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div className="w-full border-t border-white/10"></div>
-                </div>
-                <div className="relative flex flex-col items-center bg-[#0a0a0f] px-6 text-center">
-                  <span className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wider text-white">
-                    <span>{tier.emoji}</span> {tier.label}
-                  </span>
-                  <span className="mt-1 text-[11px] text-white/40">
-                    {locked
-                      ? "🔒 Kilitli — Önceki seviyeleri tamamla"
-                      : `🔓 Açık · ${levelsInTier.length} Proje`}
-                  </span>
+              {/* Tier ayracı: soldan yatay çizgi, sağda kıdem etiketi */}
+              <div className="relative my-10 flex items-center gap-4">
+                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-white/10 to-white/25" />
+                <div className="flex items-center gap-2.5">
+                  <div className="text-right leading-tight">
+                    <div className="flex items-center justify-end gap-1.5 text-sm font-bold uppercase tracking-wider text-white">
+                      {!locked && <StarIcon filled className="h-3.5 w-3.5 text-amber-300" />}
+                      {tier.label}
+                    </div>
+                    <div className="mt-0.5 flex items-center justify-end gap-1 text-[11px] text-white/40">
+                      {locked ? (
+                        <>
+                          <LockIcon className="h-3 w-3" /> Kilitli — önceki seviyeleri tamamla
+                        </>
+                      ) : (
+                        <>Açık · {levelsInTier.length} Proje</>
+                      )}
+                    </div>
+                  </div>
+                  <span
+                    className={`h-9 w-1 rounded-full ${TIER_BAR[tier.id] ?? "bg-white/30"} ${
+                      locked ? "opacity-30" : ""
+                    }`}
+                  />
                 </div>
               </div>
 
