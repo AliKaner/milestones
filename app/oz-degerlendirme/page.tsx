@@ -16,6 +16,11 @@ import {
   TrendingUpIcon,
   RotateIcon,
   BookOpenIcon,
+  ServerIcon,
+  CloudIcon,
+  ChartIcon,
+  LayersIcon,
+  SparklesIcon,
 } from "../components/icons";
 
 const STORAGE_KEY = "milestones-selfassessment-v1";
@@ -30,6 +35,12 @@ const CAT_ICON: Record<string, IconType> = {
   "geri-bildirim": MessageSquareIcon,
   zaman: ClockIcon,
   sahiplenme: SproutIcon,
+  mentorluk: BookOpenIcon,
+  kriz: ServerIcon,
+  "is-zekasi": ChartIcon,
+  "surekli-ogrenme": SparklesIcon,
+  asenkron: CloudIcon,
+  "sistem-tasarimi": LayersIcon,
 };
 
 /** 4'lü sıklık ölçeği — 0..3. */
